@@ -1,2 +1,2 @@
 # yagbe
-Yet Another GB Emulator
+Yet Another GB Emulator (WIP)
