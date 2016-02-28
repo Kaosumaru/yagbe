@@ -117,14 +117,14 @@ namespace operands
 
 	//operands
 
-	template<typename uint8_t s, typename uint8_t c>
+	template<uint8_t s, uint8_t c>
 	struct default_operand
 	{
 		constexpr static int size = s;
 		constexpr static int cycles = c;
 	};
 
-	template<typename uint8_t s, typename uint8_t c, typename Arg1, typename Arg2>
+	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
 	struct default_binary_operand
 	{
 		constexpr static int size = s;
