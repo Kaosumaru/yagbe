@@ -120,15 +120,15 @@ namespace operands
 	template<uint8_t s, uint8_t c>
 	struct default_operand
 	{
-		constexpr static int size = s;
-		constexpr static int cycles = c;
+		constexpr static int size() { return s; }
+		constexpr static int cycles() { return c; }
 	};
 
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
 	struct default_binary_operand
 	{
-		constexpr static int size = s;
-		constexpr static int cycles = c * unwrap_register<Arg1>::complexity * unwrap_register<Arg2>::complexity;
+		constexpr static int size() { return s; }
+		constexpr static int cycles() { return c * unwrap_register<Arg1>::complexity * unwrap_register<Arg2>::complexity; }
 	};
 
 	//NOP

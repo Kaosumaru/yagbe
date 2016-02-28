@@ -32,9 +32,9 @@ const lest::test specification[] =
 		EXPECT(ctx.registers.b == 1);
 		EXPECT(ctx.registers.b == ctx.registers.a);
 
-		EXPECT(ld_b_a_op::size == 1);
-		EXPECT(ld_b_a_op::cycles == 4);
-		EXPECT(ld_b_hl_op::cycles == 8);
+		EXPECT(ld_b_a_op::size() == 1);
+		EXPECT(ld_b_a_op::cycles() == 4);
+		EXPECT(ld_b_hl_op::cycles() == 8);
 	}
 };
 
