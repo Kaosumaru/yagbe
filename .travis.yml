@@ -32,11 +32,11 @@ before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake ../tests/operands -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+  - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON
   - cd ..
 
 script:
   - cd build
   - make
   - cd ..
-  - ./build/Tests -p
+  - ./build/yagbe -p
