@@ -19,6 +19,8 @@ namespace operands
 
 	struct HL {};
 
+	struct HL_pointer {};
+
 	template<typename Register>
 	struct unwrap_register
 	{
@@ -28,12 +30,16 @@ namespace operands
 	template<>
 	struct unwrap_register<A>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.a; }
 	};
 
 	template<>
 	struct unwrap_register<operands::F>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.f; }
 	};
 
@@ -42,12 +48,16 @@ namespace operands
 	template<>
 	struct unwrap_register<operands::B>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.b; }
 	};
 
 	template<>
 	struct unwrap_register<operands::C>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.c; }
 	};
 
@@ -56,12 +66,16 @@ namespace operands
 	template<>
 	struct unwrap_register<operands::D>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.d; }
 	};
 
 	template<>
 	struct unwrap_register<operands::E>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.e; }
 	};
 
@@ -70,12 +84,16 @@ namespace operands
 	template<>
 	struct unwrap_register<operands::H>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.h; }
 	};
 
 	template<>
 	struct unwrap_register<operands::L>
 	{
+		constexpr static int complexity = 1;
+
 		static auto& get(context &c) { return c.registers.l; }
 	};
 
@@ -83,14 +101,38 @@ namespace operands
 	template<>
 	struct unwrap_register<operands::HL>
 	{
+		constexpr static int complexity = 2;
+
 		static auto& get(context &c) { return c.registers.hl; }
+	};
+
+	template<>
+	struct unwrap_register<operands::HL_pointer>
+	{
+		constexpr static int complexity = 2;
+
+		static auto& get(context &c) { return c.memory.get(c.registers.hl); }
 	};
 
 
 	//operands
 
+	template<typename uint8_t s, typename uint8_t c>
+	struct default_operand
+	{
+		constexpr static int size = s;
+		constexpr static int cycles = c;
+	};
+
+	template<typename uint8_t s, typename uint8_t c, typename Arg1, typename Arg2>
+	struct default_binary_operand
+	{
+		constexpr static int size = s;
+		constexpr static int cycles = c * unwrap_register<Arg1>::complexity * unwrap_register<Arg2>::complexity;
+	};
+
 	//NOP
-	struct NOP
+	struct NOP : default_operand<1, 4>
 	{
 		static void execute(context &c)
 		{
@@ -100,7 +142,7 @@ namespace operands
 
 	//this allows to type LD<B,A>::execute, or LD<A,B>::execute, etc
 	template<typename Arg1, typename Arg2>
-	struct LD
+	struct LD : default_binary_operand<1, 4, Arg1, Arg2>
 	{
 		static void execute(context &c)
 		{

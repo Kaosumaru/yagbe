@@ -31,7 +31,7 @@ namespace automap
 	struct type_from_op<op, std::enable_if_t< op % 8 == 5 > > { using type = L; };
 
 	template<uint8_t op>
-	struct type_from_op<op, std::enable_if_t< op % 8 == 6 > > { using type = HL; }; //that's probably wrong, (HL) is probably a pointer
+	struct type_from_op<op, std::enable_if_t< op % 8 == 6 > > { using type = HL_pointer; };
 
 	template<uint8_t op>
 	struct type_from_op<op, std::enable_if_t< op % 8 == 7 > > { using type = A; };

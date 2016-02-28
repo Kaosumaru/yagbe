@@ -1,6 +1,7 @@
 #pragma once
 
 #include "registers.hpp"
+#include "memory.hpp"
 
 namespace yagbe
 {
@@ -8,5 +9,6 @@ namespace yagbe
 	{
 	public:
 		yagbe::registers registers;
+		yagbe::memory memory;
 	};
 };

@@ -23,11 +23,18 @@ const lest::test specification[] =
 		ctx.registers.a = 1;
 		ctx.registers.b = 2;
 
+		using ld_b_a_op = LD<B, A>;
+		using ld_b_hl_op = LD<B, HL_pointer>;
+
 		auto ld_b_a = &(LD<B, A>::execute);
 		ld_b_a(ctx);
 
 		EXPECT(ctx.registers.b == 1);
 		EXPECT(ctx.registers.b == ctx.registers.a);
+
+		EXPECT(ld_b_a_op::size == 1);
+		EXPECT(ld_b_a_op::cycles == 4);
+		EXPECT(ld_b_hl_op::cycles == 8);
 	}
 };
 
