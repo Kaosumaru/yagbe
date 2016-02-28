@@ -27,6 +27,7 @@ const lest::test specification[] =
 		ld_b_a(ctx);
 
 		EXPECT(ctx.registers.b == 1);
+		EXPECT(ctx.registers.b == ctx.registers.a);
 	}
 };
 
