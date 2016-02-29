@@ -65,15 +65,53 @@ namespace operands
 
 
 	//--- REGISTERS & FLAGS
+
+	//RLCA
+	struct RLCA : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			uint16_t carry = (c.registers.a & 0x80) >> 7;
+
+			c.registers.a <<= 1;
+			c.registers.a += carry;
+
+			c.flags.z = 0;
+			c.flags.n = 0;
+			c.flags.h = 0;
+			c.flags.c = carry != 0;
+
+			return cycles();
+		}
+	};
+
+	//RLA
+	struct RLA : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			uint8_t carry = c.flags.c ? 1 : 0;
+
+			c.flags.z = 0;
+			c.flags.n = 0;
+			c.flags.h = 0;
+			c.flags.c = c.registers.a & 0x80;
+
+			c.registers.a <<= 1;
+			c.registers.a += carry;
+
+			return cycles();
+		}
+	};
+
 	//DAA
-	template<typename Arg>
 	struct DAA : default_operand<1, 4>
 	{
-		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
+
 
 		static int execute(context &c)
 		{
-			uint16_t s = registers.a;
+			uint16_t s = c.registers.a;
 
 			//TODO check this
 
@@ -99,6 +137,107 @@ namespace operands
 		}
 	};
 
+	//SCF
+	struct SCF : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			c.flags.n = 0;
+			c.flags.h = 0;
+			c.flags.c = 1;
+
+			return cycles();
+		}
+	};
+
+	//RRCA
+	struct RRCA : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			uint8_t carry = c.registers.a & 0x01;
+
+			c.registers.a >>= 1;
+			if (carry) c.registers.a |= 0x80;
+
+			c.flags.z = 0;
+			c.flags.n = 0;
+			c.flags.h = 0;
+			c.flags.c = carry != 0;
+
+			return cycles();
+		}
+	};
+
+	//RRA
+	struct RRA : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			uint8_t carry = (c.flags.c ? 1 : 0) << 7;
+
+			c.flags.z = 0;
+			c.flags.n = 0;
+			c.flags.h = 0;
+			c.flags.c = c.registers.a & 0x01;
+
+			c.registers.a >>= 1;
+			c.registers.a += carry;
+
+			return cycles();
+		}
+	};
+
+	//CPL
+	struct CPL : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			c.registers.a = ~c.registers.a;
+
+			c.flags.n = 0;
+			c.flags.h = 0;
+
+			return cycles();
+		}
+	};
+
+	//CCF
+	struct CCF : default_operand<1, 4>
+	{
+		static int execute(context &c)
+		{
+			c.flags.c = !c.flags.c;
+
+			c.flags.n = 0;
+			c.flags.h = 0;
+
+			return cycles();
+		}
+	};
+
+
+/*
+	//SRA
+	template<typename Arg>
+	struct SRA : default_unary_operand<1, 4, Arg>
+	{
+		static int execute(context &c)
+		{
+			auto value = unwrap<Arg>::get(c);
+			c.flags.c = value & 0x01;
+
+			value = (value & 0x80) | (value >> 1);
+			unwrap<Arg>::get(c) = value;
+
+			c.flags.z = value == 0;
+			c.flags.n = 0;
+			c.flags.h = 0;
+
+			return cycles();
+		}
+	};
+*/
 
 	//--- LOADS
 
