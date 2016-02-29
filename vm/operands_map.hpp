@@ -52,7 +52,7 @@ namespace automap
 
 	//0x0 : NOP
 	template<>
-	struct operand<0> : operands::NOP
+	struct operand<0x0> : operands::NOP
 	{
 
 	};
@@ -69,10 +69,57 @@ namespace automap
 
 
 	template<>
-	struct operand<0x76> : operands::HALT
-	{
+	struct operand<0x76> : operands::HALT{};
 
-	};
+
+	//--- JUMPS 
+
+	//0xCA : JP Z, a16
+	template<>
+	struct operand<0xCA> : operands::JP<condition::Z, d16> {};
+
+	//0xDA : JP C, a16
+	template<>
+	struct operand<0xDA> : operands::JP<condition::C, d16> {};
+
+	//0xC2 : JP NZ, a16
+	template<>
+	struct operand<0xC2> : operands::JP<condition::NZ, d16> {};
+
+	//0xD2 : JP NC, a16
+	template<>
+	struct operand<0xD2> : operands::JP<condition::NC, d16> {};
+
+	//0xC3 : JP a16
+	template<>
+	struct operand<0xC3> : operands::JP<condition::_, d16> {};
+
+	//0xE9 : JP (HL)
+	template<>
+	struct operand<0xE9> : operands::JP<condition::_, HL> {};
+
+	//0xCA : JR Z, r8
+	template<>
+	struct operand<0x28> : operands::JR<condition::Z, d8> {};
+
+	//0xDA : JR C, r8
+	template<>
+	struct operand<0x38> : operands::JR<condition::C, d8> {};
+
+	//0xC2 : JR NZ, r8
+	template<>
+	struct operand<0x20> : operands::JR<condition::NZ, d8> {};
+
+	//0xD2 : JR NC, r8
+	template<>
+	struct operand<0x30> : operands::JR<condition::NC, d8> {};
+
+	//0xC3 : JR r8
+	template<>
+	struct operand<0x18> : operands::JR<condition::_, d8> {};
+
+
+
 
 }
 }

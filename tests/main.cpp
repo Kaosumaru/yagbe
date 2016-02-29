@@ -82,6 +82,108 @@ const lest::test specification[] =
 			EXPECT(ld_hld_a::cycles() == 8);
 		}
 
+	},
+	CASE("JP")
+	{
+		context ctx;
+
+		//JP d16
+		{
+			using jp_d16 = JP<condition::_, d16>;
+
+			ctx.registers.pc = 0;
+			ctx.memory.at(0) = 6;
+			ctx.memory.at(1) = 0;
+
+			auto cycles = jp_d16::execute(ctx);
+
+			EXPECT(ctx.registers.pc == 6);
+			EXPECT(cycles == 16);
+		}
+
+		//JP (HL)
+		{
+			using jp_HL = JP<condition::_, HL>;
+
+			ctx.registers.pc = 0;
+			ctx.registers.hl = 6;
+
+			auto cycles = jp_HL::execute(ctx);
+
+			EXPECT(ctx.registers.pc == 6);
+			EXPECT(cycles == 4);
+		}
+
+		//JP NC,d16
+		{
+			using JP_NC_HL = operands::JP<condition::NC, d16>;
+
+			{
+				ctx.registers.pc = 0;
+				ctx.memory.at(0) = 6;
+				ctx.memory.at(1) = 0;
+				ctx.flags.c = 1;
+
+				auto cycles = JP_NC_HL::execute(ctx);
+				EXPECT(ctx.registers.pc == 2);
+				EXPECT(cycles == 12);
+			}
+
+			{
+				ctx.registers.pc = 0;
+				ctx.memory.at(0) = 6;
+				ctx.memory.at(1) = 0;
+				ctx.flags.c = 0;
+
+				auto cycles = JP_NC_HL::execute(ctx);
+				EXPECT(ctx.registers.pc == 6);
+				EXPECT(cycles == 16);
+			}
+		}
+
+	},
+	CASE("JR")
+	{
+		context ctx;
+
+		//JR r8
+		{
+			using JR_D8 = JR<condition::_, d8>;
+
+			ctx.registers.pc = 0;
+			ctx.memory.at(0) = 6;
+
+			auto cycles = JR_D8::execute(ctx);
+
+			EXPECT(ctx.registers.pc == 7);
+			EXPECT(cycles == 12);
+		}
+
+		//JR NC,r8
+		{
+			using JR_NC_D8 = operands::JR<condition::NC, d8>;
+
+			{
+				ctx.registers.pc = 0;
+				ctx.memory.at(0) = 6;
+				ctx.flags.c = 1;
+
+				auto cycles = JR_NC_D8::execute(ctx);
+				EXPECT(ctx.registers.pc == 1);
+				EXPECT(cycles == 8);
+			}
+
+			{
+				ctx.registers.pc = 0;
+				ctx.memory.at(0) = 6;
+				ctx.flags.c = 0;
+
+				auto cycles = JR_NC_D8::execute(ctx);
+				EXPECT(ctx.registers.pc == 7);
+				EXPECT(cycles == 12);
+			}
+		}
+
 	}
 };
 
