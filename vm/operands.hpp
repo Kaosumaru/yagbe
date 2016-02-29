@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include "context.hpp"
 #include "operands_helpers.hpp"
 
@@ -11,8 +12,6 @@ namespace operands
 	template<uint8_t s, uint8_t c>
 	struct default_operand
 	{
-		using parent = default_operand<s, c>;
-
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c; }
 	};
@@ -20,8 +19,6 @@ namespace operands
 	template<uint8_t s, uint8_t c, typename Arg>
 	struct default_unary_operand
 	{
-		using parent = default_unary_operand<s, c, Arg>;
-
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c + unwrap<Arg>::complexity; }
 	};
@@ -29,8 +26,6 @@ namespace operands
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
 	struct default_binary_operand
 	{
-		using parent = default_binary_operand<s, c, Arg1, Arg2>;
-
 		static_assert(unwrap<Arg1>::size_of == unwrap<Arg2>::size_of, "Mismatching sizes");
 
 		constexpr static int size() { return s; }
@@ -44,7 +39,7 @@ namespace operands
 	{
 		static int execute(context &c)
 		{
-			return cycles();
+			return NOP::cycles();
 		}
 	};
 
@@ -54,7 +49,7 @@ namespace operands
 		static int execute(context &c)
 		{
 			throw std::runtime_error("NYI");
-			return cycles();
+			return HALT::cycles();
 		}
 	};
 
@@ -65,7 +60,7 @@ namespace operands
 		{
 			c.read_byte();
 			throw std::runtime_error("NYI");
-			return cycles();
+			return STOP::cycles();
 		}
 	};
 
@@ -87,7 +82,7 @@ namespace operands
 			c.flags.h = 0;
 			c.flags.c = carry != 0;
 
-			return cycles();
+			return RLCA::cycles();
 		}
 	};
 
@@ -106,7 +101,7 @@ namespace operands
 			c.registers.a <<= 1;
 			c.registers.a += carry;
 
-			return cycles();
+			return RLA::cycles();
 		}
 	};
 
@@ -139,7 +134,7 @@ namespace operands
 			if (s > 0x100)
 				c.flags.c = 1;
 
-			return cycles();
+			return DAA::cycles();
 		}
 	};
 
@@ -152,7 +147,7 @@ namespace operands
 			c.flags.h = 0;
 			c.flags.c = 1;
 
-			return cycles();
+			return SCF::cycles();
 		}
 	};
 
@@ -171,7 +166,7 @@ namespace operands
 			c.flags.h = 0;
 			c.flags.c = carry != 0;
 
-			return cycles();
+			return RRCA::cycles();
 		}
 	};
 
@@ -190,7 +185,7 @@ namespace operands
 			c.registers.a >>= 1;
 			c.registers.a += carry;
 
-			return cycles();
+			return RRA::cycles();
 		}
 	};
 
@@ -204,7 +199,7 @@ namespace operands
 			c.flags.n = 0;
 			c.flags.h = 0;
 
-			return cycles();
+			return CPL::cycles();
 		}
 	};
 
@@ -218,7 +213,7 @@ namespace operands
 			c.flags.n = 0;
 			c.flags.h = 0;
 
-			return cycles();
+			return CCF::cycles();
 		}
 	};
 
@@ -240,7 +235,7 @@ namespace operands
 			c.flags.n = 0;
 			c.flags.h = 0;
 
-			return cycles();
+			return xxx::cycles();
 		}
 	};
 */
@@ -254,7 +249,7 @@ namespace operands
 		static int execute(context &c)
 		{
 			unwrap<Arg1>::get(c) = unwrap<Arg2>::get(c);
-			return parent::cycles();
+			return LD::cycles();
 		}
 	};
 
@@ -279,7 +274,7 @@ namespace operands
 			c.memory.at(c.registers.sp--) = bytes[0];
 			c.memory.at(c.registers.sp--) = bytes[1];
 
-			return cycles();
+			return PUSH::cycles();
 		}
 	};
 
@@ -303,7 +298,7 @@ namespace operands
 
 			unwrap<Arg>::get(c) = word;
 
-			return cycles();
+			return POP::cycles();
 		}
 	};
 
@@ -333,7 +328,7 @@ namespace operands
 				c.flags.n = 0;
 			}
 
-			return cycles();
+			return INC::cycles();
 		}
 	};
 
@@ -360,7 +355,7 @@ namespace operands
 				c.flags.n = 1;
 			}
 
-			return cycles();
+			return DEC::cycles();
 		}
 	};
 
@@ -390,7 +385,7 @@ namespace operands
 			overflow_result_type cmask = single_byte ? 0xff00 : 0xffff0000;
 			c.flags.c = result & cmask;
 
-			return cycles();
+			return ADD::cycles();
 		}
 	};
 
@@ -414,7 +409,7 @@ namespace operands
 
 			registers.a = (uint8_t)result;
 
-			return cycles();
+			return ADC::cycles();
 		}
 	};
 
@@ -437,7 +432,7 @@ namespace operands
 
 			registers.a -= value;
 
-			return cycles();
+			return SBC::cycles();
 		}
 	};
 
@@ -458,7 +453,7 @@ namespace operands
 			
 			registers.a -= value;
 
-			return cycles();
+			return SUB::cycles();
 		}
 	};
 
@@ -478,7 +473,7 @@ namespace operands
 			c.flags.h = 1;
 			c.flags.c = 0;
 
-			return cycles();
+			return AND::cycles();
 		}
 	};
 
@@ -498,7 +493,7 @@ namespace operands
 			c.flags.h = 0;
 			c.flags.c = 0;
 
-			return cycles();
+			return XOR::cycles();
 		}
 	};
 
@@ -518,7 +513,7 @@ namespace operands
 			c.flags.h = 0;
 			c.flags.c = 0;
 
-			return cycles();
+			return OR::cycles();
 		}
 	};
 
@@ -537,7 +532,7 @@ namespace operands
 			c.flags.h = (value & 0x0f) > (c.registers.a & 0x0f);
 			c.flags.c = value > c.registers.a;
 
-			return cycles();
+			return CP::cycles();
 
 		}
 	};
@@ -559,7 +554,7 @@ namespace operands
 				return 12;
 
 			c.registers.pc = pointer;
-			return cycles();
+			return JP::cycles();
 		}
 	};
 
@@ -579,7 +574,7 @@ namespace operands
 				return 8;
 
 			c.registers.pc += (int8_t)pointer;
-			return cycles();
+			return JR::cycles();
 		}
 	};
 
