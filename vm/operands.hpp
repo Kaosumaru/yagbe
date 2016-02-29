@@ -202,7 +202,7 @@ namespace operands
 	struct unwrap_register<operands::HLI>
 	{
 		constexpr static int complexity = 4;
-		constexpr static int size_of = 2;
+		constexpr static int size_of = 1;
 
 		static auto& get(context &c) { return c.memory.at(c.registers.hl++); }
 	};
@@ -211,7 +211,7 @@ namespace operands
 	struct unwrap_register<operands::HLD>
 	{
 		constexpr static int complexity = 4;
-		constexpr static int size_of = 2;
+		constexpr static int size_of = 1;
 
 		static auto& get(context &c) { return c.memory.at(c.registers.hl--); }
 	};
