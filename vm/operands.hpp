@@ -404,7 +404,7 @@ namespace operands
 
 			c.flags.z = value == c.registers.a;
 			c.flags.n = false;
-			c.flags.h = ((value & 0x0f) + (registers.a & 0x0f)) > 0x0f;
+			c.flags.h = ((value & 0x0f) + (c.registers.a & 0x0f)) > 0x0f;
 			c.flags.c = result & 0xff00;
 
 			c.registers.a = (uint8_t)result;
