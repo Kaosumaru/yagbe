@@ -407,7 +407,7 @@ namespace operands
 			c.flags.h = ((value & 0x0f) + (registers.a & 0x0f)) > 0x0f;
 			c.flags.c = result & 0xff00;
 
-			registers.a = (uint8_t)result;
+			c.registers.a = (uint8_t)result;
 
 			return ADC::cycles();
 		}
@@ -430,7 +430,7 @@ namespace operands
 			c.flags.h = (value & 0x0f) > (c.registers.a & 0x0f);
 			c.flags.c = value > c.registers.a;
 
-			registers.a -= value;
+			c.registers.a -= value;
 
 			return SBC::cycles();
 		}
@@ -451,7 +451,7 @@ namespace operands
 			c.flags.h = (value & 0x0f) > (c.registers.a & 0x0f);
 			c.flags.c = value > c.registers.a;
 			
-			registers.a -= value;
+			c.registers.a -= value;
 
 			return SUB::cycles();
 		}
