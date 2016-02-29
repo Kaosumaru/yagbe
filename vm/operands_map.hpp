@@ -1,5 +1,7 @@
 #pragma once
 #include "operands.hpp"
+#include <tuple>
+
 
 namespace yagbe
 {
@@ -8,41 +10,22 @@ namespace operands
 namespace automap
 {
 
+	using register_types = std::tuple<B, C, D, E, H, L, HL_pointer, A>;
 
-	template<uint8_t number>
-	struct type_from_number {	};
-
-	template<>
-	struct type_from_number<0> { using type = B; };
-
-	template<>
-	struct type_from_number<1> { using type = C; };
-
-	template<>
-	struct type_from_number<2> { using type = D; };
-
-	template<>
-	struct type_from_number<3> { using type = E; };
-
-	template<>
-	struct type_from_number<4> { using type = H; };
-
-	template<>
-	struct type_from_number<5> { using type = L; };
-
-	template<>
-	struct type_from_number<6> { using type = HL_pointer; };
-
-	template<>
-	struct type_from_number<7> { using type = A; };
-
-	template<uint8_t op>
-	using type_from_number_t = typename type_from_number<op>::type;
 
 	constexpr bool in_range(uint8_t op, uint8_t mi, uint8_t ma)
 	{
 		return op >= mi && op <= ma;
 	}
+
+	constexpr bool in_column_4(uint8_t op, uint8_t start)
+	{
+		return op == op == start ||
+			op == (start + 0x10) ||
+			op == (start + 0x20) ||
+			op == (start + 0x30);
+	}
+
 
 	template<uint8_t op, typename = std::enable_if_t<true>>
 	struct operand
@@ -52,17 +35,21 @@ namespace automap
 
 	//0x0 : NOP
 	template<>
-	struct operand<0x0> : operands::NOP
-	{
+	struct operand<0x0> : operands::NOP	{};
 
-	};
+	//0x10 : NOP
+	template<>
+	struct operand<0x10> : operands::STOP {};
 
-
-
+	
 
 	//0x40-0x7F (not 0x76) : LD X,y
 	template<uint8_t op>
-	struct operand<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > : operands::LD<automap::type_from_number_t<(op - 0x40)/8>, automap::type_from_number_t<op % 8> >
+	struct operand<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > : 
+		operands::LD<
+			std::tuple_element_t<(op - 0x40) / 8, register_types>, 
+			std::tuple_element_t<op % 8, register_types>
+			>
 	{
 
 	};

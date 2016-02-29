@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "vm/context.hpp"
 #include "vm/operands.hpp"
+#include "vm/operands_map.hpp"
 
 #ifndef _MSC_VER
 #define lest_FEATURE_COLOURISE 1
@@ -14,9 +15,16 @@
 using namespace std;
 using namespace yagbe;
 using namespace yagbe::operands;
+using namespace yagbe::operands::automap;
 
 const lest::test specification[] =
 {
+	CASE("Map")
+	{
+		EXPECT(&(operand<0x47>::execute) == &(LD<B, A>::execute));
+		EXPECT(&(operand<0x7E>::execute) == &(LD<A, HL_pointer>::execute));
+	},
+
 	CASE("LD")
 	{
 		context ctx;
