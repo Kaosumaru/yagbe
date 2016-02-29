@@ -32,6 +32,7 @@ namespace operands
 
 	struct d8 {};
 	struct d16 {};
+	struct d16_pointer {};
 
 	struct HLI {};
 	struct HLD {};
@@ -243,6 +244,15 @@ namespace operands
 		constexpr static int size_of = 2;
 
 		static auto get(context &c) { return c.read_word(); }
+	};
+
+	template<>
+	struct unwrap<operands::d16_pointer>
+	{
+		constexpr static int complexity = 12;
+		constexpr static int size_of = 2;
+
+		static auto& get(context &c) { return c.memory.at(c.read_word()); }
 	};
 
 	//conditions
