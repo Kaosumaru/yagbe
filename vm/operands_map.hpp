@@ -1,7 +1,8 @@
 #pragma once
 #include "operands.hpp"
+#include "utils.hpp"
 #include <tuple>
-
+#include <type_traits>
 
 namespace yagbe
 {
@@ -9,6 +10,8 @@ namespace operands
 {
 namespace automap
 {
+
+
 
 	using register_types = std::tuple<B, C, D, E, H, L, HL_pointer, A>;
 
@@ -45,7 +48,7 @@ namespace automap
 
 	//0x40-0x7F (not 0x76) : LD X,y
 	template<uint8_t op>
-	struct operand<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > : 
+	struct operand<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > :
 		operands::LD<
 			std::tuple_element_t<(op - 0x40) / 8, register_types>, 
 			std::tuple_element_t<op % 8, register_types>
