@@ -37,5 +37,36 @@ namespace yagbe
 			bytes[1] = read_byte();
 			return word;
 		}
+
+		void push(uint16_t w)
+		{
+			union
+			{
+				uint8_t bytes[2];
+				uint16_t word;
+			};
+
+			word = w;
+
+			//TODO endianess
+			c.memory.at(c.registers.sp--) = bytes[0];
+			c.memory.at(c.registers.sp--) = bytes[1];
+		}
+
+		uint16_t pop()
+		{
+			union
+			{
+				uint8_t bytes[2];
+				uint16_t word;
+			};
+
+			//TODO endianess
+			bytes[1] = c.memory.at(c.registers.sp++);
+			bytes[0] = c.memory.at(c.registers.sp++);
+
+			return word;
+		}
+
 	};
 };

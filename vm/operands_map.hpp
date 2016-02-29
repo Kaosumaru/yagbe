@@ -113,7 +113,7 @@ namespace automap
 
 	//x7 column
 	template<> struct operand<0x07> : operands::RLCA {};
-	template<> struct operand<0x17> : operands::RLA{};
+	template<> struct operand<0x17> : operands::RLA {};
 	template<> struct operand<0x27> : operands::DAA {};
 	template<> struct operand<0x37> : operands::SCF {};
 

@@ -263,18 +263,7 @@ namespace operands
 
 		static int execute(context &c)
 		{
-			union
-			{
-				uint8_t bytes[2];
-				uint16_t word;
-			};
-
-			word = unwrap<Arg>::get(c);
-
-			//TODO endianess
-			c.memory.at(c.registers.sp--) = bytes[0];
-			c.memory.at(c.registers.sp--) = bytes[1];
-
+			c.push(unwrap<Arg>::get(c))
 			return PUSH::cycles();
 		}
 	};
@@ -287,18 +276,7 @@ namespace operands
 
 		static int execute(context &c)
 		{
-			union
-			{
-				uint8_t bytes[2];
-				uint16_t word;
-			};
-
-			//TODO endianess
-			bytes[1] = c.memory.at(c.registers.sp++);
-			bytes[0] = c.memory.at(c.registers.sp++);
-
-			unwrap<Arg>::get(c) = word;
-
+			unwrap<Arg>::get(c) = c.pop();
 			return POP::cycles();
 		}
 	};
