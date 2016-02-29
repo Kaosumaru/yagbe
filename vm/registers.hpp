@@ -4,6 +4,37 @@
 namespace yagbe
 {
 
+template<uint8_t n>
+struct flag
+{
+	flag(uint8_t &p) : _p(p) {}
+
+
+	flag& operator =(bool b)
+	{
+		int x = b ? 1 : 0;
+		_p ^= (-x ^ _p) & (1 << n);
+		return *this;
+	}
+
+	explicit operator bool() const
+	{
+		return (_p >> x) & 1;
+	}
+protected:
+	uint8_t &_p;
+};
+
+struct flags
+{
+	flags(uint8_t &p) : z(p), n(p), h(p), c(p) {}
+
+	flag<7> z;
+	flag<6> n;
+	flag<5> h;
+	flag<4> c;
+};
+
 
 struct registers
 {

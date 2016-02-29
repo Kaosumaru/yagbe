@@ -6,7 +6,7 @@ namespace yagbe
 	class memory
 	{
 	public:
-		auto& get(uint16_t address)
+		auto& at(uint16_t address)
 		{
 			return data[address];
 		}
