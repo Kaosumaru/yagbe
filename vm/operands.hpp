@@ -288,6 +288,16 @@ namespace operands
 		}
 	};
 
+	//STOP
+	struct STOP : default_operand<2, 4>
+	{
+		static void execute(context &c)
+		{
+			c.read_byte();
+			throw std::exception("NYI");
+		}
+	};
+
 	//this allows to type LD<B,A>::execute, or LD<A,B>::execute, etc
 	template<typename Arg1, typename Arg2>
 	struct LD : default_binary_operand<1, 4, Arg1, Arg2>
