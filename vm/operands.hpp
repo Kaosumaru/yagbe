@@ -254,6 +254,13 @@ namespace operands
 		constexpr static int cycles() { return c; }
 	};
 
+	template<uint8_t s, uint8_t c, typename Arg>
+	struct default_unary_operand
+	{
+		constexpr static int size() { return s; }
+		constexpr static int cycles() { return c + unwrap_register<Arg>::complexity; }
+	};
+
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
 	struct default_binary_operand
 	{
@@ -335,6 +342,60 @@ namespace operands
 			unwrap_register<Arg>::get(c) = word
 		}
 	};
+
+
+	//ARITHMETIC
+
+	//INC
+	template<typename Arg>
+	struct INC : default_unary_operand<1, 4, Arg>
+	{
+		static void execute(context &c)
+		{
+			bool byte = unwrap_register<Arg>::size_of == 1;
+			auto value = unwrap_register<Arg>::get(c);
+
+			if (byte)
+			{
+				c.flags.h = ((value & 0x0f) == 0x0f);
+			}
+
+			value++;
+			unwrap_register<Arg>::get(c) = value;
+
+			if (byte)
+			{
+				c.flags.z = (value == 0);
+				c.flags.n = 0;
+			}
+		}
+	};
+
+	//DEC
+	template<typename Arg>
+	struct DEC : default_unary_operand<1, 4, Arg>
+	{
+		static void execute(context &c)
+		{
+			bool byte = unwrap_register<Arg>::size_of == 1;
+			auto value = unwrap_register<Arg>::get(c);
+
+			if (byte)
+			{
+				c.flags.h = !(value & 0x0f); //TODO is this correct?
+			}
+
+			value--;
+			unwrap_register<Arg>::get(c) = value;
+
+			if (byte)
+			{
+				c.flags.z = (value == 0);
+				c.flags.n = 1;
+			}
+		}
+	};
+
 
 }
 }
