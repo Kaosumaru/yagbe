@@ -11,6 +11,8 @@ namespace operands
 	template<uint8_t s, uint8_t c>
 	struct default_operand
 	{
+		using parent = default_operand<s, c>;
+
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c; }
 	};
@@ -18,6 +20,8 @@ namespace operands
 	template<uint8_t s, uint8_t c, typename Arg>
 	struct default_unary_operand
 	{
+		using parent = default_unary_operand<s, c, Arg>;
+
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c + unwrap<Arg>::complexity; }
 	};
@@ -25,6 +29,8 @@ namespace operands
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
 	struct default_binary_operand
 	{
+		using parent = default_binary_operand<s, c, Arg1, Arg2>;
+
 		static_assert(unwrap<Arg1>::size_of == unwrap<Arg2>::size_of, "Mismatching sizes");
 
 		constexpr static int size() { return s; }
@@ -95,7 +101,7 @@ namespace operands
 			c.flags.z = 0;
 			c.flags.n = 0;
 			c.flags.h = 0;
-			c.flags.c = c.registers.a & 0x80;
+			c.flags.c = (c.registers.a & 0x80) != 0;
 
 			c.registers.a <<= 1;
 			c.registers.a += carry;
@@ -124,7 +130,7 @@ namespace operands
 				if (c.flags.c || s > 0x9F) s += 0x60;
 			}
 
-			c.registers.a = s;
+			c.registers.a = (uint8_t)s;
 
 			c.flags.z = c.registers.a == 0;
 			c.flags.n = 0;
@@ -248,7 +254,7 @@ namespace operands
 		static int execute(context &c)
 		{
 			unwrap<Arg1>::get(c) = unwrap<Arg2>::get(c);
-			return cycles();
+			return parent::cycles();
 		}
 	};
 
