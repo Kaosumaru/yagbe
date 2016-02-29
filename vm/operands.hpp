@@ -284,7 +284,7 @@ namespace operands
 	{
 		static void execute(context &c)
 		{
-			throw std::exception("NYI");
+			throw std::runtime_error("NYI");
 		}
 	};
 
@@ -294,7 +294,7 @@ namespace operands
 		static void execute(context &c)
 		{
 			c.read_byte();
-			throw std::exception("NYI");
+			throw std::runtime_error("NYI");
 		}
 	};
 
@@ -349,7 +349,7 @@ namespace operands
 			bytes[1] = c.memory.at(c.registers.sp++);
 			bytes[0] = c.memory.at(c.registers.sp++);
 
-			unwrap_register<Arg>::get(c) = word
+			unwrap_register<Arg>::get(c) = word;
 		}
 	};
 
