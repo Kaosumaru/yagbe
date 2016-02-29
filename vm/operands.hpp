@@ -367,8 +367,8 @@ namespace operands
 		static int execute(context &c)
 		{
 			constexpr bool single_byte = unwrap<Arg1>::size_of == 1;
-			using overflow_result_type = std::conditional_t<single_byte, uint16_t, uint32_t>;
-			using result_type = std::conditional_t<single_byte, uint8_t, uint16_t>;
+			using overflow_result_type = std::conditional<single_byte, uint16_t, uint32_t>::type;
+			using result_type = std::conditional<single_byte, uint8_t, uint16_t>::type;
 
 
 			auto arg1 = unwrap<Arg1>::get(c);
