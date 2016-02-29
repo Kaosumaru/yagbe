@@ -2,6 +2,7 @@
 #include <type_traits>
 #include "context.hpp"
 #include "operands_helpers.hpp"
+#include "utils.hpp"
 
 namespace yagbe
 {
@@ -367,8 +368,8 @@ namespace operands
 		static int execute(context &c)
 		{
 			constexpr bool single_byte = unwrap<Arg1>::size_of == 1;
-			using overflow_result_type = typename std::conditional<single_byte, uint16_t, uint32_t>::type;
-			using result_type = typename std::conditional<single_byte, uint8_t, uint16_t>::type;
+			using overflow_result_type = std::conditional_t<single_byte, uint16_t, uint32_t>;
+			using result_type = std::conditional_t<single_byte, uint8_t, uint16_t>;
 
 
 			auto arg1 = unwrap<Arg1>::get(c);

@@ -9,6 +9,7 @@ include_directories( ${PROJECT_SOURCE_DIR} )
 
 
 option(BUILD_TESTS "Build tests only" OFF)
+option(YAGBE_TRAVIS "On travis" OFF)
 
 #include(conanbuildinfo.cmake)
 #conan_basic_setup()
@@ -20,8 +21,11 @@ endif(MSVC)
 
 
 
-
 add_folder(vm)
+
+if(YAGBE_TRAVIS)
+	add_definitions(-DYAGBE_TRAVIS)
+endif(YAGBE_TRAVIS)
 
 if(BUILD_TESTS)
     #add_subdirectory(tests)
