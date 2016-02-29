@@ -1,6 +1,7 @@
 #pragma once
-#include <type_traits>
 
+#include <type_traits>
+#include <tuple>
 
 #ifdef YAGBE_TRAVIS
 namespace std
