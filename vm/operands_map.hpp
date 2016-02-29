@@ -194,11 +194,23 @@ namespace automap
 
 	};
 
+	//--- third 4 rows
+	template<typename Arg> struct ADD_A : ADD<A, Arg> {};
 
-	template<>
-	struct operand<0x76> : operands::HALT{};
+	template<typename Arg>
+	using arithmetic_operands_unary = std::tuple< ADD_A<Arg>, ADC<Arg>, SUB<Arg>, SBC<Arg>, AND<Arg>, XOR<Arg>, OR<Arg>, CP<Arg>>;
 
 
+	template<uint8_t op>
+	struct operand<op, std::enable_if_t< in_range(op, 0x80, 0xBF) >> :
+		std::tuple_element_t<col(op), arithmetic_operands_unary< std::tuple_element_t<row(op - 0x80), register_types>  > >
+	{
+
+	};
+
+
+	//--- fourth 4 rows
+	template<> struct operand<0x76> : operands::HALT{};
 	//--- JUMPS 
 
 	//0xCA : JP Z, a16
