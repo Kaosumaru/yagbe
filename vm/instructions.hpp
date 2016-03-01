@@ -578,6 +578,35 @@ namespace instructions
 		}
 	};
 
+	template<typename Cond = condition::_>
+	struct RET
+	{
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return 20; }
+
+		static int execute(context &c)
+		{
+			if (!unwrap<Cond>::is_true(c))
+				return 8;
+
+			c.registers.pc = c.pop();
+			return RET::cycles();
+		}
+	};
+
+	template<>
+	struct RET<condition::_>
+	{
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return 16; }
+
+		static int execute(context &c)
+		{
+			c.registers.pc = c.pop();
+			return RET::cycles();
+		}
+	};
+
 
 	template<uint16_t address>
 	struct RST : default_instruction<1, 16>

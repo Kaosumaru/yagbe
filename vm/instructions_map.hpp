@@ -217,8 +217,8 @@ namespace automap
 	//--- fourth 4 rows
 
 	//x0 column
-	//template<> struct instruction<0xC0> : instructions::RET<condition::NZ> {};
-	//template<> struct instruction<0xD0> : instructions::RET<condition::NC> {};
+	template<> struct instruction<0xC0> : instructions::RET<condition::NZ> {}; static_assert(RET<condition::NZ>::cycles() == 20, "wrong cycles");
+	template<> struct instruction<0xD0> : instructions::RET<condition::NC> {};
 	template<> struct instruction<0xE0> : instructions::LD<d8_pointer, A> {}; static_assert(LD<d8_pointer, A>::cycles() == 12, "wrong cycles");
 	template<> struct instruction<0xF0> : instructions::LD<A, d8_pointer> {};
 
