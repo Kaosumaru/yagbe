@@ -29,14 +29,6 @@ namespace automap
 		return op >= mi && op <= ma;
 	}
 
-	constexpr bool in_column_4(uint8_t op, uint8_t start)
-	{
-		return op == op == start ||
-			op == (start + 0x10) ||
-			op == (start + 0x20) ||
-			op == (start + 0x30);
-	}
-
 	constexpr uint8_t row_8(uint8_t op)
 	{
 		return op / 8;
