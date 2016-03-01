@@ -31,6 +31,7 @@ namespace operands
 	struct HL_pointer {};
 
 	struct d8 {};
+	struct d8_pointer {};
 	struct d16 {};
 	struct d16_pointer {};
 
@@ -235,6 +236,15 @@ namespace operands
 		constexpr static int size_of = 1;
 
 		static auto get(context &c) { return c.read_byte(); }
+	};
+
+	template<>
+	struct unwrap<operands::d8_pointer>
+	{
+		constexpr static int complexity = 4;
+		constexpr static int size_of = 1;
+
+		static auto get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
 	};
 
 	template<>

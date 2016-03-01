@@ -210,6 +210,35 @@ namespace automap
 
 
 	//--- fourth 4 rows
+
+	//x0 column
+	//template<> struct operand<0xC0> : operands::RET<condition::NZ> {};
+	//template<> struct operand<0xD0> : operands::RET<condition::NC> {};
+	template<> struct operand<0xE0> : operands::LD<d8_pointer, A> {};
+	template<> struct operand<0xF0> : operands::LD<A, d8_pointer> {};
+
+
+	//x1 column
+	//x2 column
+	template<> struct operand<0xE2> : operands::LD<C_pointer, A> {};
+	template<> struct operand<0xF2> : operands::LD<A, C_pointer> {};
+
+
+	//x3 column
+	//x4 column
+	//x5 column
+	//x6 column
+	//x7 column	
+	//x8 column
+	//x9 column
+	//xA column
+	//xB column
+	//xC column
+	//xD column
+	//xE column
+	//xF column	
+
+
 	template<> struct operand<0x76> : operands::HALT{};
 	//--- JUMPS 
 

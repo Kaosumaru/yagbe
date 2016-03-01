@@ -49,8 +49,8 @@ namespace yagbe
 			word = w;
 
 			//TODO endianess
-			c.memory.at(c.registers.sp--) = bytes[0];
-			c.memory.at(c.registers.sp--) = bytes[1];
+			memory.at(registers.sp--) = bytes[0];
+			memory.at(registers.sp--) = bytes[1];
 		}
 
 		uint16_t pop()
@@ -62,8 +62,8 @@ namespace yagbe
 			};
 
 			//TODO endianess
-			bytes[1] = c.memory.at(c.registers.sp++);
-			bytes[0] = c.memory.at(c.registers.sp++);
+			bytes[1] = memory.at(registers.sp++);
+			bytes[0] = memory.at(registers.sp++);
 
 			return word;
 		}
