@@ -17,9 +17,65 @@ using namespace yagbe;
 using namespace yagbe::instructions;
 using namespace yagbe::instructions::automap;
 
+
+
+bool test_opus5()
+{
+	std::string path = YAGBE_ROMS;
+	path += "opus5.gb";
+
+	context c;
+	if (!c.load_rom(path))
+		return false;
+
+	int steps = 100;
+
+	for (int i = 0; i < steps; i++)
+	{
+		c.cpu_step();
+
+		//endian...
+		if (c.registers.pc == 0x017E)
+			break;
+	}
+
+	if (c.registers.pc != 0x017E)
+		return false;
+
+	bool s = true;
+
+	auto m = [&](uint16_t a) { return c.memory.at(a); };
+
+	s &= m(0xFFFF) == 0x01;
+
+	s &= m(0xFF41) == 0x00;
+	s &= m(0xFF40) == 0x00;
+
+	s &= m(0xFF43) == 0x10;
+	s &= m(0xC1C9) == 0x10;
+	s &= m(0xC1CC) == 0x10;
+
+	s &= m(0xFF42) == 0x08;
+	s &= m(0xC1CB) == 0x08;
+	s &= m(0xC1CD) == 0x08;
+
+	s &= m(0xC1C8) == 0x00;
+	s &= m(0xC1CA) == 0x00;
+	s &= m(0xC0A0) == 0x00;
+
+	//endian...
+	s &= c.registers.bc == 0x4000;
+
+
+	return true;
+}
+
 const lest::test specification[] =
 {
-
+	CASE("OPUS5")
+	{
+		EXPECT(test_opus5());
+	},
 
 	CASE("LD")
 	{
@@ -192,7 +248,10 @@ const lest::test specification[] =
 };
 
 
+
 int main (int argc, char * argv[])
 {
+	test_opus5();
+
 	return lest::run(specification, argc, argv);
 }

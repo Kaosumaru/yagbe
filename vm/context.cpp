@@ -1,5 +1,6 @@
 #include "context.hpp"
 #include "instructions_map.hpp"
+#include <fstream>
 
 using namespace yagbe;
 
@@ -55,6 +56,29 @@ void context::reset()
 
 	cycles_elapsed = 0;
 	stopped = false;
+}
+
+bool context::load_rom(const std::string& path)
+{
+	reset();
+
+	std::ifstream fs;
+	fs.open(path, std::fstream::binary);
+
+	if (!fs)
+		return false;
+
+	auto it_begin = std::istreambuf_iterator<char>(fs);
+	auto it_end = std::istreambuf_iterator<char>();
+
+	uint16_t a = 0;
+	for (auto it = it_begin; it != it_end; it++)
+	{
+		write_byte_at(a, *it);
+		a++;
+	}
+
+	return true;
 }
 
 
