@@ -423,25 +423,7 @@ namespace automap
 
 
 
-	const instructions_array& instructions()
-	{
-		static instructions_array arr = { nullptr };
-		
-		if (arr[0] == nullptr)
-			impl::fill_instructions<255>::fill(arr);
 
-		return arr;
-	}
-
-	const instructions_array& cb_instructions()
-	{
-		static instructions_array arr = { nullptr };
-
-		if (arr[0] == nullptr)
-			impl::fill_instructions_cb<255>::fill(arr);
-
-		return arr;
-	}
 
 
 	//CHECKS

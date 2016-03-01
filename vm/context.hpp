@@ -1,10 +1,14 @@
 #pragma once
-
+#include <array>
 #include "registers.hpp"
 #include "memory.hpp"
 
 namespace yagbe
 {
+	class context;
+	using instruction_pointer = int(*)(context &c);
+	using instructions_array = std::array<instruction_pointer, 0xFF>;
+
 	class context
 	{
 	protected:
@@ -38,6 +42,8 @@ namespace yagbe
 		bool     stopped;
 
 
+		const instructions_array& instructions();
+		const instructions_array& cb_instructions();
 		void cpu_step();
 
 		//reads a byte at PC, and increments PC

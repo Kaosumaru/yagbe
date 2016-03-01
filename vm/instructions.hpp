@@ -3,15 +3,14 @@
 #include "context.hpp"
 #include "instructions_helpers.hpp"
 #include "utils.hpp"
-#include <array>
+
 
 namespace yagbe
 {
 
 namespace instructions
 {
-	using instruction_pointer = int(*)(context &c);
-	using instructions_array = std::array<instruction_pointer, 0xFF>;
+
 
 	//instructions
 	template<uint8_t s, uint8_t c>
@@ -672,8 +671,9 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			throw std::runtime_error("NYI");
-			return 0;
+			auto opcode = c.read_byte();
+			auto instruction = c.cb_instructions()[opcode];
+			return instruction(c);
 		}
 	};
 

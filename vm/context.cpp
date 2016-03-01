@@ -1,4 +1,5 @@
 #include "context.hpp"
+#include "instructions_map.hpp"
 
 using namespace yagbe;
 
@@ -61,8 +62,27 @@ void context::cpu_step()
 {
 	if (stopped) return;
 
-	auto instruction = read_byte();
 
-	//execute instruction
+	auto opcode = read_byte();
+	auto instruction = instructions()[opcode];
+	cycles_elapsed += instruction(*this);
+}
 
+const instructions_array& context::instructions()
+{
+	static instructions_array arr = { nullptr };
+
+	if (arr[0] == nullptr)
+		instructions::automap::impl::fill_instructions<255>::fill(arr);
+
+	return arr;
+}
+const instructions_array& context::cb_instructions()
+{
+	static instructions_array arr = { nullptr };
+
+	if (arr[0] == nullptr)
+		instructions::automap::impl::fill_instructions_cb<255>::fill(arr);
+
+	return arr;
 }
