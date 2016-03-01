@@ -245,6 +245,11 @@ namespace automap
 		>{};
 
 	//x6 column
+	template<> struct operand<0xC6> : operands::ADD<A, d8> {};
+	template<> struct operand<0xD6> : operands::SUB<d8> {};
+	template<> struct operand<0xE6> : operands::AND<d8> {};
+	template<> struct operand<0xF6> : operands::OR <d8> {};
+
 	//x7 column	
 	//x8 column
 	//x9 column
@@ -256,6 +261,11 @@ namespace automap
 
 	//xB column
 	//xC column
+	template<> struct operand<0xCE> : operands::ADC<d8> {};
+	template<> struct operand<0xDE> : operands::SBC<d8> {};
+	template<> struct operand<0xEE> : operands::XOR<d8> {};
+	template<> struct operand<0xFE> : operands::CP <d8> {};
+
 	//xD column
 	//xE column
 	//xF column	
