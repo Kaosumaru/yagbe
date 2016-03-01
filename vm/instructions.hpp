@@ -608,6 +608,28 @@ namespace instructions
 	};
 
 
+	template<typename Cond, typename Arg>
+	struct CALL
+	{
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return 24; }
+
+		static_assert(unwrap<Arg>::size_of == 2, "Assuming word");
+
+		static int execute(context &c)
+		{
+			auto pointer = unwrap<Arg>::get(c);
+
+			if (!unwrap<Cond>::is_true(c))
+				return 12;
+
+			c.push(c.registers.pc);
+			c.registers.pc = pointer;
+			return CALL::cycles();
+		}
+	};
+
+
 	template<uint16_t address>
 	struct RST : default_instruction<1, 16>
 	{
