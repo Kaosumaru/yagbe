@@ -377,6 +377,72 @@ namespace automap
 	};
 
 
+	//fillers
+
+
+	namespace impl
+	{
+		template<int n>
+		struct fill_instructions
+		{
+			static void fill(instructions_array &arr)
+			{
+				arr[n] = &(instruction<n>::execute);
+				fill_instructions<n - 1>::fill(arr);
+			}
+		};
+
+		template<>
+		struct fill_instructions<0>
+		{
+			static void fill(instructions_array &arr)
+			{
+				arr[0] = &(instruction<0>::execute);
+			}
+		};
+
+		template<int n>
+		struct fill_instructions_cb
+		{
+			static void fill(instructions_array &arr)
+			{
+				arr[n] = &(instruction_cb<n>::execute);
+				fill_instructions_cb<n - 1>::fill(arr);
+			}
+		};
+
+		template<>
+		struct fill_instructions_cb<0>
+		{
+			static void fill(instructions_array &arr)
+			{
+				arr[0] = &(instruction_cb<0>::execute);
+			}
+		};
+	}
+
+
+
+	const instructions_array& instructions()
+	{
+		static instructions_array arr = { nullptr };
+		
+		if (arr[0] == nullptr)
+			impl::fill_instructions<255>::fill(arr);
+
+		return arr;
+	}
+
+	const instructions_array& cb_instructions()
+	{
+		static instructions_array arr = { nullptr };
+
+		if (arr[0] == nullptr)
+			impl::fill_instructions_cb<255>::fill(arr);
+
+		return arr;
+	}
+
 
 	//CHECKS
 	static_assert(&(instruction<0x47>::execute) == &(LD<B, A>::execute), "Wrong mapping");

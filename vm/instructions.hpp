@@ -3,12 +3,16 @@
 #include "context.hpp"
 #include "instructions_helpers.hpp"
 #include "utils.hpp"
+#include <array>
 
 namespace yagbe
 {
 
 namespace instructions
 {
+	using instruction_pointer = int(*)(context &c);
+	using instructions_array = std::array<instruction_pointer, 0xFF>;
+
 	//instructions
 	template<uint8_t s, uint8_t c>
 	struct default_instruction
@@ -371,7 +375,7 @@ namespace instructions
 			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
 
 			overflow_result_type cmask = single_byte ? 0xff00 : 0xffff0000;
-			c.flags.c = result & cmask;
+			c.flags.c = (result & cmask) != 0;
 
 			return ADD::cycles();
 		}
@@ -393,7 +397,7 @@ namespace instructions
 			c.flags.z = value == c.registers.a;
 			c.flags.n = false;
 			c.flags.h = ((value & 0x0f) + (c.registers.a & 0x0f)) > 0x0f;
-			c.flags.c = result & 0xff00;
+			c.flags.c = (result & 0xff00) != 0;
 
 			c.registers.a = (uint8_t)result;
 
