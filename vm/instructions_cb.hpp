@@ -191,5 +191,50 @@ namespace instructions
 	};
 
 
+	//bit manipulation
+
+	template<uint8_t bit, typename Arg>
+	struct BIT : default_unary_instruction<1, 8, Arg>
+	{
+		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
+
+		static int execute(context &c)
+		{
+			auto &value = unwrap<Arg>::get(c);
+			auto bchar = (1 << bit);
+
+			c.flags.z = (value & bit) == 0;
+			c.flags.n = 0;
+			c.flags.h = 1;
+			return BIT::cycles();
+		}
+	};
+
+	template<uint8_t bit, typename Arg>
+	struct SET : default_unary_instruction<1, 8, Arg>
+	{
+		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
+
+		static int execute(context &c)
+		{
+			auto &value = unwrap<Arg>::get(c);
+			value |= (1 << bit);
+			return SET::cycles();
+		}
+	};
+
+	template<uint8_t bit, typename Arg>
+	struct RES : default_unary_instruction<1, 8, Arg>
+	{
+		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
+
+		static int execute(context &c)
+		{
+			auto &value = unwrap<Arg>::get(c);
+			value &= ~(1 << bit);
+			return RES::cycles();
+		}
+	};
+
 }
 }

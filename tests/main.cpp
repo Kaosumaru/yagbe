@@ -19,11 +19,7 @@ using namespace yagbe::instructions::automap;
 
 const lest::test specification[] =
 {
-	CASE("Map")
-	{
-		EXPECT(&(instruction<0x47>::execute) == &(LD<B, A>::execute));
-		EXPECT(&(instruction<0x7E>::execute) == &(LD<A, HL_pointer>::execute));
-	},
+
 
 	CASE("LD")
 	{

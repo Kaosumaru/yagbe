@@ -227,29 +227,6 @@ namespace instructions
 		}
 	};
 
-
-/*
-	//SRA
-	template<typename Arg>
-	struct SRA : default_unary_instruction<1, 4, Arg>
-	{
-		static int execute(context &c)
-		{
-			auto value = unwrap<Arg>::get(c);
-			c.flags.c = value & 0x01;
-
-			value = (value & 0x80) | (value >> 1);
-			unwrap<Arg>::get(c) = value;
-
-			c.flags.z = value == 0;
-			c.flags.n = 0;
-			c.flags.h = 0;
-
-			return xxx::cycles();
-		}
-	};
-*/
-
 	//--- LOADS
 
 	//this allows to type LD<B,A>::execute, or LD<A,B>::execute, etc

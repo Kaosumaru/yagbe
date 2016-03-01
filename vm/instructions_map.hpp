@@ -1,5 +1,6 @@
 #pragma once
 #include "instructions.hpp"
+#include "instructions_cb.hpp"
 #include "utils.hpp"
 #include <tuple>
 #include <type_traits>
@@ -36,14 +37,24 @@ namespace automap
 			op == (start + 0x30);
 	}
 
-	constexpr uint8_t row(uint8_t op)
+	constexpr uint8_t row_8(uint8_t op)
 	{
 		return op / 8;
 	}
 
-	constexpr uint8_t col(uint8_t op)
+	constexpr uint8_t col_8(uint8_t op)
 	{
 		return op % 8;
+	}
+
+	constexpr uint8_t row_16(uint8_t op)
+	{
+		return op / 16;
+	}
+
+	constexpr uint8_t col_16(uint8_t op)
+	{
+		return op % 16;
 	}
 
 	template<uint8_t op, typename = std::enable_if_t<true>>
@@ -64,51 +75,51 @@ namespace automap
 	//x1 column (from 0)
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t< 
-			col(op) == 0x1 && row(op) < 4
+			col_16(op) == 0x1 && row_16(op) < 4
 		>> : instructions::LD<
-			std::tuple_element_t<row(op), register_BC_DE_HL_SP>,
+			std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>,
 			d16
 		>{};
 
 	//x2 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x2 && row(op) < 4
+		col_16(op) == 0x2 && row_16(op) < 4
 		>> : instructions::LD<
-			std::tuple_element_t<row(op), pointers_BC_DE_HLI_HLD>,
+			std::tuple_element_t<row_16(op), pointers_BC_DE_HLI_HLD>,
 			A
 		>{};
 
 	//x3 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x3 && row(op) < 4
+		col_16(op) == 0x3 && row_16(op) < 4
 		>> : instructions::INC<
-			std::tuple_element_t<row(op), register_BC_DE_HL_SP>
+			std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>
 		>{};
 
 	//x4 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x4 && row(op) < 4
+		col_16(op) == 0x4 && row_16(op) < 4
 		>> : instructions::INC<
-		std::tuple_element_t<row(op), register_B_D_H_HLP>
+		std::tuple_element_t<row_16(op), register_B_D_H_HLP>
 		>{};
 
 	//x5 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x5 && row(op) < 4
+		col_16(op) == 0x5 && row_16(op) < 4
 		>> : instructions::DEC<
-		std::tuple_element_t<row(op), register_B_D_H_HLP>
+		std::tuple_element_t<row_16(op), register_B_D_H_HLP>
 		>{};
 
 	//x6 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x6 && row(op) < 4
+		col_16(op) == 0x6 && row_16(op) < 4
 		>> : instructions::LD<
-		std::tuple_element_t<row(op), register_B_D_H_HLP>,
+		std::tuple_element_t<row_16(op), register_B_D_H_HLP>,
 		d8
 		>{};
 
@@ -127,51 +138,51 @@ namespace automap
 	//x9 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x9 && row(op) < 4
+		col_16(op) == 0x9 && row_16(op) < 4
 		>> : instructions::ADD<
 		HL,
-		std::tuple_element_t<row(op), register_BC_DE_HL_SP>
+		std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>
 		>{};
 
 	//xA column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0xA && row(op) < 4
+		col_16(op) == 0xA && row_16(op) < 4
 		>> : instructions::LD<
 		A,
-		std::tuple_element_t<row(op), pointers_BC_DE_HLI_HLD>
+		std::tuple_element_t<row_16(op), pointers_BC_DE_HLI_HLD>
 		>{};
 
 	//xB column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0xB && row(op) < 4
+		col_16(op) == 0xB && row_16(op) < 4
 		>> : instructions::DEC<
-		std::tuple_element_t<row(op), register_BC_DE_HL_SP>
+		std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>
 		>{};
 
 	//xC column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0xC && row(op) < 4
+		col_16(op) == 0xC && row_16(op) < 4
 		>> : instructions::INC<
-		std::tuple_element_t<row(op), register_C_E_L_A>
+		std::tuple_element_t<row_16(op), register_C_E_L_A>
 		>{};
 
 	//xD column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0xD && row(op) < 4
+		col_16(op) == 0xD && row_16(op) < 4
 		>> : instructions::DEC<
-		std::tuple_element_t<row(op), register_C_E_L_A>
+		std::tuple_element_t<row_16(op), register_C_E_L_A>
 		>{};
 
 	//xE column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0xE && row(op) < 4
+		col_16(op) == 0xE && row_16(op) < 4
 		>> : instructions::LD<
-		std::tuple_element_t<row(op), register_C_E_L_A>,
+		std::tuple_element_t<row_16(op), register_C_E_L_A>,
 		d8
 		>{};
 
@@ -190,8 +201,8 @@ namespace automap
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > :
 		instructions::LD<
-			std::tuple_element_t<row(op - 0x40), register_types>,
-			std::tuple_element_t<col(op), register_types>
+			std::tuple_element_t<row_8(op - 0x40), register_types>,
+			std::tuple_element_t<col_8(op), register_types>
 			>
 	{
 
@@ -208,7 +219,7 @@ namespace automap
 
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t< in_range(op, 0x80, 0xBF) >> :
-		std::tuple_element_t<col(op), arithmetic_instructions_unary< std::tuple_element_t<row(op - 0x80), register_types>  > >
+		std::tuple_element_t<row_8(op - 0x80), arithmetic_instructions_unary< std::tuple_element_t<col_8(op), register_types>  > >
 	{
 
 	};
@@ -226,9 +237,9 @@ namespace automap
 	//x1 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x1 && row(op) >= 0xC
+		col_16(op) == 0x1 && row_16(op) >= 0xC
 		>> : instructions::POP<
-			std::tuple_element_t<row(op - 0xC0), register_BC_DE_HL_AF>
+			std::tuple_element_t<row_16(op - 0xC0), register_BC_DE_HL_AF>
 		>{};
 
 	//x2 column
@@ -252,9 +263,9 @@ namespace automap
 	//x5 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
-		col(op) == 0x5 && row(op) >= 0xC
+		col_16(op) == 0x5 && row_16(op) >= 0xC
 		>> : instructions::PUSH<
-		std::tuple_element_t<row(op - 0xC0), register_BC_DE_HL_AF>
+		std::tuple_element_t<row_16(op - 0xC0), register_BC_DE_HL_AF>
 		>{};
 
 	//x6 column
@@ -318,17 +329,81 @@ namespace automap
 	template<> struct instruction<0xFF> : instructions::RST<0x38> {};
 
 	
-	//--- JUMPS 
 
 
 
 
 
+	//--- CBMAP ------------------------------------
+
+	template<uint8_t op, typename = std::enable_if_t<true>>
+	struct instruction_cb
+	{
+
+	};
+
+	//first 4 rows
+
+	template<typename Arg>
+	using cb_first_instructions = std::tuple< RLC<Arg>, RRC<Arg>, RL<Arg>, RR<Arg>, SLA<Arg>, SRA<Arg>, SWAP<Arg>, SRL<Arg>>;
+
+
+	template<uint8_t op>
+	struct instruction_cb<op, std::enable_if_t< in_range(op, 0x0, 0x3F) >> :
+		std::tuple_element_t<row_8(op), cb_first_instructions< std::tuple_element_t<col_8(op), register_types>  > >
+	{
+
+	};
+
+	template<uint8_t op>
+	struct instruction_cb<op, std::enable_if_t< in_range(op, 0x40, 0x7F) >> :
+		BIT<row_8(op-0x40), std::tuple_element_t<col_8(op), register_types> >
+	{
+
+	};
+
+	template<uint8_t op>
+	struct instruction_cb<op, std::enable_if_t< in_range(op, 0x80, 0xBF) >> :
+		RES<row_8(op - 0x80), std::tuple_element_t<col_8(op), register_types> >
+	{
+
+	};
+
+	template<uint8_t op>
+	struct instruction_cb<op, std::enable_if_t< in_range(op, 0xC0, 0xFF) >> :
+		SET<row_8(op - 0xC0), std::tuple_element_t<col_8(op), register_types> >
+	{
+
+	};
 
 
 
+	//CHECKS
+	static_assert(&(instruction<0x47>::execute) == &(LD<B, A>::execute), "Wrong mapping");
+	static_assert(&(instruction<0x7E>::execute) == &(LD<A, HL_pointer>::execute), "Wrong mapping");
 
+	static_assert(&(instruction<0x80>::execute) == &(ADD<A, B>::execute), "Wrong mapping");
+	static_assert(&(instruction<0xBF>::execute) == &(CP<A>::execute), "Wrong mapping");
 
+	static_assert(&(instruction<0x95>::execute) == &(SUB<L>::execute), "Wrong mapping");
+
+	static_assert(&(instruction<0xE1>::execute) == &(POP<HL>::execute), "Wrong mapping");
+	static_assert(&(instruction<0x36>::execute) == &(LD<HL_pointer,d8>::execute), "Wrong mapping");
+
+	//CB CHECKS
+	static_assert(&(instruction_cb<0x0>::execute) == &(RLC<B>::execute), "Wrong mapping");
+	static_assert(&(instruction_cb<0x3F>::execute) == &(SRL<A>::execute), "Wrong mapping");
+
+	static_assert(&(instruction_cb<0x15>::execute) == &(RL<L>::execute), "Wrong mapping");
+
+	static_assert(&(instruction_cb<0x40>::execute) == &(BIT<0,B>::execute), "Wrong mapping");
+	static_assert(&(instruction_cb<0x7F>::execute) == &(BIT<7, A>::execute), "Wrong mapping");
+
+	static_assert(&(instruction_cb<0x80>::execute) == &(RES<0, B>::execute), "Wrong mapping");
+	static_assert(&(instruction_cb<0xBF>::execute) == &(RES<7, A>::execute), "Wrong mapping");
+
+	static_assert(&(instruction_cb<0xC0>::execute) == &(SET<0, B>::execute), "Wrong mapping");
+	static_assert(&(instruction_cb<0xFF>::execute) == &(SET<7, A>::execute), "Wrong mapping");
 
 }
 }
