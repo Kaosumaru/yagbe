@@ -28,7 +28,7 @@ namespace instructions
 			c.flags.n = 0;
 			c.flags.h = 0;
 
-			return SRA::cycles();
+			return RLC::cycles();
 		}
 	};
 
@@ -56,7 +56,7 @@ namespace instructions
 			c.flags.n = 0;
 			c.flags.h = 0;
 
-			return SRA::cycles();
+			return RRC::cycles();
 		}
 	};
 
