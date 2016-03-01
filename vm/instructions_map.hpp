@@ -382,18 +382,22 @@ namespace automap
 
 	namespace impl
 	{
-		template<int n>
+		template<int n = 255>
 		struct fill_instructions
 		{
 			static void fill(instructions_array &arr)
 			{
 				arr[n] = &(instruction<n>::execute);
-				fill_instructions<n - 1>::fill(arr);
+				arr[n-1] = &(instruction<n-1>::execute);
+				arr[n-2] = &(instruction<n-2>::execute);
+				arr[n-3] = &(instruction<n-3>::execute);
+
+				fill_instructions<n - 4>::fill(arr);
 			}
 		};
 
 		template<>
-		struct fill_instructions<0>
+		struct fill_instructions<3>
 		{
 			static void fill(instructions_array &arr)
 			{
@@ -401,18 +405,22 @@ namespace automap
 			}
 		};
 
-		template<int n>
+		template<int n = 255>
 		struct fill_instructions_cb
 		{
 			static void fill(instructions_array &arr)
 			{
 				arr[n] = &(instruction_cb<n>::execute);
-				fill_instructions_cb<n - 1>::fill(arr);
+				arr[n-1] = &(instruction_cb<n-1>::execute);
+				arr[n-2] = &(instruction_cb<n-2>::execute);
+				arr[n-3] = &(instruction_cb<n-3>::execute);
+
+				fill_instructions_cb<n - 4>::fill(arr);
 			}
 		};
 
 		template<>
-		struct fill_instructions_cb<0>
+		struct fill_instructions_cb<3>
 		{
 			static void fill(instructions_array &arr)
 			{

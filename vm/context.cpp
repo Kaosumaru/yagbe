@@ -73,7 +73,7 @@ const instructions_array& context::instructions()
 	static instructions_array arr = { nullptr };
 
 	if (arr[0] == nullptr)
-		instructions::automap::impl::fill_instructions<255>::fill(arr);
+		instructions::automap::impl::fill_instructions<>::fill(arr);
 
 	return arr;
 }
@@ -82,7 +82,7 @@ const instructions_array& context::cb_instructions()
 	static instructions_array arr = { nullptr };
 
 	if (arr[0] == nullptr)
-		instructions::automap::impl::fill_instructions_cb<255>::fill(arr);
+		instructions::automap::impl::fill_instructions_cb<>::fill(arr);
 
 	return arr;
 }
