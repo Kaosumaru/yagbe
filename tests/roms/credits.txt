@@ -1,0 +1,1 @@
+the test ROM being loaded is a scrolling test written by Doug Lanford ( http://www.opusgames.com/ )
