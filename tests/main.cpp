@@ -156,7 +156,7 @@ const lest::test specification[] =
 
 		//JR r8
 		{
-			using JR_D8 = JR<condition::_, d8>;
+			using JR_D8 = JR<condition::_, r8>;
 
 			ctx.registers.pc = 0;
 			ctx.memory.at(0) = 6;
@@ -169,7 +169,7 @@ const lest::test specification[] =
 
 		//JR NC,r8
 		{
-			using JR_NC_D8 = instructions::JR<condition::NC, d8>;
+			using JR_NC_D8 = instructions::JR<condition::NC, r8>;
 
 			{
 				ctx.registers.pc = 0;
