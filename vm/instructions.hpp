@@ -1,31 +1,31 @@
 #pragma once
 #include <type_traits>
 #include "context.hpp"
-#include "operands_helpers.hpp"
+#include "instructions_helpers.hpp"
 #include "utils.hpp"
 
 namespace yagbe
 {
 
-namespace operands
+namespace instructions
 {
-	//operands
+	//instructions
 	template<uint8_t s, uint8_t c>
-	struct default_operand
+	struct default_instruction
 	{
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c; }
 	};
 
 	template<uint8_t s, uint8_t c, typename Arg>
-	struct default_unary_operand
+	struct default_unary_instruction
 	{
 		constexpr static int size() { return s; }
 		constexpr static int cycles() { return c + unwrap<Arg>::complexity; }
 	};
 
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
-	struct default_binary_operand
+	struct default_binary_instruction
 	{
 		static_assert(unwrap<Arg1>::size_of == unwrap<Arg2>::size_of, "Mismatching sizes");
 
@@ -36,7 +36,7 @@ namespace operands
 	//--- MISC 1
 
 	//NOP
-	struct NOP : default_operand<1, 4>
+	struct NOP : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -45,7 +45,7 @@ namespace operands
 	};
 
 	//HALT
-	struct HALT : default_operand<1, 4>
+	struct HALT : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -55,7 +55,7 @@ namespace operands
 	};
 
 	//STOP
-	struct STOP : default_operand<2, 4>
+	struct STOP : default_instruction<2, 4>
 	{
 		static int execute(context &c)
 		{
@@ -69,7 +69,7 @@ namespace operands
 	//--- REGISTERS & FLAGS
 
 	//RLCA
-	struct RLCA : default_operand<1, 4>
+	struct RLCA : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -88,7 +88,7 @@ namespace operands
 	};
 
 	//RLA
-	struct RLA : default_operand<1, 4>
+	struct RLA : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -107,7 +107,7 @@ namespace operands
 	};
 
 	//DAA
-	struct DAA : default_operand<1, 4>
+	struct DAA : default_instruction<1, 4>
 	{
 
 
@@ -140,7 +140,7 @@ namespace operands
 	};
 
 	//SCF
-	struct SCF : default_operand<1, 4>
+	struct SCF : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -153,7 +153,7 @@ namespace operands
 	};
 
 	//RRCA
-	struct RRCA : default_operand<1, 4>
+	struct RRCA : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -172,7 +172,7 @@ namespace operands
 	};
 
 	//RRA
-	struct RRA : default_operand<1, 4>
+	struct RRA : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -191,7 +191,7 @@ namespace operands
 	};
 
 	//CPL
-	struct CPL : default_operand<1, 4>
+	struct CPL : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -205,7 +205,7 @@ namespace operands
 	};
 
 	//CCF
-	struct CCF : default_operand<1, 4>
+	struct CCF : default_instruction<1, 4>
 	{
 		static int execute(context &c)
 		{
@@ -222,7 +222,7 @@ namespace operands
 /*
 	//SRA
 	template<typename Arg>
-	struct SRA : default_unary_operand<1, 4, Arg>
+	struct SRA : default_unary_instruction<1, 4, Arg>
 	{
 		static int execute(context &c)
 		{
@@ -245,7 +245,7 @@ namespace operands
 
 	//this allows to type LD<B,A>::execute, or LD<A,B>::execute, etc
 	template<typename Arg1, typename Arg2>
-	struct LD : default_binary_operand<1, 4, Arg1, Arg2>
+	struct LD : default_binary_instruction<1, 4, Arg1, Arg2>
 	{
 		static int execute(context &c)
 		{
@@ -255,7 +255,7 @@ namespace operands
 	};
 
 	template<>
-	struct LD<d16_pointer, SP> : default_operand<3, 20>
+	struct LD<d16_pointer, SP> : default_instruction<3, 20>
 	{
 		static int execute(context &c)
 		{
@@ -278,7 +278,7 @@ namespace operands
 
 	//PUSH
 	template<typename Arg>
-	struct PUSH : default_operand<1, 16>
+	struct PUSH : default_instruction<1, 16>
 	{
 		static_assert(unwrap<Arg>::size_of == 2, "Assuming word");
 
@@ -291,7 +291,7 @@ namespace operands
 
 	//POP
 	template<typename Arg>
-	struct POP : default_operand<1, 16>
+	struct POP : default_instruction<1, 16>
 	{
 		static_assert(unwrap<Arg>::size_of == 2, "Assuming word");
 
@@ -307,7 +307,7 @@ namespace operands
 
 	//INC
 	template<typename Arg>
-	struct INC : default_unary_operand<1, 4, Arg>
+	struct INC : default_unary_instruction<1, 4, Arg>
 	{
 		static int execute(context &c)
 		{
@@ -334,7 +334,7 @@ namespace operands
 
 	//DEC
 	template<typename Arg>
-	struct DEC : default_unary_operand<1, 4, Arg>
+	struct DEC : default_unary_instruction<1, 4, Arg>
 	{
 		static int execute(context &c)
 		{
@@ -362,7 +362,7 @@ namespace operands
 
 	//ADD (8bit, 16 bit)
 	template<typename Arg1, typename Arg2>
-	struct ADD : default_binary_operand<1, 4, Arg1, Arg2>
+	struct ADD : default_binary_instruction<1, 4, Arg1, Arg2>
 	{
 		static int execute(context &c)
 		{
@@ -391,7 +391,7 @@ namespace operands
 
 	//ADC
 	template<typename Arg>
-	struct ADC : default_unary_operand<1, 4, Arg>
+	struct ADC : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -415,7 +415,7 @@ namespace operands
 
 	//SBC
 	template<typename Arg>
-	struct SBC : default_unary_operand<1, 4, Arg>
+	struct SBC : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -438,7 +438,7 @@ namespace operands
 
 	//SUB
 	template<typename Arg>
-	struct SUB : default_unary_operand<1, 4, Arg>
+	struct SUB : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -459,7 +459,7 @@ namespace operands
 
 	//AND
 	template<typename Arg>
-	struct AND : default_unary_operand<1, 4, Arg>
+	struct AND : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -479,7 +479,7 @@ namespace operands
 
 	//XOR
 	template<typename Arg>
-	struct XOR : default_unary_operand<1, 4, Arg>
+	struct XOR : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -499,7 +499,7 @@ namespace operands
 
 	//OR
 	template<typename Arg>
-	struct OR : default_unary_operand<1, 4, Arg>
+	struct OR : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -519,7 +519,7 @@ namespace operands
 
 	//CP
 	template<typename Arg>
-	struct CP : default_unary_operand<1, 4, Arg>
+	struct CP : default_unary_instruction<1, 4, Arg>
 	{
 		static_assert(unwrap<Arg>::size_of == 1, "Assuming byte");
 
@@ -541,8 +541,8 @@ namespace operands
 	template<typename Cond, typename Arg>
 	struct JP
 	{
-		constexpr static int size() { return std::is_same<Arg, operands::d16>::value ? 3 : 1; }
-		constexpr static int cycles() { return std::is_same<Arg, operands::d16>::value ? 16 : 4; }
+		constexpr static int size() { return std::is_same<Arg, instructions::d16>::value ? 3 : 1; }
+		constexpr static int cycles() { return std::is_same<Arg, instructions::d16>::value ? 16 : 4; }
 
 		static_assert(unwrap<Arg>::size_of == 2, "Assuming word");
 
@@ -564,7 +564,7 @@ namespace operands
 		constexpr static int size() { return 2; }
 		constexpr static int cycles() { return 12; }
 
-		static_assert(std::is_same<Arg, operands::d8>::value, "Assuming d8");
+		static_assert(std::is_same<Arg, instructions::d8>::value, "Assuming d8");
 
 		static int execute(context &c)
 		{
@@ -580,7 +580,7 @@ namespace operands
 
 
 	template<uint16_t address>
-	struct RST : default_operand<1, 16>
+	struct RST : default_instruction<1, 16>
 	{
 		static int execute(context &c)
 		{

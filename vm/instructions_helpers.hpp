@@ -3,7 +3,7 @@
 namespace yagbe
 {
 
-namespace operands
+namespace instructions
 {
 	struct A {};
 	struct F {};
@@ -60,7 +60,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::F>
+	struct unwrap<instructions::F>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -71,7 +71,7 @@ namespace operands
 
 
 	template<>
-	struct unwrap<operands::B>
+	struct unwrap<instructions::B>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -80,7 +80,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::C>
+	struct unwrap<instructions::C>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -91,7 +91,7 @@ namespace operands
 
 
 	template<>
-	struct unwrap<operands::D>
+	struct unwrap<instructions::D>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -100,7 +100,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::E>
+	struct unwrap<instructions::E>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -111,7 +111,7 @@ namespace operands
 
 
 	template<>
-	struct unwrap<operands::H>
+	struct unwrap<instructions::H>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -120,7 +120,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::L>
+	struct unwrap<instructions::L>
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
@@ -130,7 +130,7 @@ namespace operands
 
 
 	template<>
-	struct unwrap<operands::AF>
+	struct unwrap<instructions::AF>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -139,7 +139,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::BC>
+	struct unwrap<instructions::BC>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -148,7 +148,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::DE>
+	struct unwrap<instructions::DE>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -157,7 +157,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::HL>
+	struct unwrap<instructions::HL>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -166,7 +166,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::SP>
+	struct unwrap<instructions::SP>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -175,7 +175,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::BC_pointer>
+	struct unwrap<instructions::BC_pointer>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -184,7 +184,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::DE_pointer>
+	struct unwrap<instructions::DE_pointer>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -193,7 +193,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::HL_pointer>
+	struct unwrap<instructions::HL_pointer>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -202,7 +202,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::HLI>
+	struct unwrap<instructions::HLI>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -211,7 +211,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::HLD>
+	struct unwrap<instructions::HLD>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -220,7 +220,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::C_pointer>
+	struct unwrap<instructions::C_pointer>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -230,7 +230,7 @@ namespace operands
 
 
 	template<>
-	struct unwrap<operands::d8>
+	struct unwrap<instructions::d8>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
@@ -239,7 +239,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::d8_pointer>
+	struct unwrap<instructions::d8_pointer>
 	{
 		constexpr static int complexity = 8;
 		constexpr static int size_of = 1;
@@ -248,7 +248,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::d16>
+	struct unwrap<instructions::d16>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
@@ -257,7 +257,7 @@ namespace operands
 	};
 
 	template<>
-	struct unwrap<operands::d16_pointer>
+	struct unwrap<instructions::d16_pointer>
 	{
 		constexpr static int complexity = 12;
 		constexpr static int size_of = 1;

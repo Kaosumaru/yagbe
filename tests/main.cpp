@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdexcept>
 #include "vm/context.hpp"
-#include "vm/operands.hpp"
-#include "vm/operands_map.hpp"
+#include "vm/instructions.hpp"
+#include "vm/instructions_map.hpp"
 
 #ifndef _MSC_VER
 #define lest_FEATURE_COLOURISE 1
@@ -14,15 +14,15 @@
 
 using namespace std;
 using namespace yagbe;
-using namespace yagbe::operands;
-using namespace yagbe::operands::automap;
+using namespace yagbe::instructions;
+using namespace yagbe::instructions::automap;
 
 const lest::test specification[] =
 {
 	CASE("Map")
 	{
-		EXPECT(&(operand<0x47>::execute) == &(LD<B, A>::execute));
-		EXPECT(&(operand<0x7E>::execute) == &(LD<A, HL_pointer>::execute));
+		EXPECT(&(instruction<0x47>::execute) == &(LD<B, A>::execute));
+		EXPECT(&(instruction<0x7E>::execute) == &(LD<A, HL_pointer>::execute));
 	},
 
 	CASE("LD")
@@ -124,7 +124,7 @@ const lest::test specification[] =
 
 		//JP NC,d16
 		{
-			using JP_NC_HL = operands::JP<condition::NC, d16>;
+			using JP_NC_HL = instructions::JP<condition::NC, d16>;
 
 			{
 				ctx.registers.pc = 0;
@@ -169,7 +169,7 @@ const lest::test specification[] =
 
 		//JR NC,r8
 		{
-			using JR_NC_D8 = operands::JR<condition::NC, d8>;
+			using JR_NC_D8 = instructions::JR<condition::NC, d8>;
 
 			{
 				ctx.registers.pc = 0;
