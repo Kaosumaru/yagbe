@@ -58,8 +58,8 @@ namespace automap
 	//x0 column (from 0)
 	template<> struct instruction<0x0> : instructions::NOP	{};
 	template<> struct instruction<0x10> : instructions::STOP {};
-	template<> struct instruction<0x20> : instructions::JR<condition::NZ, d8> {};
-	template<> struct instruction<0x30> : instructions::JR<condition::NC, d8> {};
+	template<> struct instruction<0x20> : instructions::JR<condition::NZ, r8> {};
+	template<> struct instruction<0x30> : instructions::JR<condition::NC, r8> {};
 
 	//x1 column (from 0)
 	template<uint8_t op>
@@ -120,9 +120,9 @@ namespace automap
 
 	//x8 column
 	template<> struct instruction<0x08> : instructions::LD<d16_pointer, SP> {}; static_assert(LD<d16_pointer, SP>::cycles() == 20, "wrong cycles");
-	template<> struct instruction<0x18> : instructions::JR<condition::_, d8> {};
-	template<> struct instruction<0x28> : instructions::JR<condition::Z, d8> {};
-	template<> struct instruction<0x38> : instructions::JR<condition::C, d8> {};
+	template<> struct instruction<0x18> : instructions::JR<condition::_, r8> {};
+	template<> struct instruction<0x28> : instructions::JR<condition::Z, r8> {};
+	template<> struct instruction<0x38> : instructions::JR<condition::C, r8> {};
 
 	//x9 column
 	template<uint8_t op>
@@ -234,12 +234,21 @@ namespace automap
 	//x2 column
 	template<> struct instruction<0xC2> : instructions::JP<condition::NZ, d16> {};
 	template<> struct instruction<0xD2> : instructions::JP<condition::NC, d16> {};
-	template<> struct instruction<0xE2> : instructions::LD<C_pointer, A> {};
+	template<> struct instruction<0xE2> : instructions::LD<C_pointer, A> {}; static_assert(LD<C_pointer, A>::cycles() == 8, "wrong cycles");
 	template<> struct instruction<0xF2> : instructions::LD<A, C_pointer> {};
 
-
 	//x3 column
+	template<> struct instruction<0xC3> : instructions::JP<condition::_, d16> {};
+	template<> struct instruction<0xD3> : instructions::UNDEFINED {};
+	template<> struct instruction<0xE3> : instructions::UNDEFINED {};
+	template<> struct instruction<0xF3> : instructions::EI {};
+
 	//x4 column
+	template<> struct instruction<0xC4> : instructions::CALL<condition::NZ, d16> {};
+	template<> struct instruction<0xD4> : instructions::CALL<condition::NC, d16> {};
+	template<> struct instruction<0xE4> : instructions::UNDEFINED {};
+	template<> struct instruction<0xF4> : instructions::UNDEFINED {};
+
 	//x5 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
@@ -261,7 +270,17 @@ namespace automap
 	template<> struct instruction<0xF7> : instructions::RST<0x30> {};
 
 	//x8 column
+	template<> struct instruction<0xC8> : instructions::RET<condition::Z> {};
+	template<> struct instruction<0xD8> : instructions::RET<condition::C> {};
+	template<> struct instruction<0xE8> : instructions::ADD<SP, r8_as_word> {}; static_assert(ADD<SP, r8_as_word>::cycles() == 16, "wrong cycles");
+	template<> struct instruction<0xF8> : instructions::LD<HL, SP_p_r8> {}; static_assert(LD<HL, SP_p_r8>::cycles() == 12, "wrong cycles");
+
 	//x9 column
+	template<> struct instruction<0xC9> : instructions::RET<> {};
+	template<> struct instruction<0xD9> : instructions::RETI {};
+	template<> struct instruction<0xE9> : instructions::JP<condition::_, HL> {};
+	template<> struct instruction<0xF9> : instructions::LD<SP, HL> {}; static_assert(instructions::LD<SP, HL>::cycles() == 8, "wrong cycles");
+
 	//xA column
 	template<> struct instruction<0xCA> : instructions::JP<condition::Z, d16> {};
 	template<> struct instruction<0xDA> : instructions::JP<condition::C, d16> {};
@@ -269,14 +288,29 @@ namespace automap
 	template<> struct instruction<0xFA> : instructions::LD<A, d16_pointer> {};
 
 	//xB column
+	template<> struct instruction<0xCB> : instructions::CB {};
+	template<> struct instruction<0xDB> : instructions::UNDEFINED {};
+	template<> struct instruction<0xEB> : instructions::UNDEFINED {};
+	template<> struct instruction<0xFB> : instructions::EI {};
+
 	//xC column
+	template<> struct instruction<0xCC> : instructions::CALL<condition::Z, d16> {};
+	template<> struct instruction<0xDC> : instructions::CALL<condition::C, d16> {};
+	template<> struct instruction<0xEC> : instructions::UNDEFINED {};
+	template<> struct instruction<0xFC> : instructions::UNDEFINED {};
+
+	//xD column
+	template<> struct instruction<0xCD> : instructions::CALL<condition::_, d16> {};
+	template<> struct instruction<0xDD> : instructions::UNDEFINED {};
+	template<> struct instruction<0xED> : instructions::UNDEFINED {};
+	template<> struct instruction<0xFD> : instructions::UNDEFINED {};
+
+	//xE column
 	template<> struct instruction<0xCE> : instructions::ADC<d8> {};
 	template<> struct instruction<0xDE> : instructions::SBC<d8> {};
 	template<> struct instruction<0xEE> : instructions::XOR<d8> {};
 	template<> struct instruction<0xFE> : instructions::CP <d8> {};
 
-	//xD column
-	//xE column
 	//xF column	
 	template<> struct instruction<0xCF> : instructions::RST<0x08> {};
 	template<> struct instruction<0xDF> : instructions::RST<0x18> {};
@@ -290,11 +324,7 @@ namespace automap
 
 
 
-	//0xC3 : JP a16
-	template<> struct instruction<0xC3> : instructions::JP<condition::_, d16> {};
 
-	//0xE9 : JP (HL)
-	template<> struct instruction<0xE9> : instructions::JP<condition::_, HL> {};
 
 
 

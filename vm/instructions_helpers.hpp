@@ -31,15 +31,19 @@ namespace instructions
 	struct HL_pointer {};
 
 	struct d8 {};
+	struct d8_as_word {};
 	struct d8_pointer {};
 	struct d16 {};
 	struct d16_pointer {};
+
+	struct r8 {};
+	struct r8_as_word {};
 
 	struct HLI {};
 	struct HLD {};
 
 	struct SP {};
-
+	struct SP_p_r8 {};
 
 
 
@@ -230,12 +234,41 @@ namespace instructions
 
 
 	template<>
+	struct unwrap<instructions::r8>
+	{
+		constexpr static int complexity = 4;
+		constexpr static int size_of = 1;
+		constexpr static int is_signed = 1;
+
+		static int8_t get(context &c) { return (int8_t)c.read_byte(); }
+	};
+
+	template<>
+	struct unwrap<instructions::r8_as_word>
+	{
+		constexpr static int complexity = 8;
+		constexpr static int size_of = 2;
+		constexpr static int is_signed = 1;
+
+		static int16_t get(context &c) { return (int8_t)c.read_byte(); }
+	};
+
+	template<>
 	struct unwrap<instructions::d8>
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
 		static auto get(context &c) { return c.read_byte(); }
+	};
+
+	template<>
+	struct unwrap<instructions::d8_as_word>
+	{
+		constexpr static int complexity = 4;
+		constexpr static int size_of = 2;
+
+		static uint16_t get(context &c) { return c.read_byte(); }
 	};
 
 	template<>
@@ -263,6 +296,15 @@ namespace instructions
 		constexpr static int size_of = 1;
 
 		static auto& get(context &c) { return c.memory.at(c.read_word()); }
+	};
+
+	template<>
+	struct unwrap<instructions::SP_p_r8>
+	{
+		constexpr static int complexity = 4;
+		constexpr static int size_of = 2;
+
+		static auto get(context &c) { return c.registers.sp + (int8_t)c.read_byte(); }
 	};
 
 	//conditions

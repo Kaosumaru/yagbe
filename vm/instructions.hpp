@@ -35,6 +35,15 @@ namespace instructions
 
 	//--- MISC 1
 
+	//UNDEFINED
+	struct UNDEFINED : default_instruction<1, 4>
+	{
+		static int execute(context &c)
+		{
+			return UNDEFINED::cycles();
+		}
+	};
+
 	//NOP
 	struct NOP : default_instruction<1, 4>
 	{
@@ -254,23 +263,25 @@ namespace instructions
 		}
 	};
 
+	//specialized LD<SP, HL> to change cycles to 8
+	template<>
+	struct LD<SP, HL> : default_instruction<1, 8>
+	{
+		static int execute(context &c)
+		{
+			unwrap<SP>::get(c) = unwrap<HL>::get(c);
+			return LD::cycles();
+		}
+	};
+
+	//specialized LD<d16_pointer, SP> to allow writing word at address
 	template<>
 	struct LD<d16_pointer, SP> : default_instruction<3, 20>
 	{
 		static int execute(context &c)
 		{
 			auto address = c.read_word();
-			union
-			{
-				uint8_t bytes[2];
-				uint16_t word;
-			};
-
-			word = c.registers.sp;
-
-			c.memory.at(address) = bytes[0];
-			c.memory.at(address+1) = bytes[1];
-
+			c.write_word_at(address, c.registers.sp);
 			return LD::cycles();
 		}
 	};
@@ -564,7 +575,7 @@ namespace instructions
 		constexpr static int size() { return 2; }
 		constexpr static int cycles() { return 12; }
 
-		static_assert(std::is_same<Arg, instructions::d8>::value, "Assuming d8");
+		static_assert(unwrap<Arg>::is_signed == 1, "Assuming signed data");
 
 		static int execute(context &c)
 		{
@@ -573,7 +584,7 @@ namespace instructions
 			if (!unwrap<Cond>::is_true(c))
 				return 8;
 
-			c.registers.pc += (int8_t)pointer;
+			c.registers.pc += pointer;
 			return JR::cycles();
 		}
 	};
@@ -638,6 +649,50 @@ namespace instructions
 			c.push(c.registers.pc);
 			c.registers.pc = address;
 			return RST::cycles();
+		}
+	};
+
+
+	//--- INTERRUPTS
+	struct EI : default_instruction<1, 4>
+	{
+		static int execute(context &c)
+		{
+			c.interrupt.enabled = true;
+			return EI::cycles();
+		}
+	};
+
+	struct DI : default_instruction<1, 4>
+	{
+		static int execute(context &c)
+		{
+			c.interrupt.enabled = false;
+			return EI::cycles();
+		}
+	};
+
+	struct RETI
+	{
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return 16; }
+
+		static int execute(context &c)
+		{
+			c.interrupt.enabled = true;
+			c.registers.pc = c.pop();
+			return RETI::cycles();
+		}
+	};
+
+
+	//--- CB
+	struct CB
+	{
+		static int execute(context &c)
+		{
+			throw std::runtime_error("NYI");
+			return 0;
 		}
 	};
 
