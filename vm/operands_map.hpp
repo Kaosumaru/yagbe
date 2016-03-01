@@ -15,6 +15,7 @@ namespace automap
 
 	using register_types = std::tuple<B, C, D, E, H, L, HL_pointer, A>;
 	using register_BC_DE_HL_SP = std::tuple<BC, DE, HL, SP>;
+	using register_BC_DE_HL_AF = std::tuple<BC, DE, HL, AF>;
 	using pointers_BC_DE_HLI_HLD = std::tuple<BC_pointer, DE_pointer, HLI, HLD>;
 
 
@@ -214,12 +215,21 @@ namespace automap
 	//x0 column
 	//template<> struct operand<0xC0> : operands::RET<condition::NZ> {};
 	//template<> struct operand<0xD0> : operands::RET<condition::NC> {};
-	template<> struct operand<0xE0> : operands::LD<d8_pointer, A> {};
+	template<> struct operand<0xE0> : operands::LD<d8_pointer, A> {}; static_assert(LD<d8_pointer, A>::cycles() == 12, "wrong cycles");
 	template<> struct operand<0xF0> : operands::LD<A, d8_pointer> {};
 
 
 	//x1 column
+	template<uint8_t op>
+	struct operand<op, std::enable_if_t<
+		col(op) == 0x1 && row(op) >= 0xC
+		>> : operands::POP<
+			std::tuple_element_t<row(op - 0xC0), register_BC_DE_HL_AF>
+		>{};
+
 	//x2 column
+	template<> struct operand<0xC2> : operands::JP<condition::NZ, d16> {};
+	template<> struct operand<0xD2> : operands::JP<condition::NC, d16> {};
 	template<> struct operand<0xE2> : operands::LD<C_pointer, A> {};
 	template<> struct operand<0xF2> : operands::LD<A, C_pointer> {};
 
@@ -227,11 +237,23 @@ namespace automap
 	//x3 column
 	//x4 column
 	//x5 column
+	template<uint8_t op>
+	struct operand<op, std::enable_if_t<
+		col(op) == 0x5 && row(op) >= 0xC
+		>> : operands::PUSH<
+		std::tuple_element_t<row(op - 0xC0), register_BC_DE_HL_AF>
+		>{};
+
 	//x6 column
 	//x7 column	
 	//x8 column
 	//x9 column
 	//xA column
+	template<> struct operand<0xCA> : operands::JP<condition::Z, d16> {};
+	template<> struct operand<0xDA> : operands::JP<condition::C, d16> {};
+	template<> struct operand<0xEA> : operands::LD<d16_pointer, A> {}; static_assert(LD<d16_pointer, A>::cycles() == 16, "wrong cycles");
+	template<> struct operand<0xFA> : operands::LD<A, d16_pointer> {};
+
 	//xB column
 	//xC column
 	//xD column
@@ -242,17 +264,9 @@ namespace automap
 	template<> struct operand<0x76> : operands::HALT{};
 	//--- JUMPS 
 
-	//0xCA : JP Z, a16
-	template<> struct operand<0xCA> : operands::JP<condition::Z, d16> {};
 
-	//0xDA : JP C, a16
-	template<> struct operand<0xDA> : operands::JP<condition::C, d16> {};
 
-	//0xC2 : JP NZ, a16
-	template<> struct operand<0xC2> : operands::JP<condition::NZ, d16> {};
 
-	//0xD2 : JP NC, a16
-	template<> struct operand<0xD2> : operands::JP<condition::NC, d16> {};
 
 	//0xC3 : JP a16
 	template<> struct operand<0xC3> : operands::JP<condition::_, d16> {};

@@ -254,6 +254,27 @@ namespace operands
 		}
 	};
 
+	template<>
+	struct LD<d16_pointer, SP> : default_operand<3, 20>
+	{
+		static int execute(context &c)
+		{
+			auto address = c.read_word();
+			union
+			{
+				uint8_t bytes[2];
+				uint16_t word;
+			};
+
+			word = c.registers.sp;
+
+			c.memory.at(address) = bytes[0];
+			c.memory.at(address+1) = bytes[1];
+
+			return LD::cycles();
+		}
+	};
+
 
 	//PUSH
 	template<typename Arg>
@@ -263,7 +284,7 @@ namespace operands
 
 		static int execute(context &c)
 		{
-			c.push(unwrap<Arg>::get(c))
+			c.push(unwrap<Arg>::get(c));
 			return PUSH::cycles();
 		}
 	};

@@ -241,7 +241,7 @@ namespace operands
 	template<>
 	struct unwrap<operands::d8_pointer>
 	{
-		constexpr static int complexity = 4;
+		constexpr static int complexity = 8;
 		constexpr static int size_of = 1;
 
 		static auto get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
@@ -260,7 +260,7 @@ namespace operands
 	struct unwrap<operands::d16_pointer>
 	{
 		constexpr static int complexity = 12;
-		constexpr static int size_of = 2;
+		constexpr static int size_of = 1;
 
 		static auto& get(context &c) { return c.memory.at(c.read_word()); }
 	};
