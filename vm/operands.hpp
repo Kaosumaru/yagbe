@@ -579,6 +579,16 @@ namespace operands
 	};
 
 
+	template<uint16_t address>
+	struct RST : default_operand<1, 16>
+	{
+		static int execute(context &c)
+		{
+			c.push(c.registers.pc);
+			c.registers.pc = address;
+			return RST::cycles();
+		}
+	};
 
 }
 }

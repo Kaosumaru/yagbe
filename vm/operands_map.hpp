@@ -184,6 +184,8 @@ namespace automap
 
 	//--- second 4 rows
 
+	template<> struct operand<0x76> : operands::HALT {};
+
 	//0x40-0x7F (not 0x76) : LD X,y
 	template<uint8_t op>
 	struct operand<op, std::enable_if_t< in_range(op, 0x40, 0x7F) && op != 0x76 > > :
@@ -194,6 +196,8 @@ namespace automap
 	{
 
 	};
+
+
 
 	//--- third 4 rows
 	template<typename Arg> struct ADD_A : ADD<A, Arg> {};
@@ -251,6 +255,11 @@ namespace automap
 	template<> struct operand<0xF6> : operands::OR <d8> {};
 
 	//x7 column	
+	template<> struct operand<0xC7> : operands::RST<0x00> {};
+	template<> struct operand<0xD7> : operands::RST<0x10> {};
+	template<> struct operand<0xE7> : operands::RST<0x20> {};
+	template<> struct operand<0xF7> : operands::RST<0x30> {};
+
 	//x8 column
 	//x9 column
 	//xA column
@@ -269,9 +278,12 @@ namespace automap
 	//xD column
 	//xE column
 	//xF column	
+	template<> struct operand<0xCF> : operands::RST<0x08> {};
+	template<> struct operand<0xDF> : operands::RST<0x18> {};
+	template<> struct operand<0xEF> : operands::RST<0x28> {};
+	template<> struct operand<0xFF> : operands::RST<0x38> {};
 
-
-	template<> struct operand<0x76> : operands::HALT{};
+	
 	//--- JUMPS 
 
 
