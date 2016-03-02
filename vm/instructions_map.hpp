@@ -73,6 +73,8 @@ namespace automap
 			d16
 		>{};
 
+	static_assert(instruction<0x1>::cycles() == 12, "wrong cycles");
+
 	//x2 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
@@ -98,6 +100,9 @@ namespace automap
 		std::tuple_element_t<row_16(op), register_B_D_H_HLP>
 		>{};
 
+	static_assert(instruction<0x24>::cycles() == 4, "wrong cycles");
+	static_assert(instruction<0x34>::cycles() == 12, "wrong cycles");
+
 	//x5 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
@@ -114,6 +119,9 @@ namespace automap
 		std::tuple_element_t<row_16(op), register_B_D_H_HLP>,
 		d8
 		>{};
+
+	static_assert(instruction<0x26>::cycles() == 8, "wrong cycles");
+	static_assert(instruction<0x36>::cycles() == 12, "wrong cycles");
 
 	//x7 column
 	template<> struct instruction<0x07> : instructions::RLCA {};
@@ -135,6 +143,9 @@ namespace automap
 		HL,
 		std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>
 		>{};
+
+	static_assert(instruction<0x9>::cycles() == 8, "wrong cycles");
+
 
 	//xA column
 	template<uint8_t op>
@@ -177,6 +188,8 @@ namespace automap
 		std::tuple_element_t<row_16(op), register_C_E_L_A>,
 		d8
 		>{};
+
+	static_assert(instruction<0x0E>::cycles() == 8, "wrong cycles");
 
 	//xF column
 	template<> struct instruction<0x0F> : instructions::RRCA {};
