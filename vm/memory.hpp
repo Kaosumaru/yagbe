@@ -96,6 +96,12 @@ namespace yagbe
 			return memory_address{*this, address};
 		}
 
+		//raw byte at address, without interceptors
+		uint8_t& raw_at(uint16_t address)
+		{
+			return data[address];
+		}
+
 		uint8_t read_at(uint16_t address)
 		{
 			auto& inter = interceptor_at(address).onRead;
@@ -119,6 +125,22 @@ namespace yagbe
 
 			write_byte_at(address, w.byte[0]);
 			write_byte_at(address + 1, w.byte[1]);
+		}
+
+		void map_interceptors(uint16_t start, uint16_t end, const interceptor::ReadCallback& rc, const interceptor::WriteCallback& wc)
+		{
+			end++;
+			if (start % interceptor_range != 0)
+				throw std::out_of_range("Wrong start");
+			if (end % interceptor_range != 0)
+				throw std::out_of_range("Wrong end");
+
+			for (uint16_t i = start; i < end; i += interceptor_range)
+			{
+				auto& inter = interceptor_at(i);
+				inter.onWrite = wc;
+				inter.onRead = rc;
+			}
 		}
 
 protected:

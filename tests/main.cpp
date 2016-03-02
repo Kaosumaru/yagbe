@@ -44,7 +44,7 @@ bool test_opus5()
 
 	bool s = true;
 
-	auto m = [&](uint16_t a) { return c.memory.at(a); };
+	auto m = [&](uint16_t a) { return c.memory.raw_at(a); };
 
 	s &= m(0xFFFF) == 0x01;
 
@@ -72,6 +72,27 @@ bool test_opus5()
 
 const lest::test specification[] =
 {
+	CASE("ROM")
+	{
+		context ctx;
+		ctx.memory.raw_at(0) = 1;
+		ctx.memory.at(0) = 2;
+		EXPECT(ctx.memory.at(0) == 1);
+	},
+
+	CASE("SHADOW RAM")
+	{
+		context ctx;
+
+		for (uint16_t i = 0xC000; i <= 0xDFFF; i++)
+			ctx.memory.at(i) = i % 256;
+
+		for (uint16_t i = 0xE000; i <= 0xFDFF; i++)
+			EXPECT(ctx.memory.read_at(i) == ctx.memory.read_at(i - 0x2000));
+
+	},
+
+
 	CASE("OPUS5")
 	{
 		EXPECT(test_opus5());
@@ -107,8 +128,8 @@ const lest::test specification[] =
 			using ld_bc_d16 = LD<BC, d16>;
 
 			ctx.registers.pc = 0;
-			ctx.memory.at(0) = 6;
-			ctx.memory.at(1) = 0;
+			ctx.memory.raw_at(0) = 6;
+			ctx.memory.raw_at(1) = 0;
 
 			ld_bc_d16::execute(ctx);
 
@@ -121,22 +142,24 @@ const lest::test specification[] =
 			using ld_hli_a = LD<HLI, A>;
 			using ld_hld_a = LD<HLD, A>;
 
-			ctx.memory.at(0) = 6;
-			ctx.memory.at(1) = 6;
+			ctx.memory.raw_at(0xC000) = 6;
+			ctx.memory.raw_at(0xC001) = 6;
 
 			ctx.registers.a = 5;
-			ctx.registers.hl = 0;
+			ctx.registers.hl = 0xC000;
 			
 			ld_hli_a::execute(ctx);
 
-			EXPECT(ctx.registers.hl == 1);
-			EXPECT(ctx.memory.at(0) == 5);
+			EXPECT(ctx.registers.hl == 0xC001);
+			EXPECT(ctx.memory.at(0xC000) == 5);
+			EXPECT(ctx.memory.at(0xE000) == 5); //shadow
 
 			ctx.registers.a = 1;
 			ld_hld_a::execute(ctx);
 
-			EXPECT(ctx.registers.hl == 0);
-			EXPECT(ctx.memory.at(1) == 1);
+			EXPECT(ctx.registers.hl == 0xC000);
+			EXPECT(ctx.memory.at(0xC001) == 1);
+			EXPECT(ctx.memory.at(0xE001) == 1); //shadow
 
 			EXPECT(ld_hli_a::cycles() == 8);
 			EXPECT(ld_hld_a::cycles() == 8);
@@ -152,8 +175,8 @@ const lest::test specification[] =
 			using jp_d16 = JP<condition::_, d16>;
 
 			ctx.registers.pc = 0;
-			ctx.memory.at(0) = 6;
-			ctx.memory.at(1) = 0;
+			ctx.memory.raw_at(0) = 6;
+			ctx.memory.raw_at(1) = 0;
 
 			auto cycles = jp_d16::execute(ctx);
 
@@ -180,8 +203,8 @@ const lest::test specification[] =
 
 			{
 				ctx.registers.pc = 0;
-				ctx.memory.at(0) = 6;
-				ctx.memory.at(1) = 0;
+				ctx.memory.raw_at(0) = 6;
+				ctx.memory.raw_at(1) = 0;
 				ctx.flags.c = 1;
 
 				auto cycles = JP_NC_HL::execute(ctx);
@@ -191,8 +214,8 @@ const lest::test specification[] =
 
 			{
 				ctx.registers.pc = 0;
-				ctx.memory.at(0) = 6;
-				ctx.memory.at(1) = 0;
+				ctx.memory.raw_at(0) = 6;
+				ctx.memory.raw_at(1) = 0;
 				ctx.flags.c = 0;
 
 				auto cycles = JP_NC_HL::execute(ctx);
@@ -211,7 +234,7 @@ const lest::test specification[] =
 			using JR_D8 = JR<condition::_, r8>;
 
 			ctx.registers.pc = 0;
-			ctx.memory.at(0) = 6;
+			ctx.memory.raw_at(0) = 6;
 
 			auto cycles = JR_D8::execute(ctx);
 
@@ -225,7 +248,7 @@ const lest::test specification[] =
 
 			{
 				ctx.registers.pc = 0;
-				ctx.memory.at(0) = 6;
+				ctx.memory.raw_at(0) = 6;
 				ctx.flags.c = 1;
 
 				auto cycles = JR_NC_D8::execute(ctx);
@@ -235,7 +258,7 @@ const lest::test specification[] =
 
 			{
 				ctx.registers.pc = 0;
-				ctx.memory.at(0) = 6;
+				ctx.memory.raw_at(0) = 6;
 				ctx.flags.c = 0;
 
 				auto cycles = JR_NC_D8::execute(ctx);
@@ -251,7 +274,5 @@ const lest::test specification[] =
 
 int main (int argc, char * argv[])
 {
-	test_opus5();
-
 	return lest::run(specification, argc, argv);
 }
