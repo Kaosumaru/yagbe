@@ -374,6 +374,7 @@ namespace automap
 
 	namespace impl
 	{
+		//I yearn for constexpr for
 		template<int n = 255>
 		struct fill_instructions
 		{
@@ -393,6 +394,9 @@ namespace automap
 		{
 			static void fill(instructions_array &arr)
 			{
+				arr[3] = &(instruction<3>::execute);
+				arr[2] = &(instruction<2>::execute);
+				arr[1] = &(instruction<1>::execute);
 				arr[0] = &(instruction<0>::execute);
 			}
 		};
@@ -416,6 +420,9 @@ namespace automap
 		{
 			static void fill(instructions_array &arr)
 			{
+				arr[3] = &(instruction_cb<3>::execute);
+				arr[2] = &(instruction_cb<2>::execute);
+				arr[1] = &(instruction_cb<1>::execute);
 				arr[0] = &(instruction_cb<0>::execute);
 			}
 		};

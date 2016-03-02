@@ -7,7 +7,7 @@ namespace yagbe
 {
 	class context;
 	using instruction_pointer = int(*)(context &c);
-	using instructions_array = std::array<instruction_pointer, 0xFF>;
+	using instructions_array = std::array<instruction_pointer, 256>;
 
 	class context
 	{
@@ -21,6 +21,7 @@ namespace yagbe
 		}
 
 		void reset();
+		bool load_rom(const std::string& path);
 
 		yagbe::registers registers;
 		yagbe::flags flags;
