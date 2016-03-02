@@ -16,7 +16,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			uint8_t carry = (value & 0x80) >> 7;
 
 			c.flags.c = (value & 0x80) != 0;
@@ -40,7 +40,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			uint8_t carry = value & 0x01;
 			value >>= 1;
 
@@ -71,7 +71,7 @@ namespace instructions
 		{
 			auto carry = c.flags.c ? 1 : 0;
 
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			c.flags.c = (value & 0x80) != 0;
 
 			value <<= 1;
@@ -93,7 +93,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			value >>= 1;
 			if (c.flags.c)
 				value |= 0x80;
@@ -115,7 +115,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			c.flags.c = (value & 0x80) != 0;
 			value <<= 1;
 
@@ -135,7 +135,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			c.flags.c = value & 0x01;
 
 			value = (value & 0x80) | (value >> 1);
@@ -156,7 +156,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			value = ((value & 0xf) << 4) | ((value & 0xf0) >> 4);
 
 			c.flags.c = 0;
@@ -176,7 +176,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			c.flags.c = (value & 0x01) != 0;
 			value >>= 1;
 
@@ -198,7 +198,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			auto bchar = (1 << bit);
 
 			c.flags.z = (value & bit) == 0;
@@ -215,7 +215,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			value |= (1 << bit);
 			return SET::cycles();
 		}
@@ -228,7 +228,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 			value &= ~(1 << bit);
 			return RES::cycles();
 		}

@@ -303,7 +303,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			bool byte = unwrap<Arg>::size_of == 1;
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 
 			if (byte)
 			{
@@ -329,7 +329,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			bool byte = unwrap<Arg>::size_of == 1;
-			auto &value = unwrap<Arg>::get(c);
+			auto &&value = unwrap<Arg>::get(c);
 
 			if (byte)
 			{
