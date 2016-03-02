@@ -184,7 +184,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.registers.bc); }
+		static auto get(context &c) { return c.memory.at(c.registers.bc); }
 	};
 
 	template<>
@@ -193,7 +193,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.registers.de); }
+		static auto get(context &c) { return c.memory.at(c.registers.de); }
 	};
 
 	template<>
@@ -202,7 +202,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.registers.hl); }
+		static auto get(context &c) { return c.memory.at(c.registers.hl); }
 	};
 
 	template<>
@@ -211,7 +211,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.registers.hl++); }
+		static auto get(context &c) { return c.memory.at(c.registers.hl++); }
 	};
 
 	template<>
@@ -220,7 +220,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.registers.hl--); }
+		static auto get(context &c) { return c.memory.at(c.registers.hl--); }
 	};
 
 	template<>
@@ -229,7 +229,7 @@ namespace instructions
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(0xFF00 + c.registers.c); }
+		static auto get(context &c) { return c.memory.at(0xFF00 + c.registers.c); }
 	};
 
 
@@ -277,7 +277,7 @@ namespace instructions
 		constexpr static int complexity = 8;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
+		static auto get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
 	};
 
 	template<>
@@ -295,7 +295,7 @@ namespace instructions
 		constexpr static int complexity = 12;
 		constexpr static int size_of = 1;
 
-		static auto& get(context &c) { return c.memory.at(c.read_word()); }
+		static auto get(context &c) { return c.memory.at(c.read_word()); }
 	};
 
 	template<>

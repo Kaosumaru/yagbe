@@ -12,12 +12,7 @@ namespace yagbe
 	class context
 	{
 	protected:
-		//TODO endianess
-		union ByteWord
-		{
-			uint16_t word;
-			uint8_t byte[2];
-		};
+
 
 	public:
 		context() : flags(registers.f)
@@ -49,26 +44,13 @@ namespace yagbe
 		//reads a byte at PC, and increments PC
 		uint8_t read_byte()
 		{
-			return memory.at(registers.pc++);
-		}
-
-		void write_byte_at(uint16_t address, uint8_t byte)
-		{
-			memory.at(address) = byte;
-		}
-
-		void write_word_at(uint16_t address, uint16_t word)
-		{
-			ByteWord w = { word };
-
-			memory.at(address) = w.byte[0];
-			memory.at(address+1) = w.byte[1];
+			return memory.read_at(registers.pc++);
 		}
 
 		//reads a word at PC, and increments PC
 		uint16_t read_word()
 		{
-			ByteWord w;
+			memory::ByteWord w;
 			w.byte[0] = read_byte();
 			w.byte[1] = read_byte();
 			return w.word;
@@ -76,18 +58,18 @@ namespace yagbe
 
 		void push(uint16_t word)
 		{
-			ByteWord w = { word };
+			memory::ByteWord w = { word };
 
-			memory.at(registers.sp--) = w.byte[0];
-			memory.at(registers.sp--) = w.byte[1];
+			memory.write_byte_at(registers.sp--, w.byte[0]);
+			memory.write_byte_at(registers.sp--, w.byte[1]);
 		}
 
 		uint16_t pop()
 		{
-			ByteWord w;
+			memory::ByteWord w;
 
-			w.byte[1] = memory.at(registers.sp++);
-			w.byte[0] = memory.at(registers.sp++);
+			w.byte[1] = memory.read_at(registers.sp++);
+			w.byte[0] = memory.read_at(registers.sp++);
 
 			return w.word;
 		}

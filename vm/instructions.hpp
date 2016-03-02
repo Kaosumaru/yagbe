@@ -261,7 +261,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto address = c.read_word();
-			c.write_word_at(address, c.registers.sp);
+			c.memory.write_word_at(address, c.registers.sp);
 			return LD::cycles();
 		}
 	};
@@ -303,15 +303,14 @@ namespace instructions
 		static int execute(context &c)
 		{
 			bool byte = unwrap<Arg>::size_of == 1;
-			auto value = unwrap<Arg>::get(c);
+			auto &value = unwrap<Arg>::get(c);
 
 			if (byte)
 			{
 				c.flags.h = ((value & 0x0f) == 0x0f);
 			}
 
-			value++;
-			unwrap<Arg>::get(c) = value;
+			value += 1;
 
 			if (byte)
 			{
@@ -330,15 +329,14 @@ namespace instructions
 		static int execute(context &c)
 		{
 			bool byte = unwrap<Arg>::size_of == 1;
-			auto value = unwrap<Arg>::get(c);
+			auto &value = unwrap<Arg>::get(c);
 
 			if (byte)
 			{
 				c.flags.h = !(value & 0x0f); //TODO is this correct?
 			}
 
-			value--;
-			unwrap<Arg>::get(c) = value;
+			value-=1;
 
 			if (byte)
 			{

@@ -76,7 +76,6 @@ namespace instructions
 
 			value <<= 1;
 			value += carry;
-			unwrap<Arg>::get(c) = value;
 
 			c.flags.z = value == 0;
 			c.flags.n = 0;
@@ -99,7 +98,6 @@ namespace instructions
 			if (c.flags.c)
 				value |= 0x80;
 
-			
 			c.flags.c = (value & 0x01) != 0;
 			c.flags.z = value == 0;
 			c.flags.n = 0;
