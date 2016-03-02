@@ -76,7 +76,7 @@ bool context::load_rom(const std::string& path)
 	uint16_t a = 0;
 	for (auto it = it_begin; it != it_end; it++)
 	{
-		write_byte_at(a, *it);
+		memory.write_byte_at(a, *it);
 		a++;
 	}
 
