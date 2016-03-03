@@ -5,10 +5,12 @@
 
 namespace yagbe
 {
-	class gpu
+
+	class gpu_base
 	{
 	public:
-		gpu(memory &m) : _m(m) {}
+		gpu_base(memory &m) : _m(m) {}
+		virtual ~gpu_base(){}
 
 		enum class mode
 		{
@@ -38,7 +40,19 @@ namespace yagbe
 		}
 
 	protected:
-		using function_pointer = gpu::mode (gpu::*)();
+		virtual void push_screen()
+		{
+			//push buffer to a renderer
+		}
+
+		virtual void render_scanline()
+		{
+			//render scanline to framebuffer
+		}
+
+
+	private:
+		using function_pointer = gpu_base::mode (gpu_base::*)();
 
 		mode end_horizontal_blank()
 		{
@@ -77,20 +91,7 @@ namespace yagbe
 		}
 
 
-
-
-
-		void push_screen()
-		{
-			//push buffer to a renderer
-		}
-
-		void render_scanline()
-		{
-			//render scanline to framebuffer
-		}
-
-		constexpr static std::array<function_pointer, 4> mode_end_functions() { return{ &gpu::end_horizontal_blank, &gpu::end_vertical_blank, &gpu::end_scanline_OAM, &gpu::end_scanline_VRAM }; }
+		constexpr static std::array<function_pointer, 4> mode_end_functions() { return{ &gpu_base::end_horizontal_blank, &gpu_base::end_vertical_blank, &gpu_base::end_scanline_OAM, &gpu_base::end_scanline_VRAM }; }
 
 
 		int _line = 0;
@@ -98,4 +99,23 @@ namespace yagbe
 		uint32_t _clock = 0;
 		memory &_m;
 	};
+
+
+	class gpu : public gpu_base
+	{
+	public:
+		using gpu_base::gpu_base;
+	protected:
+		void push_screen() override
+		{
+			//push buffer to a renderer
+		}
+
+		void render_scanline() override
+		{
+			//render scanline to framebuffer
+		}
+	};
+
+
 };

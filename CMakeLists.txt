@@ -33,8 +33,15 @@ if(BUILD_TESTS)
 	add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
 	add_executable (yagbe tests/main.cpp ${SRCS})
 else(BUILD_TESTS)
+	add_folder(renderer)
+	
+	find_package(SDL2 REQUIRED)
+	include_directories(${SDL2_INCLUDE_DIR})
+	target_link_libraries(yagbe ${SDL2_LIBRARY})
+
 	add_executable (yagbe main.cpp ${SRCS})
 endif(BUILD_TESTS)
+
 
 
 target_link_libraries(yagbe ${CONAN_LIBS})
