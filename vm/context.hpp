@@ -3,6 +3,7 @@
 #include "registers.hpp"
 #include "memory.hpp"
 #include "gpu.hpp"
+#include "zero_ram.hpp"
 
 namespace yagbe
 {
@@ -27,7 +28,8 @@ namespace yagbe
 		yagbe::registers registers;
 		yagbe::flags     flags;
 		yagbe::memory    memory;
-		yagbe::gpu       gpu;
+		yagbe::gpu       gpu = { memory };
+		yagbe::zero_ram  zero_ram = { memory };
 
 		struct 
 		{

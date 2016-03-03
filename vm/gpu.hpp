@@ -1,12 +1,14 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include "memory.hpp"
 
 namespace yagbe
 {
 	class gpu
 	{
 	public:
+		gpu(memory &m) : _m(m) {}
 
 		enum class mode
 		{
@@ -94,5 +96,6 @@ namespace yagbe
 		int _line = 0;
 		mode _mode = mode::scanline_OAM;
 		uint32_t _clock = 0;
+		memory &_m;
 	};
 };
