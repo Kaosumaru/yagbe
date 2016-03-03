@@ -37,9 +37,9 @@ else(BUILD_TESTS)
 	
 	find_package(SDL2 REQUIRED)
 	include_directories(${SDL2_INCLUDE_DIR})
-	target_link_libraries(yagbe ${SDL2_LIBRARY})
 
 	add_executable (yagbe main.cpp ${SRCS})
+	target_link_libraries(yagbe ${SDL2_LIBRARY} ${SDL2MAIN_LIBRARY})	
 endif(BUILD_TESTS)
 
 

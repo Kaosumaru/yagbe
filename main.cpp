@@ -3,38 +3,33 @@
 #include <sstream>
 
 #include "vm/context.hpp"
-#include "vm/operands.hpp"
-#include "vm/operands_map.hpp"
-
+#include "renderer/sdl2_renderer.hpp"
 
 int main (int argc, char * argv[])
 {
 	using namespace yagbe;
-	using namespace yagbe::operands;
+	sdl2_renderer renderer(256,256);
 
-	
+	std::vector<uint8_t> bytes;
+
+	bytes.resize(256 * 256 * 4);
+
+	for (int y = 0; y < 256; y ++)
+		for (int x = 0; x < 256; x++)
+		{
+			auto o = x * 4 + y * 256 * 4;
+			bytes[o + 0] = 255; //A
+			bytes[o + 1] = y;   //B
+			bytes[o + 2] = y;   //G
+			bytes[o + 3] = y;   //R
+		}
+
+	renderer.accept_image(bytes);
+	while (renderer.step())
 	{
-		context ctx;
-		ctx.registers.a = 1;
-		ctx.registers.b = 2;
 
-		auto ld_b_a = &(LD<B, A>::execute);
-		ld_b_a(ctx);
-
-		std::cout << "B is now " << (int)ctx.registers.b << std::endl;
 	}
 
-	{
-		using namespace yagbe::operands::automap;
-		context ctx;
-		ctx.registers.a = 1;
-		ctx.registers.b = 2;
-
-		auto ld_b_a = &(operand<0x47>::execute);
-		ld_b_a(ctx);
-
-		std::cout << "B is now " << (int)ctx.registers.b << std::endl;
-	}
 
 	return 0;
 }
