@@ -84,6 +84,8 @@ namespace automap
 			A
 		>{};
 
+	static_assert(instruction<0x2>::cycles() == 8, "wrong cycles");
+
 	//x3 column
 	template<uint8_t op>
 	struct instruction<op, std::enable_if_t<
@@ -91,6 +93,8 @@ namespace automap
 		>> : instructions::INC<
 			std::tuple_element_t<row_16(op), register_BC_DE_HL_SP>
 		>{};
+
+	static_assert(instruction<0x3>::cycles() == 8, "wrong cycles");
 
 	//x4 column
 	template<uint8_t op>
@@ -110,6 +114,9 @@ namespace automap
 		>> : instructions::DEC<
 		std::tuple_element_t<row_16(op), register_B_D_H_HLP>
 		>{};
+
+	static_assert(instruction<0x25>::cycles() == 4, "wrong cycles");
+	static_assert(instruction<0x35>::cycles() == 12, "wrong cycles");
 
 	//x6 column
 	template<uint8_t op>
@@ -289,7 +296,7 @@ namespace automap
 	template<> struct instruction<0xC8> : instructions::RET<condition::Z> {};
 	template<> struct instruction<0xD8> : instructions::RET<condition::C> {};
 	template<> struct instruction<0xE8> : instructions::ADD<SP, r8_as_word> {}; static_assert(ADD<SP, r8_as_word>::cycles() == 16, "wrong cycles");
-	template<> struct instruction<0xF8> : instructions::LD<HL, SP_p_r8> {}; static_assert(LD<HL, SP_p_r8>::cycles() == 12, "wrong cycles");
+	template<> struct instruction<0xF8> : instructions::LD<HL, SP_p_r8> {}; static_assert(LD<HL, SP_p_r8>::cycles() == 12, "wrong cycles"); 
 
 	//x9 column
 	template<> struct instruction<0xC9> : instructions::RET<> {};
@@ -301,7 +308,7 @@ namespace automap
 	template<> struct instruction<0xCA> : instructions::JP<condition::Z, d16> {};
 	template<> struct instruction<0xDA> : instructions::JP<condition::C, d16> {};
 	template<> struct instruction<0xEA> : instructions::LD<d16_pointer, A> {}; static_assert(LD<d16_pointer, A>::cycles() == 16, "wrong cycles");
-	template<> struct instruction<0xFA> : instructions::LD<A, d16_pointer> {};
+	template<> struct instruction<0xFA> : instructions::LD<A, d16_pointer> {}; static_assert(LD<A, d16_pointer>::cycles() == 16, "wrong cycles");
 
 	//xB column
 	template<> struct instruction<0xCB> : instructions::CB {};
@@ -322,7 +329,7 @@ namespace automap
 	template<> struct instruction<0xFD> : instructions::UNDEFINED {};
 
 	//xE column
-	template<> struct instruction<0xCE> : instructions::ADC<d8> {};
+	template<> struct instruction<0xCE> : instructions::ADC<d8> {}; static_assert(instructions::ADC<d8>::cycles() == 8, "wrong cycles");
 	template<> struct instruction<0xDE> : instructions::SBC<d8> {};
 	template<> struct instruction<0xEE> : instructions::XOR<d8> {};
 	template<> struct instruction<0xFE> : instructions::CP <d8> {};
@@ -472,6 +479,10 @@ namespace automap
 
 	static_assert(&(instruction_cb<0xC0>::execute) == &(SET<0, B>::execute), "Wrong mapping");
 	static_assert(&(instruction_cb<0xFF>::execute) == &(SET<7, A>::execute), "Wrong mapping");
+
+
+	static_assert(instruction_cb<0x05>::cycles() == 8, "wrong cycles");
+	static_assert(instruction_cb<0x06>::cycles() == 16, "wrong cycles");
 
 }
 }

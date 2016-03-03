@@ -59,6 +59,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.a; }
 	};
@@ -68,6 +69,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.f; }
 	};
@@ -79,6 +81,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.b; }
 	};
@@ -88,6 +91,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.c; }
 	};
@@ -99,6 +103,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.d; }
 	};
@@ -108,6 +113,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.e; }
 	};
@@ -119,6 +125,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.h; }
 	};
@@ -128,6 +135,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 0;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.l; }
 	};
@@ -138,6 +146,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.af; }
 	};
@@ -147,6 +156,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.bc; }
 	};
@@ -156,6 +166,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.de; }
 	};
@@ -165,6 +176,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.hl; }
 	};
@@ -174,6 +186,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto& get(context &c) { return c.registers.sp; }
 	};
@@ -183,6 +196,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.registers.bc); }
 	};
@@ -192,6 +206,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.registers.de); }
 	};
@@ -201,6 +216,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.registers.hl); }
 	};
@@ -210,6 +226,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.registers.hl++); }
 	};
@@ -219,6 +236,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.registers.hl--); }
 	};
@@ -228,6 +246,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(0xFF00 + c.registers.c); }
 	};
@@ -258,6 +277,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 0;
 
 		static auto get(context &c) { return c.read_byte(); }
 	};
@@ -267,6 +287,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static uint16_t get(context &c) { return c.read_byte(); }
 	};
@@ -276,6 +297,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 8;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
 	};
@@ -285,6 +307,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
 		static auto get(context &c) { return c.read_word(); }
 	};
@@ -294,6 +317,7 @@ namespace instructions
 	{
 		constexpr static int complexity = 12;
 		constexpr static int size_of = 1;
+		constexpr static int is_pointer = 1;
 
 		static auto get(context &c) { return c.memory.at(c.read_word()); }
 	};
@@ -303,8 +327,21 @@ namespace instructions
 	{
 		constexpr static int complexity = 4;
 		constexpr static int size_of = 2;
+		constexpr static int is_pointer = 0;
 
-		static auto get(context &c) { return c.registers.sp + (int8_t)c.read_byte(); }
+		static auto get(context &c) 
+		{
+			//this actually adds stuff, so it's expected to set h c
+			auto operand = c.read_byte();
+			uint32_t result = (uint32_t)c.registers.sp + (int8_t)operand;
+
+			c.flags.z = false;
+			c.flags.n = false;
+			c.flags.h = ((c.registers.sp & 0x0f) + (operand & 0x0f)) > 0x0f;
+			c.flags.c = (result & 0xffff0000) != 0;
+			
+			return (uint16_t)result;
+		}
 	};
 
 	//conditions

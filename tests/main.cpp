@@ -165,6 +165,9 @@ const lest::test specification[] =
 			EXPECT(ld_hld_a::cycles() == 8);
 		}
 
+		//LD<HL, SP_p_r8> //TODO seems like this sets h & c - good test case
+
+
 	},
 	CASE("JP")
 	{
