@@ -2,7 +2,7 @@
 #include <array>
 #include "registers.hpp"
 #include "memory.hpp"
-#include "gpu.hpp"
+#include "vm/gpu/gpu.hpp"
 #include "zero_ram.hpp"
 
 namespace yagbe

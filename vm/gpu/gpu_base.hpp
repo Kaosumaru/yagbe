@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <array>
-#include "memory.hpp"
+#include "vm/memory.hpp"
 
 namespace yagbe
 {
@@ -99,23 +99,4 @@ namespace yagbe
 		uint32_t _clock = 0;
 		memory &_m;
 	};
-
-
-	class gpu : public gpu_base
-	{
-	public:
-		using gpu_base::gpu_base;
-	protected:
-		void push_screen() override
-		{
-			//push buffer to a renderer
-		}
-
-		void render_scanline() override
-		{
-			//render scanline to framebuffer
-		}
-	};
-
-
 };
