@@ -24,7 +24,7 @@ namespace instructions
 	struct default_unary_instruction
 	{
 		constexpr static int size() { return s; }
-		constexpr static int cycles() { return c + unwrap<Arg>::complexity; }
+		constexpr static int cycles() { return c + unwrap<Arg>::complexity + unwrap<Arg>::is_pointer * 4; }
 	};
 
 	template<uint8_t s, uint8_t c, typename Arg1, typename Arg2>
@@ -254,6 +254,7 @@ namespace instructions
 		}
 	};
 
+
 	//specialized LD<d16_pointer, SP> to allow writing word at address
 	template<>
 	struct LD<d16_pointer, SP> : default_instruction<3, 20>
@@ -351,8 +352,13 @@ namespace instructions
 
 	//ADD (8bit, 16 bit)
 	template<typename Arg1, typename Arg2>
-	struct ADD : default_binary_instruction<1, 4, Arg1, Arg2>
+	struct ADD : default_instruction<1, 4>
 	{
+		static_assert(unwrap<Arg1>::size_of == unwrap<Arg2>::size_of, "Mismatching sizes");
+
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return unwrap<Arg1>::size_of == 2 && unwrap<Arg2>::size_of == 2 ? 8 : 4 + unwrap<Arg1>::complexity + unwrap<Arg2>::complexity; }
+
 		static int execute(context &c)
 		{
 			constexpr bool single_byte = unwrap<Arg1>::size_of == 1;
@@ -367,7 +373,8 @@ namespace instructions
 
 			unwrap<Arg1>::get(c) = (result_type)(result);
 
-			c.flags.z = (result == 0);
+			if (single_byte)
+				c.flags.z = (result == 0);
 			c.flags.n = 0;
 			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
 
@@ -377,6 +384,46 @@ namespace instructions
 			return ADD::cycles();
 		}
 	};
+
+
+	//sigh... this add DOESN'T set n flag
+	template<>
+	struct ADD<SP, r8_as_word> : default_instruction<1, 4>
+	{
+		using Arg1 = SP;
+		using Arg2 = r8_as_word;
+
+		static_assert(unwrap<Arg1>::size_of == unwrap<Arg2>::size_of, "Mismatching sizes");
+
+		constexpr static int size() { return 1; }
+		constexpr static int cycles() { return 16; }
+
+		static int execute(context &c)
+		{
+			constexpr bool single_byte = unwrap<Arg1>::size_of == 1;
+			using overflow_result_type = std::conditional_t<single_byte, uint16_t, uint32_t>;
+			using result_type = std::conditional_t<single_byte, uint8_t, uint16_t>;
+
+
+			auto arg1 = unwrap<Arg1>::get(c);
+			auto arg2 = unwrap<Arg2>::get(c);
+			overflow_result_type result = arg1 + arg2;
+
+
+			unwrap<Arg1>::get(c) = (result_type)(result);
+
+			if (single_byte)
+				c.flags.z = (result == 0);
+			//c.flags.n = 0;
+			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
+
+			overflow_result_type cmask = single_byte ? 0xff00 : 0xffff0000;
+			c.flags.c = (result & cmask) != 0;
+
+			return ADD::cycles();
+		}
+	};
+
 
 	//ADC
 	template<typename Arg>
