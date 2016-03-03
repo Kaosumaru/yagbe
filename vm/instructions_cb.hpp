@@ -199,7 +199,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto &&value = unwrap<Arg>::get(c);
-			auto bchar = (1 << bit);
+			auto bchar = (1u << bit);
 
 			c.flags.z = (value & bit) == 0;
 			c.flags.n = 0;
@@ -216,7 +216,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto &&value = unwrap<Arg>::get(c);
-			value |= (1 << bit);
+			value |= (uint8_t)(1u << bit);
 			return SET::cycles();
 		}
 	};
@@ -229,7 +229,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto &&value = unwrap<Arg>::get(c);
-			value &= ~(1 << bit);
+			value &= (uint8_t) ~(1u << bit);
 			return RES::cycles();
 		}
 	};

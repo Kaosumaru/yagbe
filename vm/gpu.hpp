@@ -16,14 +16,14 @@ namespace yagbe
 			scanline_VRAM,
 		};
 
-		constexpr static int mode_durations[4] = { 204, 456, 80, 172 };
+		constexpr static std::array<int,4> mode_durations() { return{ 204, 456, 80, 172 }; }
 
 		void step(uint32_t delta)
 		{
 			if (delta > 80)
 				throw std::out_of_range("delta is too large");
 
-			auto &current_mode_duration = mode_durations[(int)_mode];
+			auto &current_mode_duration = mode_durations()[(int)_mode];
 			_clock += delta;
 
 			if (_clock < current_mode_duration)
@@ -31,7 +31,7 @@ namespace yagbe
 
 			_clock -= current_mode_duration;
 
-			auto call_ptr = mode_end_functions[(int)_mode];
+			auto call_ptr = mode_end_functions()[(int)_mode];
 			_mode = (this->*call_ptr)();
 		}
 
@@ -88,7 +88,7 @@ namespace yagbe
 			//render scanline to framebuffer
 		}
 
-		constexpr static function_pointer mode_end_functions[4] = { &gpu::end_horizontal_blank, &gpu::end_vertical_blank, &gpu::end_scanline_OAM, &gpu::end_scanline_VRAM };
+		constexpr static std::array<function_pointer, 4> mode_end_functions() { return{ &gpu::end_horizontal_blank, &gpu::end_vertical_blank, &gpu::end_scanline_OAM, &gpu::end_scanline_VRAM }; }
 
 
 		int _line = 0;
