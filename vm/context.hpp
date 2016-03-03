@@ -2,6 +2,7 @@
 #include <array>
 #include "registers.hpp"
 #include "memory.hpp"
+#include "gpu.hpp"
 
 namespace yagbe
 {
@@ -24,8 +25,9 @@ namespace yagbe
 		bool load_rom(const std::string& path);
 
 		yagbe::registers registers;
-		yagbe::flags flags;
-		yagbe::memory memory;
+		yagbe::flags     flags;
+		yagbe::memory    memory;
+		yagbe::gpu       gpu;
 
 		struct 
 		{

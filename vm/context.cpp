@@ -99,7 +99,10 @@ void context::cpu_step()
 
 	auto opcode = read_byte();
 	auto instruction = instructions()[opcode];
-	cycles_elapsed += instruction(*this);
+
+	auto cycles = instruction(*this);
+	cycles_elapsed += cycles;
+	gpu.step(cycles);
 }
 
 const instructions_array& context::instructions()
