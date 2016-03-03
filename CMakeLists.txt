@@ -28,10 +28,11 @@ if(YAGBE_TRAVIS)
 	add_definitions(-DYAGBE_TRAVIS)
 endif(YAGBE_TRAVIS)
 
+add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
+
 if(BUILD_TESTS)
     #add_subdirectory(tests)
 	add_definitions(-DYAGBE_TESTS)
-	add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
 	add_executable (yagbe tests/main.cpp ${SRCS})
 else(BUILD_TESTS)
 	add_folder(renderer)

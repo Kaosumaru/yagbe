@@ -50,6 +50,11 @@ namespace yagbe
 			//render scanline to framebuffer
 		}
 
+		auto line()
+		{
+			return _line;
+		}
+
 
 	private:
 		using function_pointer = gpu_base::mode (gpu_base::*)();
@@ -97,6 +102,7 @@ namespace yagbe
 		int _line = 0;
 		mode _mode = mode::scanline_OAM;
 		uint32_t _clock = 0;
+	protected:
 		memory &_m;
 	};
 };
