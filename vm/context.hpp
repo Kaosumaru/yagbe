@@ -1,9 +1,11 @@
 #pragma once
 #include <array>
 #include "registers.hpp"
+#include "interrupts.hpp"
 #include "memory.hpp"
 #include "vm/gpu/gpu.hpp"
-#include "zero_ram.hpp"
+#include "key_handler.hpp"
+
 
 namespace yagbe
 {
@@ -25,18 +27,16 @@ namespace yagbe
 		void reset();
 		bool load_rom(const std::string& path);
 
-		yagbe::registers registers;
-		yagbe::flags     flags;
-		yagbe::memory    memory;
-		yagbe::gpu       gpu = { memory };
-		yagbe::zero_ram  zero_ram = { memory };
+		yagbe::registers   registers;
+		yagbe::flags       flags;
+		yagbe::memory      memory;
+		yagbe::interrupts  interrupt{ *this };
+		yagbe::gpu         gpu { memory, interrupt };
 
-		struct 
-		{
-			uint8_t enabled;
-			uint8_t enable_specific;
-			uint8_t flags;
-		} interrupt;
+
+		yagbe::key_handler key_handler{ memory.io_register.P1, interrupt };
+
+
 
 		uint32_t cycles_elapsed;
 		bool     stopped;

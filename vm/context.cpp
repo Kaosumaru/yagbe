@@ -18,9 +18,8 @@ void context::reset()
 	registers.sp = 0xfffe;
 	registers.pc = 0x100;
 
-	interrupt.enabled = 1;
-	interrupt.enable_specific = 0;
-	interrupt.flags = 0;
+	interrupt.reset();
+	gpu.reset();
 
 	auto wb = [&](uint16_t a, uint8_t b) { this->memory.write_byte_at(a, b); };
 
@@ -66,6 +65,20 @@ void context::reset()
 	auto shadow_write = [](yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
 
 	memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
+
+
+	auto zero_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
+	{
+		if (a == 0xFF46)
+		{
+			//NYI
+			return;
+		}
+
+		m.raw_at(a) = b;
+	};
+
+	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write);
 }
 
 bool context::load_rom(const std::string& path)
@@ -103,6 +116,7 @@ void context::cpu_step()
 	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
 	gpu.step(cycles);
+	key_handler.step();
 }
 
 const instructions_array& context::instructions()

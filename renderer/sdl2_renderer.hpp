@@ -65,6 +65,8 @@ namespace yagbe
 			accept_raw_image((uint8_t*)image.data());
 		}
 
+		
+		std::function<void(SDL_Keycode, bool)> onKeyChanged;
 	protected:
 		void accept_raw_image(const uint8_t *input)
 		{
@@ -98,9 +100,11 @@ namespace yagbe
 				if (e.type == SDL_QUIT) 
 					_running = false;
 
-				if (e.type == SDL_KEYDOWN) 
+				if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
 				{
-					
+					auto key_code = e.key.keysym.sym;
+					if (onKeyChanged)
+						onKeyChanged(key_code, e.type == SDL_KEYDOWN);
 				}
 			}
 		}

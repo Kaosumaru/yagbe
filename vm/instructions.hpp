@@ -671,6 +671,7 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
+			c.interrupt.enabled = 0;
 			c.push(c.registers.pc);
 			c.registers.pc = address;
 			return RST::cycles();
@@ -683,7 +684,7 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			c.interrupt.enabled = true;
+			c.interrupt.enabled = 1;
 			return EI::cycles();
 		}
 	};
@@ -692,7 +693,7 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			c.interrupt.enabled = false;
+			c.interrupt.enabled = 0;
 			return EI::cycles();
 		}
 	};
@@ -704,7 +705,7 @@ namespace instructions
 
 		static int execute(context &c)
 		{
-			c.interrupt.enabled = true;
+			c.interrupt.enabled = 1;
 			c.registers.pc = c.pop();
 			return RETI::cycles();
 		}

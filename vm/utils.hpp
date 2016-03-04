@@ -35,4 +35,26 @@ namespace yagbe
 	};
 
 
+
+	struct bit
+	{
+		bit(uint8_t &p, uint8_t N) : _p(p), n(N) {}
+
+
+		bit& operator =(bool b)
+		{
+			int x = b ? 1 : 0;
+			_p ^= (-x ^ _p) & (1 << n);
+			return *this;
+		}
+
+		explicit operator bool() const
+		{
+			return (_p >> n) & 1;
+		}
+	protected:
+		uint8_t &_p;
+		uint8_t n;
+	};
+
 }

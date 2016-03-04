@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <array>
 #include "vm/memory.hpp"
+#include "vm/interrupts.hpp"
 
 namespace yagbe
 {
@@ -9,7 +10,7 @@ namespace yagbe
 	class gpu_base
 	{
 	public:
-		gpu_base(memory &m) : _m(m) {}
+		gpu_base(memory &m, interrupts &i) : _m(m), _i(i) {}
 		virtual ~gpu_base(){}
 
 		enum class mode
@@ -39,7 +40,20 @@ namespace yagbe
 			_mode = (this->*call_ptr)();
 		}
 
+
+		void reset()
+		{
+			_line = 0;
+			_mode = mode::scanline_OAM;
+			_clock = 0;
+		}
 	protected:
+		void set_line(int l)
+		{
+			_line = l;
+			_m.io_register.LY = l;
+		}
+
 		virtual void push_screen()
 		{
 			//push buffer to a renderer
@@ -61,10 +75,11 @@ namespace yagbe
 
 		mode end_horizontal_blank()
 		{
-			_line++;
+			set_line(_line+1);
 			if (_line == 143)
 			{
 				// Enter vblank
+				_i.vblank();
 				push_screen();
 				return mode::vertical_blank;
 			}
@@ -74,11 +89,11 @@ namespace yagbe
 		mode end_vertical_blank()
 		{
 			// Vblank (10 lines)
-			_line++;
+			set_line(_line + 1);
 			if (_line > 153) 
 			{ 
 				// Restart scanning modes
-				_line = 0; 
+				set_line(0);
 				return  mode::scanline_OAM;
 			}
 			return mode::vertical_blank;
@@ -103,6 +118,7 @@ namespace yagbe
 		mode _mode = mode::scanline_OAM;
 		uint32_t _clock = 0;
 	protected:
+		interrupts &_i;
 		memory &_m;
 	};
 };

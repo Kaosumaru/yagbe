@@ -14,7 +14,7 @@ namespace yagbe
 	public:
 		constexpr static ipoint screen_size() { return{ 160, 144 }; }
 
-		gpu(memory &m) : gpu_base(m) {}
+		gpu(memory &m, interrupts &i) : gpu_base(m, i) {}
 
 		std::function<void(const std::vector<color>&)> onFrameReady;
 	protected:
@@ -37,7 +37,7 @@ namespace yagbe
 			return _tilemap.pixel_at_point({ x,y });
 		}
 
-
+		
 		tilemap _tilemap { _m };
 		std::vector<color> _buffer { (std::size_t) screen_size().x * screen_size().y };
 	};

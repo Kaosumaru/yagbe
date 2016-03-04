@@ -40,7 +40,7 @@ namespace yagbe
 		uint8_t &SCY{ _a[0xFF42] }; //R/W scroll y
 		uint8_t &SCX{ _a[0xFF43] };	//R/W scroll x
 
-		uint8_t &LY{ _a[0xFF44] }; // X R LCDC Y-Coordinate
+		uint8_t &LY{ _a[0xFF44] }; //X R LCDC Y-Coordinate
 		uint8_t &LYC{ _a[0xFF45] }; // X R/W LY Compare
 		uint8_t &DMA{ _a[0xFF46] }; // X W DMA Transfer and Start Address 
 
