@@ -34,7 +34,7 @@ namespace yagbe
 
 		color render_pixel(int x, int y)
 		{
-			return _tileset.pixel_at_point(x,y);
+			return _tileset.pixel_at_point({ x,y });
 		}
 
 

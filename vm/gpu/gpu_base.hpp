@@ -79,7 +79,7 @@ namespace yagbe
 			{ 
 				// Restart scanning modes
 				_line = 0; 
-				_mode = mode::scanline_OAM;
+				return  mode::scanline_OAM;
 			}
 			return mode::vertical_blank;
 		}
