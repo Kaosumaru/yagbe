@@ -31,8 +31,14 @@ namespace yagbe
 		void step()
 		{
 			//int offset = P1 & 0x20 ? 4 : P1 & 0x10 ? 0 : -1;
-			
-			P1 = rows[1];
+			auto c = P1 & 0x30;
+
+			if (c & 0x10)
+				_selected_column = 1;
+			else if (c & 0x10)
+				_selected_column = 0;
+
+			P1 = rows[_selected_column];
 			
 		}
 
@@ -48,6 +54,7 @@ namespace yagbe
 		}
 
 	protected:
+		int _selected_column = 0;
 		uint8_t rows[2] = { 0xF, 0xF };
 		interrupts &_i;
 	};
