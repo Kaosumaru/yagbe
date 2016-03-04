@@ -14,7 +14,7 @@ namespace yagbe
 	public:
 		constexpr static ipoint screen_size() { return{ 160, 144 }; }
 
-		using gpu_base::gpu_base;
+		gpu(memory &m) : gpu_base(m) {}
 
 		std::function<void(const std::vector<color>&)> onFrameReady;
 	protected:

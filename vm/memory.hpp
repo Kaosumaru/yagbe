@@ -92,7 +92,7 @@ namespace yagbe
 			uint8_t _b;
 		};
 
-		io_registers io_registers{ data };
+		io_registers io_register{ data };
 
 		memory_address at(uint16_t address)
 		{
