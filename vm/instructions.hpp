@@ -209,8 +209,8 @@ namespace instructions
 		{
 			c.registers.a = ~c.registers.a;
 
-			c.flags.n = 0;
-			c.flags.h = 0;
+			c.flags.n = 1;
+			c.flags.h = 1;
 
 			return CPL::cycles();
 		}
