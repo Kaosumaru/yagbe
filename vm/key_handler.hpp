@@ -30,30 +30,25 @@ namespace yagbe
 
 		void step()
 		{
-			int offset = P1 & 0x20 ? 4 : P1 & 0x10 ? 0 : -1;
-
-			if (offset == -1)
-			{
-				P1 = 0xF;
-				return;
-			}
-
-			for (int i = 0; i < 4; i++)
-			{
-				bit b(P1, i);
-				b = !keys[offset + i];
-			}
+			//int offset = P1 & 0x20 ? 4 : P1 & 0x10 ? 0 : -1;
+			
+			P1 = rows[1];
+			
 		}
 
 		void set_key(key k, bool v)
 		{
-			keys[(int)k] = v;
-			if (v)
-				_i.joypad();
+			int i = (int)k;
+			int r = i / 4;
+			i %= 4;
+
+			bit b(rows[r], i);
+			b = !v; //on bit = released, off - pressed
+			_i.joypad();
 		}
 
 	protected:
-		bool keys[8] = { 0 };
+		uint8_t rows[2] = { 0xF, 0xF };
 		interrupts &_i;
 	};
 

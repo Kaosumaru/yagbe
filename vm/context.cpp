@@ -75,6 +75,9 @@ void context::reset()
 			return;
 		}
 
+		if (a == 0xFF00)
+			return;
+
 		m.raw_at(a) = b;
 	};
 
