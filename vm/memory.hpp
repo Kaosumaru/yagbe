@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <functional>
 #include <array>
+#include "io_registers.hpp"
 
 namespace yagbe
 {
@@ -90,6 +91,8 @@ namespace yagbe
 			uint16_t _a;
 			uint8_t _b;
 		};
+
+		io_registers io_registers{ data };
 
 		memory_address at(uint16_t address)
 		{
