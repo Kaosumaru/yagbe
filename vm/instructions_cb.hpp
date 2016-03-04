@@ -201,7 +201,7 @@ namespace instructions
 			auto &&value = unwrap<Arg>::get(c);
 			auto bchar = (1u << bit);
 
-			c.flags.z = (value & bit) == 0;
+			c.flags.z = (value & bchar) == 0;
 			c.flags.n = 0;
 			c.flags.h = 1;
 			return BIT::cycles();
