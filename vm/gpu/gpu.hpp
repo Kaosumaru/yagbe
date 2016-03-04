@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 #include "gpu_base.hpp"
-#include "tileset.hpp"
+#include "tilemap.hpp"
 #include "vm/utils.hpp"
 
 namespace yagbe
@@ -34,11 +34,11 @@ namespace yagbe
 
 		color render_pixel(int x, int y)
 		{
-			return _tileset.pixel_at_point({ x,y });
+			return _tilemap.pixel_at_point({ x,y });
 		}
 
 
-		tileset _tileset { _m };
+		tilemap _tilemap { _m };
 		std::vector<color> _buffer { screen_size().x * screen_size().y };
 	};
 
