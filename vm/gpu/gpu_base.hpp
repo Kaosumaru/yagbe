@@ -25,6 +25,7 @@ namespace yagbe
 
 		void step(uint32_t delta)
 		{
+			delta /= 4; //convert to m
 			if (delta > 80)
 				throw std::out_of_range("delta is too large");
 

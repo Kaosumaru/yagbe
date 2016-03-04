@@ -71,7 +71,7 @@ void context::reset()
 	{
 		if (a == 0xFF46)
 		{
-			//NYI
+			throw std::runtime_error("NYI");
 			return;
 		}
 

@@ -13,7 +13,7 @@ void interrupts::reset()
 
 void interrupts::process_interrupt(type t)
 {
-	return;
+	//return;
 	auto address = address_of_interrupt(t);
 
 	//1 IF shall be set
