@@ -10,6 +10,7 @@ namespace yagbe
 	{
 	public:
 		constexpr static ipoint tilemap_size() { return { 32, 32 }; }
+		constexpr static ipoint tile_size() { return{ 8, 8 }; }
 
 		tileset(memory &m) : _m(m)
 		{
@@ -27,11 +28,12 @@ namespace yagbe
 		uint8_t tile_at_point(const ipoint& p)
 		{
 			auto off = offset();
-			int x = ((p.x + off.x) / tilemap_size().x) % tilemap_size().x;
-			int y = ((p.y + off.y) / tilemap_size().y) % tilemap_size().y;
+			int x = ((p.x + off.x) / tile_size().x) % tilemap_size().x;
+			int y = ((p.y + off.y) / tile_size().y) % tilemap_size().y;
 
 
 			int offset = x + y * tilemap_size().x;
+			//return (x + y) % 2 ? 1 : 0;
 			return _m.raw_at(current_tileset_address() + offset);
 		}
 
