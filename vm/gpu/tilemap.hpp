@@ -38,7 +38,7 @@ namespace yagbe
 
 		ipoint offset()
 		{
-			return { _m.io_register.scx, _m.io_register.scy };
+			return { _m.io_register.SCX, _m.io_register.SCY };
 		}
 	protected:
 		uint16_t current_tileset_address()
