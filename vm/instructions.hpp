@@ -378,7 +378,7 @@ namespace instructions
 			c.flags.n = 0;
 			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
 
-			overflow_result_type cmask = single_byte ? 0xff00 : 0xffff0000;
+			overflow_result_type cmask = single_byte ? (overflow_result_type)0xff00 : (overflow_result_type)0xffff0000;
 			c.flags.c = (result & cmask) != 0;
 
 			return ADD::cycles();
