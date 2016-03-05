@@ -4,7 +4,14 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+
+#ifdef __EMSCRIPTEN__
+#include "SDL2/SDL.h"
+#else
 #include "SDL.h"
+#endif
+
+
 #include "vm/utils.hpp"
 
 namespace yagbe

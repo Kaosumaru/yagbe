@@ -7,7 +7,9 @@
 #include "vm/context.hpp"
 #include "renderer/sdl2_renderer.hpp"
 
-
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 int main (int argc, char * argv[])
 {
