@@ -31,7 +31,9 @@ namespace yagbe
 			auto y = line();
 
 			auto line_address = _buffer.data() + y * screen_size().x;
+
 			_tilemap.render_scanline(line_address, y, screen_size().x);
+			_spritemap.render_scanline(line_address, y, screen_size().x);
 
 		}
 

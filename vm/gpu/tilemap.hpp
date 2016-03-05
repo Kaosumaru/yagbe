@@ -21,6 +21,9 @@ namespace yagbe
 
 		void render_scanline(yagbe::color* line, int line_index, int width)
 		{
+			if (!_m.io_register.LCDC_background)
+				return;
+
 			for (int i = 0; i < width; i++)
 			{
 				line[i] = pixel_at_point({ i, line_index });
@@ -87,6 +90,7 @@ namespace yagbe
 
 		color color_of_index(uint8_t i)
 		{
+			//TODO use real palette
 			i = i % 4;
 			static color pallete[] = { 
 				{ 0,0,0,255 },
