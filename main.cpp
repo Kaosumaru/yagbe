@@ -20,7 +20,7 @@ void one_iter()
 {
 	//renderer.accept_image(image);
 	frame_drawn = false;
-	while (renderer.step() || frame_drawn)
+	while (renderer.step() && !frame_drawn)
 	{
 		ctx.cpu_step();
 	}
