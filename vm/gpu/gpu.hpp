@@ -5,6 +5,7 @@
 #include <functional>
 #include "gpu_base.hpp"
 #include "tilemap.hpp"
+#include "spritemap.hpp"
 #include "vm/utils.hpp"
 
 namespace yagbe
@@ -28,17 +29,16 @@ namespace yagbe
 		void render_scanline() override
 		{
 			auto y = line();
-			for (int x = 0; x < screen_size().x; x++)
-				_buffer[x + y * screen_size().x] = render_pixel(x, y);
+
+			auto line_address = _buffer.data() + y * screen_size().x;
+			_tilemap.render_scanline(line_address, y, screen_size().x);
+
 		}
 
-		color render_pixel(int x, int y)
-		{
-			return _tilemap.pixel_at_point({ x,y });
-		}
 
 		
-		tilemap _tilemap { _m };
+		tilemap _tilemap     { _m };
+		spritemap _spritemap { _m };
 		std::vector<color> _buffer { (std::size_t) screen_size().x * screen_size().y };
 	};
 

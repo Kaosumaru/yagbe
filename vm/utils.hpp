@@ -34,7 +34,11 @@ namespace yagbe
 		uint8_t a;
 	};
 
-
+	template<typename T>
+	constexpr bool is_bit_set(T&& t, int bit)
+	{
+		return (t >> bit) & 1;
+	}
 
 	struct bit
 	{
