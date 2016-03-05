@@ -36,8 +36,8 @@ namespace yagbe
 
 		uint8_t &LCDC{ _a[0xFF40] }; //X R/W LCD Control
 		bit LCDC_background { LCDC, 0 };
-		bit LCDC_sprites { LCDC, 1 };
-		bit LCDC_sprites_size { LCDC, 2 };
+		bit LCDC_sprites { LCDC, 1 }; //connected
+		bit LCDC_sprites_size { LCDC, 2 }; //connected
 		bit LCDC_background_tile_map { LCDC, 3 };
 		bit LCDC_background_tile_set { LCDC, 4 };
 		bit LCDC_window{ LCDC, 5 };
