@@ -18,7 +18,6 @@ bool frame_drawn = false;
 
 void one_iter()
 {
-	//renderer.accept_image(image);
 	frame_drawn = false;
 	while (renderer.step() && !frame_drawn)
 	{
@@ -26,10 +25,10 @@ void one_iter()
 	}
 }
 
-int main (int argc, char * argv[])
+int main(int argc, char * argv[])
 {
-	
-	std::map<SDL_Keycode, key_handler::key> keys = { 
+
+	std::map<SDL_Keycode, key_handler::key> keys = {
 		{ SDLK_LEFT, key_handler::key::Left },
 		{ SDLK_RIGHT, key_handler::key::Right },
 		{ SDLK_UP, key_handler::key::Up },
@@ -48,7 +47,11 @@ int main (int argc, char * argv[])
 		return -1;
 
 
-	ctx.gpu.onFrameReady = [&](auto &frame) { renderer.accept_image(frame); frame_drawn = true; };
+	ctx.gpu.onFrameReady = [&](auto &frame)
+	{
+		renderer.accept_image(frame);
+		frame_drawn = true;
+	};
 
 	renderer.onKeyChanged = [&](SDL_Keycode c, bool v)
 	{
@@ -59,12 +62,10 @@ int main (int argc, char * argv[])
 
 
 #ifdef __EMSCRIPTEN__
-	// void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop);
 	emscripten_set_main_loop(one_iter, 60, 1);
 #else
-	while (renderer.running()) {
+	while (renderer.running())
 		one_iter();
-	}
 #endif
 
 	return 0;
