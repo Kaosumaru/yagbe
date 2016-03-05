@@ -23,6 +23,9 @@ void context::reset()
 
 	auto wb = [&](uint16_t a, uint8_t b) { this->memory.write_byte_at(a, b); };
 
+	//for (int i = 0; i <= 0xFFFF; i++)
+	//	wb(i, 0);
+
 	wb(0xFF05, 0);
 	wb(0xFF06, 0);
 	wb(0xFF07, 0);
@@ -71,12 +74,14 @@ void context::reset()
 	{
 		if (a == 0xFF46)
 		{
-			throw std::runtime_error("NYI");
+			//throw std::runtime_error("NYI");
+			auto *src = m.raw_pointer_at((int)b*0x100);
+			auto *dst = m.raw_pointer_at(0xFE00);
+			std::copy(src, src + 4 * 40, dst);
+
 			return;
 		}
 
-		if (a == 0xFF00)
-			return;
 
 		m.raw_at(a) = b;
 	};
