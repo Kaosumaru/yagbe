@@ -39,7 +39,7 @@ namespace yagbe
 	struct bit
 	{
 		bit(uint8_t &p, uint8_t N) : _p(p), n(N) {}
-
+		bit(uint8_t &p, int N) : _p(p), n(N) {}
 
 		bit& operator =(bool b)
 		{

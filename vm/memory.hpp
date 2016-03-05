@@ -105,6 +105,11 @@ namespace yagbe
 			return data[address];
 		}
 
+		uint8_t* raw_pointer_at(uint16_t address)
+		{
+			return data + address;
+		}
+
 		uint8_t read_at(uint16_t address)
 		{
 			auto& inter = interceptor_at(address).onRead;

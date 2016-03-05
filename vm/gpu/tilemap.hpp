@@ -41,41 +41,52 @@ namespace yagbe
 			return { _m.io_register.SCX, _m.io_register.SCY };
 		}
 	protected:
+		struct tile_info
+		{
+			memory::ByteWord rows[8];
+
+			int palette_index_at(int x, int y)
+			{
+				auto row = rows[y];
+
+				x = 7 - x;
+				auto b1 = bit{ row.byte[0], x } ? 1 : 0;
+				auto b2 = bit{ row.byte[1], x } ? 1 : 0;
+
+				return b1 << 1 | b2;
+			}
+		};
+
 		uint16_t current_tilemap_address()
 		{
 			return _m.io_register.LCDC_background_tile_map ? 0x9C00 : 0x9800; 
 		}
 
-		uint8_t* tile_at_index(uint8_t i)
+		tile_info *tile_at_index(uint8_t i)
 		{
-			const uint16_t tile_size = 2 * 8;
 			int tileset_index = _m.io_register.LCDC_background_tile_set ? 1 : 0;
 
-			uint16_t tile_address;
-			if (tileset_index == 0)
-				tile_address = 0x9000 + (int16_t)((int8_t)i)*tile_size;
-			else
-				tile_address = 0x8000 + i*tile_size;
+			tile_info *info;
 
-			auto &sprite_bytes = _m.raw_at(tile_address);
-			return &sprite_bytes;
+			if (tileset_index == 0)
+			{
+				info = (tile_info*)_m.raw_pointer_at(0x9000);
+				info += (int8_t)i; //this tileset is using signed coords
+			}
+			else
+			{
+				info = (tile_info*)_m.raw_pointer_at(0x8000);
+				info += i; //this tileset is using unsigned coords
+			}
+
+
+			return info;
 		}
 
 		color color_of_tile_index_pixel(uint8_t i, int x, int y)
 		{
-			auto data = tile_at_index(i);
-			data += y * 2;
-
-			x = 7 - x;
-			auto d1 = *data;
-			auto d2 = *(data+1);
-
-			auto b1 = (d1 >> x) & 1;
-			auto b2 = (d2 >> x) & 1;
-
-			//TODO check hi/low
-			auto c = b1 << 1 | b2;
-
+			auto info = tile_at_index(i);
+			auto c = info->palette_index_at(x, y);
 			return color_of_index(c);
 
 		}
