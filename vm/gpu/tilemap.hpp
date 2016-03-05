@@ -26,7 +26,7 @@ namespace yagbe
 
 
 			int offset = x + y * tilemap_size().x;
-			uint8_t tile_index = _m.raw_at(current_tileset_address() + offset);
+			uint8_t tile_index = _m.raw_at(current_tilemap_address() + offset);
 
 			//shows tiles as blocks
 			//uint8_t c = 10 * tile_index;
@@ -41,15 +41,15 @@ namespace yagbe
 			return { _m.io_register.SCX, _m.io_register.SCY };
 		}
 	protected:
-		uint16_t current_tileset_address()
+		uint16_t current_tilemap_address()
 		{
-			return true ? 0x9800 : 0x9C00; //TODO
+			return _m.io_register.LCDC_background_tile_map ? 0x9C00 : 0x9800; 
 		}
 
 		uint8_t* tile_at_index(uint8_t i)
 		{
 			const uint16_t tile_size = 2 * 8;
-			int tileset_index = 1; //TODO
+			int tileset_index = _m.io_register.LCDC_background_tile_set ? 1 : 0;
 
 			uint16_t tile_address;
 			if (tileset_index == 0)
