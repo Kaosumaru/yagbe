@@ -137,13 +137,14 @@ namespace yagbe
 
 		void map_interceptors(uint16_t start, uint16_t end, const interceptor::ReadCallback& rc, const interceptor::WriteCallback& wc)
 		{
-			end++;
+			int end_range = end;
+			end_range++;
 			if (start % interceptor_range != 0)
 				throw std::out_of_range("Wrong start");
-			if (end % interceptor_range != 0)
+			if (end_range % interceptor_range != 0)
 				throw std::out_of_range("Wrong end");
 
-			for (uint16_t i = start; i < end; i += interceptor_range)
+			for (int i = start; i < end_range; i += interceptor_range)
 			{
 				auto& inter = interceptor_at(i);
 				inter.onWrite = wc;
