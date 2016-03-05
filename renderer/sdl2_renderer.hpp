@@ -72,7 +72,8 @@ namespace yagbe
 			accept_raw_image((uint8_t*)image.data());
 		}
 
-		
+		bool running() { return _running; }
+
 		std::function<void(SDL_Keycode, bool)> onKeyChanged;
 	protected:
 		void accept_raw_image(const uint8_t *input)

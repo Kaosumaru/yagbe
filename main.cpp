@@ -10,10 +10,25 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
+using namespace yagbe;
+
+context ctx;
+sdl2_renderer renderer(gpu::screen_size());
+bool frame_drawn = false;
+
+void one_iter()
+{
+	//renderer.accept_image(image);
+	frame_drawn = false;
+	while (renderer.step() || frame_drawn)
+	{
+		ctx.cpu_step();
+	}
+}
 
 int main (int argc, char * argv[])
 {
-	using namespace yagbe;
+	
 	std::map<SDL_Keycode, key_handler::key> keys = { 
 		{ SDLK_LEFT, key_handler::key::Left },
 		{ SDLK_RIGHT, key_handler::key::Right },
@@ -26,17 +41,14 @@ int main (int argc, char * argv[])
 		{ SDLK_x, key_handler::key::B },
 	};
 
-
 	std::string path = YAGBE_ROMS;
 	path += "opus5.gb";
 
-	context ctx;
 	if (!ctx.load_rom(path))
 		return -1;
 
-	sdl2_renderer renderer(gpu::screen_size());
 
-	ctx.gpu.onFrameReady = [&](auto &frame) { renderer.accept_image(frame); };
+	ctx.gpu.onFrameReady = [&](auto &frame) { renderer.accept_image(frame); frame_drawn = true; };
 
 	renderer.onKeyChanged = [&](SDL_Keycode c, bool v)
 	{
@@ -45,12 +57,15 @@ int main (int argc, char * argv[])
 			ctx.key_handler.set_key(it->second, v);
 	};
 
-	//renderer.accept_image(image);
-	while (renderer.step())
-	{
-		ctx.cpu_step();
-	}
 
+#ifdef __EMSCRIPTEN__
+	// void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop);
+	emscripten_set_main_loop(one_iter, 60, 1);
+#else
+	while (renderer.running()) {
+		one_iter();
+	}
+#endif
 
 	return 0;
 }
