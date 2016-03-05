@@ -12,12 +12,12 @@ namespace yagbe
 	class sdl2_renderer
 	{
 	public:
-		sdl2_renderer(const ipoint &size) : _w(size.x), _h(size.y)
+		sdl2_renderer(const ipoint &size, int scale = 4) : _w(size.x), _h(size.y)
 		{
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
 				throw std::runtime_error("SDL_Init");
 
-			_window.reset(SDL_CreateWindow("YAGBE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _w, _h, SDL_WINDOW_SHOWN));
+			_window.reset(SDL_CreateWindow("YAGBE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _w * scale, _h * scale, SDL_WINDOW_SHOWN));
 			if (!_window) throw std::runtime_error("SDL_CreateWindow");
 
 			_renderer.reset(SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
