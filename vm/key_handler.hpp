@@ -28,12 +28,11 @@ namespace yagbe
 			P1 = 0;
 		}
 
-		void step()
+		void on_write(uint8_t b)
 		{
-			//int offset = P1 & 0x20 ? 4 : P1 & 0x10 ? 0 : -1;
-			auto c = P1 & 0x30;
+			auto c = b & 0x30;
 
-			if (c & 0x10)
+			if (c & 0x20)
 				_selected_column = 1;
 			else if (c & 0x10)
 				_selected_column = 0;

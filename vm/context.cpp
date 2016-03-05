@@ -70,7 +70,7 @@ void context::reset()
 	memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
 
 
-	auto zero_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
+	auto zero_write = [this](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		if (a == 0xFF46)
 		{
@@ -79,6 +79,12 @@ void context::reset()
 			auto *dst = m.raw_pointer_at(0xFE00);
 			std::copy(src, src + 4 * 40, dst);
 
+			return;
+		}
+
+		if (a == 0xFF00)
+		{
+			this->key_handler.on_write(b);
 			return;
 		}
 
@@ -124,7 +130,7 @@ void context::cpu_step()
 	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
 	gpu.step(cycles);
-	key_handler.step();
+//	key_handler.step();
 }
 
 const instructions_array& context::instructions()
