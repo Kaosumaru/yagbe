@@ -17,9 +17,9 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto &&value = unwrap<Arg>::get(c);
-			uint8_t carry = (value & 0x80) >> 7;
+			uint8_t carry = (value & 0x80) ? 1 : 0;
 
-			c.flags.c = (value & 0x80) != 0;
+			c.flags.c = carry ? true : false;
 
 			value <<= 1;
 			value += carry;
@@ -93,12 +93,13 @@ namespace instructions
 
 		static int execute(context &c)
 		{
+			auto old_carry = c.flags.c ? 0x80 : 0;
 			auto &&value = unwrap<Arg>::get(c);
-			value >>= 1;
-			if (c.flags.c)
-				value |= 0x80;
-
 			c.flags.c = (value & 0x01) != 0;
+
+			value >>= 1;
+			value |= old_carry;
+
 			c.flags.z = value == 0;
 			c.flags.n = 0;
 			c.flags.h = 0;

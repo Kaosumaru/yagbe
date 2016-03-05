@@ -332,15 +332,11 @@ namespace instructions
 			bool byte = unwrap<Arg>::size_of == 1;
 			auto &&value = unwrap<Arg>::get(c);
 
-			if (byte)
-			{
-				c.flags.h = !(value & 0x0f); //TODO is this correct?
-			}
-
 			value-=1;
 
 			if (byte)
 			{
+				c.flags.h = (value & 0x0f) == 0x0f; //TODO is this correct?
 				c.flags.z = (value == 0);
 				c.flags.n = 1;
 			}
