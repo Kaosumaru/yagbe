@@ -375,20 +375,35 @@ namespace instructions
 			using result_type = std::conditional_t<single_byte, uint8_t, uint16_t>;
 
 
-			auto arg1 = unwrap<Arg1>::get(c);
-			auto arg2 = unwrap<Arg2>::get(c);
-			overflow_result_type result = arg1 + arg2;
+			auto &&arg1 = unwrap<Arg1>::get(c);
+			auto &&arg2 = unwrap<Arg2>::get(c);
+			
 
-
-			unwrap<Arg1>::get(c) = (result_type)(result);
+			overflow_result_type result = (overflow_result_type)arg1 + (overflow_result_type)arg2;
+			
 
 			if (single_byte)
 				c.flags.z = (result == 0);
 			c.flags.n = 0;
-			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
 
-			overflow_result_type cmask = single_byte ? (overflow_result_type)0xff00 : (overflow_result_type)0xffff0000;
-			c.flags.c = (result & cmask) != 0;
+			if (single_byte)
+				c.flags.h = ((result & 0xf) < (arg1 & 0xf));
+			else
+				c.flags.h = (arg1 & 0xFFF) > (result & 0xFFF);
+
+			
+			arg1 = (result_type)(result);
+
+			if (single_byte)
+			{
+				c.flags.c = (result > 0xFF);
+			}
+			else
+			{
+				overflow_result_type cmask = (overflow_result_type)0xffff0000;
+				c.flags.c = (result & cmask) != 0;
+			}
+
 
 			return ADD::cycles();
 		}
