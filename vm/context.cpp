@@ -72,6 +72,7 @@ void context::reset()
 
 	auto zero_write = [this](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
+		//DMA
 		if (a == 0xFF46)
 		{
 			//throw std::runtime_error("NYI");
@@ -82,17 +83,21 @@ void context::reset()
 			return;
 		}
 
+		//P1
 		if (a == 0xFF00)
 		{
 			this->key_handler.on_write(b);
 			return;
 		}
 
+		//LY is read-only
+		if (a == 0xFF44)
+			return;
 
 		m.raw_at(a) = b;
 	};
 
-	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write);
+	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write); //resetting zero RAM (IO) interceptors
 }
 
 bool context::load_rom(const std::string& path)

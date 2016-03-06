@@ -70,3 +70,14 @@ int main(int argc, char * argv[])
 
 	return 0;
 }
+
+
+/*
+Left to do:
+- more interrupts
+- window
+- more io_registers
+
+
+- more unit tests on GPU & CPU
+*/

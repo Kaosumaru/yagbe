@@ -158,7 +158,7 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto &&value = unwrap<Arg>::get(c);
-			value = ((value & 0xf) << 4) | ((value & 0xf0) >> 4);
+			value = ((value & 0b00001111) << 4) | ((value & 0b11110000) >> 4);
 
 			c.flags.c = 0;
 			c.flags.z = value == 0;

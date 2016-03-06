@@ -5,6 +5,7 @@
 #include "vm/utils.hpp"
 #include <bitset>
 #include "tile_info.hpp"
+#include "palette.hpp"
 
 namespace yagbe
 {
@@ -41,7 +42,7 @@ namespace yagbe
 			int offset = x + y * tilemap_size().x;
 			uint8_t tile_index = _m.raw_at(current_tilemap_address() + offset);
 
-			//shows tiles as blocks
+			shows tiles as blocks
 			//uint8_t c = 10 * tile_index;
 			//return{ c,c,c,255 };
 
@@ -90,15 +91,7 @@ namespace yagbe
 
 		color color_of_index(uint8_t i)
 		{
-			//TODO use real palette
-			i = i % 4;
-			static color pallete[] = { 
-				{ 0,0,0,255 },
-				{ 96,96,96,255 },
-				{ 192,192,192,255 },
-				{ 255,255,255,255 },
-			};
-			return pallete[i];
+			return palette_entry{ _m.io_register.BGP }.color(i);
 		}
 
 		memory &_m;

@@ -6,6 +6,7 @@
 #include <bitset>
 #include <algorithm>
 #include "tile_info.hpp"
+#include "palette.hpp"
 
 namespace yagbe
 {
@@ -131,15 +132,8 @@ namespace yagbe
 
 		color color_of_index(sprite_info& sprite, uint8_t i)
 		{
-			//TODO use real palette
-			i = i % 4;
-			static color pallete[] = {
-				{ 0,0,0,255 },
-				{ 96,96,96,255 },
-				{ 192,192,192,255 },
-				{ 255,255,255,255 },
-			};
-			return pallete[i];
+			auto raw_palette = sprite.palette_index() ? _m.io_register.OBP0 : _m.io_register.OBP1;
+			return palette_entry{ raw_palette }.color(i);
 		}
 
 
