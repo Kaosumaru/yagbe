@@ -299,7 +299,11 @@ namespace instructions
 		constexpr static int size_of = 1;
 		constexpr static int is_pointer = 1;
 
-		static auto get(context &c) { return c.memory.at(0xFF00 + c.read_byte()); }
+		static auto get(context &c) 
+		{ 
+			auto address = 0xFF00 + c.read_byte();
+			return c.memory.at(address);
+		}
 	};
 
 	template<>

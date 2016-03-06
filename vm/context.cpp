@@ -18,10 +18,8 @@ void context::reset()
 	registers.sp = 0xfffe;
 	registers.pc = 0x100;
 
-	interrupt.reset();
-	gpu.reset();
-
-	auto wb = [&](uint16_t a, uint8_t b) { this->memory.write_byte_at(a, b); };
+	auto wb = [&](uint16_t a, uint8_t b) { this->memory.raw_at(a) = b; };
+	
 
 	//for (int i = 0; i <= 0xFFFF; i++)
 	//	wb(i, 0);
@@ -58,6 +56,11 @@ void context::reset()
 	wb(0xFF4B, 0x00);
 	wb(0xFFFF, 0x00);
 
+
+	interrupt.reset();
+	gpu.reset();
+
+
 	cycles_elapsed = 0;
 	stopped = false;
 
@@ -70,7 +73,13 @@ void context::reset()
 	memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
 
 
-	auto zero_write = [this](yagbe::memory &m, uint16_t a, uint8_t b)
+	std::array<uint8_t, 256> io_write_masks;
+	std::fill(io_write_masks.begin(), io_write_masks.end(), 0xFF);
+
+	io_write_masks[0x44] = 0; //FF44 LY is read-only
+	io_write_masks[0x41] = 0b1111000; //FF41 STAT has writeble 6-3 bits
+
+	auto zero_write = [this, io_write_masks](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		//DMA
 		if (a == 0xFF46)
@@ -90,11 +99,29 @@ void context::reset()
 			return;
 		}
 
-		//LY is read-only
-		if (a == 0xFF44)
+		if (a >= 0xFF10 && a <= 0xFF10)
+		{
+			//sounds, NYI
+			m.raw_at(a) = b;
 			return;
+		}
 
-		m.raw_at(a) = b;
+		if (a > 0xFF4B && a != 0xFFFF)
+		{
+			//stack memory
+			m.raw_at(a) = b;
+			return;
+		}
+
+		//TODO check this
+		auto &destination = m.raw_at(a);
+		auto bit_mask = io_write_masks[a & 0xFF];
+
+		auto ones_to_write = b & bit_mask;
+		destination |= ones_to_write;
+
+		auto zeroes_to_write = ~((~b) & bit_mask);
+		destination &= zeroes_to_write;
 	};
 
 	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write); //resetting zero RAM (IO) interceptors
@@ -131,7 +158,15 @@ void context::cpu_step()
 
 #ifdef TEST_DEBUG
 	auto pc = registers.pc;
+
+	if (pc == 0x29b)
+	{
+		int a = 5;
+		a++;
+	}
 #endif
+
+
 
 	auto opcode = read_byte();
 	auto instruction = instructions()[opcode];
@@ -139,6 +174,16 @@ void context::cpu_step()
 	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
 	gpu.step(cycles);
+
+#ifdef TEST_DEBUG
+	auto new_pc = registers.pc;
+	if (new_pc == 0x39 || new_pc == 0x38 || new_pc > 0xFF00)
+	{
+		int a = 5;
+		a++;
+	}
+#endif
+
 //	key_handler.step();
 }
 

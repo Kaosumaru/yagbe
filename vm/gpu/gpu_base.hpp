@@ -38,21 +38,50 @@ namespace yagbe
 			_clock -= current_mode_duration;
 
 			auto call_ptr = mode_end_functions()[(int)_mode];
-			_mode = (this->*call_ptr)();
+			mode new_mode = (this->*call_ptr)();
+
+			if (_mode != new_mode)
+			{
+				_mode = new_mode;
+				on_mode_changed();
+			}
+			
+
 		}
 
 
 		void reset()
 		{
 			_line = 0;
-			_mode = mode::scanline_OAM;
+			_mode = mode::horizontal_blank;
 			_clock = 0;
+			on_mode_changed();
 		}
 	protected:
+		void on_mode_changed()
+		{
+			uint8_t mode = (uint8_t)_mode;
+			_m.io_register.STAT_mode_0bit = (mode & 0b01) != 0;
+			_m.io_register.STAT_mode_1bit = (mode & 0b10) != 0;
+
+			if (_mode == mode::horizontal_blank && _m.io_register.STAT_interrupt_mode00)
+				_i.lcd_status();
+			else if (_mode == mode::vertical_blank && _m.io_register.STAT_interrupt_mode01)
+				_i.lcd_status();
+			else if (_mode == mode::scanline_OAM && _m.io_register.STAT_interrupt_mode10)
+				_i.lcd_status();
+		}
+
 		void set_line(int l)
 		{
 			_line = l;
 			_m.io_register.LY = l;
+
+			_m.io_register.STAT_ly_equals_lyc = l == _m.io_register.LYC;
+
+			if (_m.io_register.STAT_interrupt_ly_equals_lyc)
+				_i.lcd_status();
+				
 		}
 
 		virtual void push_screen()
@@ -116,7 +145,7 @@ namespace yagbe
 
 
 		int _line = 0;
-		mode _mode = mode::scanline_OAM;
+		mode _mode = mode::horizontal_blank;
 		uint32_t _clock = 0;
 	protected:
 		interrupts &_i;

@@ -46,6 +46,14 @@ namespace yagbe
 
 
 		uint8_t &STAT{ _a[0xFF41] }; //X R/W LCDC Status
+		bit STAT_mode_0bit{ STAT, 0 };
+		bit STAT_mode_1bit{ STAT, 1 };
+		bit STAT_ly_equals_lyc{ STAT, 2 };
+		bit STAT_interrupt_mode00{ STAT, 3 };
+		bit STAT_interrupt_mode01{ STAT, 4 };
+		bit STAT_interrupt_mode10{ STAT, 5 };
+		bit STAT_interrupt_ly_equals_lyc{ STAT, 6 };
+
 
 		uint8_t &SCY{ _a[0xFF42] }; //R/W scroll y
 		uint8_t &SCX{ _a[0xFF43] };	//R/W scroll x
