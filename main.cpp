@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
 	};
 
 	std::string path = YAGBE_ROMS;
-	path += "ttt.gb";
+	path += "individual/01-special.gb";
 
 	if (!ctx.load_rom(path))
 		return -1;
