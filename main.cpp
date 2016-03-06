@@ -41,7 +41,26 @@ int main(int argc, char * argv[])
 	};
 
 	std::string path = YAGBE_ROMS;
-	path += "individual/01-special.gb";
+
+	//path += "individual/01-special.gb"; //hangs?
+	//path += "individual/02-interrupts.gb"; //failing EI
+	//path += "individual/03-op sp,hl.gb"; //failing 39 e8 e8 f8 f8
+
+	//path += "individual/04-op r,imm.gb"; //failing C6 CE DE
+	//path += "individual/05-op rp.gb"; //failing 09 19 29
+	//path += "individual/06-ld r,r.gb"; //PASSED
+
+	path += "individual/07-jr,jp,call,ret,rst.gb"; //HANGS? important
+
+	//path += "individual/08-misc instrs.gb"; //failing
+
+	//path += "individual/09-op r,r.gb"; //failing
+
+	//path += "individual/10-bit ops.gb"; //PASSED
+	
+	//path += "individual/11-op a,(hl).gb"; //FAILED
+
+
 
 	if (!ctx.load_rom(path))
 		return -1;
