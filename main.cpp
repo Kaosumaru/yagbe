@@ -50,9 +50,9 @@ int main(int argc, char * argv[])
 	//path += "individual/05-op rp.gb"; //PASSED
 	//path += "individual/06-ld r,r.gb"; //PASSED
 
-	//path += "individual/07-jr,jp,call,ret,rst.gb"; //failing, most important
+	//path += "individual/07-jr,jp,call,ret,rst.gb"; //PASSED
 
-	//path += "individual/08-misc instrs.gb"; //push & pop seem to be failing
+	//path += "individual/08-misc instrs.gb"; //PASSED
 
 	//path += "individual/09-op r,r.gb"; //PASSED
 
@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
 	
 	//path += "individual/11-op a,(hl).gb"; //PASSED
 
-	//path += "ttt.gb";
+	path += "ttt.gb";
 
 	if (!ctx.load_rom(path))
 		return -1;

@@ -65,16 +65,16 @@ namespace yagbe
 		{
 			memory::ByteWord w = { word };
 
-			memory.write_byte_at(--registers.sp, w.byte[0]);
 			memory.write_byte_at(--registers.sp, w.byte[1]);
+			memory.write_byte_at(--registers.sp, w.byte[0]);
 		}
 
 		uint16_t pop()
 		{
 			memory::ByteWord w;
 
-			w.byte[1] = memory.read_at(registers.sp++);
 			w.byte[0] = memory.read_at(registers.sp++);
+			w.byte[1] = memory.read_at(registers.sp++);
 
 			return w.word;
 		}
