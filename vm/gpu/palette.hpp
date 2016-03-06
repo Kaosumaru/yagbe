@@ -17,7 +17,7 @@ namespace yagbe
 
 		uint8_t color_index(int i) const
 		{
-			return (_entry >> i) & 0b11;
+			return (_entry >> i*2) & 0b11;
 		}
 
 		yagbe::color color(int i) const

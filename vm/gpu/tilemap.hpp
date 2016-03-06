@@ -42,7 +42,7 @@ namespace yagbe
 			int offset = x + y * tilemap_size().x;
 			uint8_t tile_index = _m.raw_at(current_tilemap_address() + offset);
 
-			shows tiles as blocks
+			//shows tiles as blocks
 			//uint8_t c = 10 * tile_index;
 			//return{ c,c,c,255 };
 
