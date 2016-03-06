@@ -121,31 +121,30 @@ namespace instructions
 	//DAA
 	struct DAA : default_instruction<1, 4>
 	{
-
-
 		static int execute(context &c)
 		{
-			uint16_t s = c.registers.a;
-
-			//TODO check this
-
-			if (c.flags.n) {
-				if (c.flags.h) s = (s - 0x06) & 0xFF;
-				if (c.flags.c) s -= 0x60;
+			if (!c.flags.n) {
+				if (c.flags.c || c.registers.a > 0x99) {
+					c.registers.a = (c.registers.a + 0x60);
+					c.flags.c = true;
+				}
+				if (c.flags.h || (c.registers.a & 0xF) > 0x9) {
+					c.registers.a = (c.registers.a + 0x06);
+					c.flags.h = false;
+				}
 			}
-			else {
-				if (c.flags.h || (s & 0xF) > 9) s += 0x06;
-				if (c.flags.c || s > 0x9F) s += 0x60;
+			else if (c.flags.c && c.flags.h) {
+				c.registers.a = (c.registers.a + 0x9A);
+				c.flags.h = false;
 			}
-
-			c.registers.a = (uint8_t)s;
-
-			c.flags.z = c.registers.a == 0;
-			c.flags.n = 0;
-			c.flags.h = 0;
-
-			if (s > 0x100)
-				c.flags.c = 1;
+			else if (c.flags.c) {
+				c.registers.a = (c.registers.a + 0xA0);
+			}
+			else if (c.flags.h) {
+				c.registers.a = (c.registers.a + 0xFA);
+				c.flags.h = false;
+			}
+			c.flags.z = (c.registers.a == 0);
 
 			return DAA::cycles();
 		}
@@ -266,6 +265,29 @@ namespace instructions
 			return LD::cycles();
 		}
 	};
+
+	//specialized LD<d16_pointer, SP> LD HL,SP+r8
+	template<>
+	struct LD<HL, SP_p_r8> : default_instruction<2, 12>
+	{
+		static int execute(context &c)
+		{
+			int16_t temp_var = (int8_t)c.read_byte();
+
+			c.registers.hl = (c.registers.sp + temp_var) & 0xFFFF;
+
+			temp_var = c.registers.sp ^ temp_var ^ c.registers.hl;
+			c.flags.c = ((temp_var & 0x100) == 0x100);
+			c.flags.h = ((temp_var & 0x10) == 0x10);
+			c.flags.z = false;
+			c.flags.n = false;
+
+			//auto address = c.read_word();
+			//c.memory.write_word_at(address, c.registers.sp);
+			return LD::cycles();
+		}
+	};
+
 
 
 	//PUSH
@@ -431,21 +453,18 @@ namespace instructions
 			using result_type = std::conditional_t<single_byte, uint8_t, uint16_t>;
 
 
-			auto arg1 = unwrap<Arg1>::get(c);
-			auto arg2 = unwrap<Arg2>::get(c);
-			overflow_result_type result = arg1 + arg2;
+			auto &&arg1 = unwrap<Arg1>::get(c);
+			auto &&arg2 = unwrap<Arg2>::get(c);
 
+			overflow_result_type result = (overflow_result_type)arg1 + (overflow_result_type)arg2;
 
-			unwrap<Arg1>::get(c) = (result_type)(result);
+			auto temp_value2 = arg1 ^ arg2 ^ result;
+			arg1 = result;
 
-			if (single_byte)
-				c.flags.z = (result == 0);
-			//c.flags.n = 0;
-			c.flags.h = ((result)+(arg2 & 0x0f)) > 0x0f;
-
-			overflow_result_type cmask = single_byte ? 0xff00 : 0xffff0000;
-			c.flags.c = (result & cmask) != 0;
-
+			c.flags.c = ((temp_value2 & 0x100) == 0x100);
+			c.flags.h = ((temp_value2 & 0x10) == 0x10);
+			c.flags.z = 0;
+			c.flags.n = 0;
 			return ADD::cycles();
 		}
 	};
@@ -460,16 +479,15 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto value = unwrap<Arg>::get(c);
-			value += c.flags.c ? 1 : 0;
+			int32_t result = (int32_t)c.registers.a + (int32_t)value + (c.flags.c ? 1 : 0);
 
-			uint16_t result = (uint16_t)c.registers.a + (uint16_t)value;
 
-			c.flags.z = value == c.registers.a;
-			c.flags.n = false;
-			c.flags.h = ((value & 0x0f) + (c.registers.a & 0x0f)) > 0x0f;
-			c.flags.c = (result & 0xff00) != 0;
-
+			c.flags.h = ((int32_t)(c.registers.a & 0xF) + (int32_t)(value & 0xF) + (c.flags.c ? 1 : 0)) > 0xF;
+			c.flags.c = (result > 0xFF);
 			c.registers.a = (uint8_t)result;
+			c.flags.z = 0 == c.registers.a;
+			c.flags.n = false;
+
 
 			return ADC::cycles();
 		}
@@ -484,16 +502,14 @@ namespace instructions
 		static int execute(context &c)
 		{
 			auto value = unwrap<Arg>::get(c);
-			value += c.flags.c ? 1 : 0;
+			int32_t result = (int32_t)c.registers.a - (int32_t)value - (c.flags.c ? 1 : 0);
 
-			
-			c.flags.z = value == c.registers.a;
+			c.flags.h = ((int32_t)(c.registers.a & 0xF) - (int32_t)(value & 0xF) - (c.flags.c ? 1 : 0) < 0);
+			c.flags.c = result < 0;
+			c.registers.a = (uint8_t)result;
+			c.flags.z = 0 == c.registers.a;
 			c.flags.n = true;
-			c.flags.h = (value & 0x0f) > (c.registers.a & 0x0f);
-			c.flags.c = value > c.registers.a;
-
-			c.registers.a -= value;
-
+			
 			return SBC::cycles();
 		}
 	};

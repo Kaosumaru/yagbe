@@ -333,19 +333,6 @@ namespace instructions
 		constexpr static int size_of = 2;
 		constexpr static int is_pointer = 0;
 
-		static auto get(context &c) 
-		{
-			//this actually adds stuff, so it's expected to set h c
-			auto operand = c.read_byte();
-			uint32_t result = (uint32_t)c.registers.sp + (int8_t)operand;
-
-			c.flags.z = false;
-			c.flags.n = false;
-			c.flags.h = ((c.registers.sp & 0x0f) + (operand & 0x0f)) > 0x0f;
-			c.flags.c = (result & 0xffff0000) != 0;
-			
-			return (uint16_t)result;
-		}
 	};
 
 	//conditions

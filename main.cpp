@@ -42,23 +42,23 @@ int main(int argc, char * argv[])
 
 	std::string path = YAGBE_ROMS;
 
-	//path += "individual/01-special.gb"; //hangs?
+	//path += "individual/01-special.gb"; //PASSED
 	//path += "individual/02-interrupts.gb"; //failing EI, due to not implemented timers
-	//path += "individual/03-op sp,hl.gb"; //failing 39 e8 e8 f8 f8
+	//path += "individual/03-op sp,hl.gb"; //PASSED
 
-	//path += "individual/04-op r,imm.gb"; //failing C6 CE DE
+	//path += "individual/04-op r,imm.gb"; //PASSED
 	//path += "individual/05-op rp.gb"; //PASSED
 	//path += "individual/06-ld r,r.gb"; //PASSED
 
-	//path += "individual/07-jr,jp,call,ret,rst.gb"; //HANGS? important
+	//path += "individual/07-jr,jp,call,ret,rst.gb"; //failing, most important
 
-	//path += "individual/08-misc instrs.gb"; //failing
+	//path += "individual/08-misc instrs.gb"; //push & pop seem to be failing
 
-	//path += "individual/09-op r,r.gb"; //failing
+	//path += "individual/09-op r,r.gb"; //PASSED
 
 	//path += "individual/10-bit ops.gb"; //PASSED
 	
-	//path += "individual/11-op a,(hl).gb"; //FAILED
+	//path += "individual/11-op a,(hl).gb"; //PASSED
 
 	//path += "ttt.gb";
 
