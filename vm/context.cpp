@@ -65,7 +65,9 @@ void context::reset()
 	cycles_elapsed = 0;
 	stopped = false;
 
-	auto null_write = [](yagbe::memory &m, uint16_t, uint8_t) {};
+	auto null_write = [](yagbe::memory &m, uint16_t a, uint8_t b) 
+	{
+	};
 	memory.map_interceptors(0x0000, 0x7FFF, nullptr, null_write); //resetting ROM intercepts
 
 	auto shadow_read = [](yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };

@@ -49,12 +49,15 @@ namespace yagbe
 
 			bit b(rows[r], i);
 			b = !v; //on bit = released, off - pressed
+
+			P1 = rows[_selected_column];
+
 			_i.joypad();
 		}
 
 	protected:
 		int _selected_column = 0;
-		uint8_t rows[2] = { 0xF, 0xF };
+		uint8_t rows[2] = { 0xFF, 0xFF };
 		interrupts &_i;
 	};
 
