@@ -80,7 +80,8 @@ void context::reset()
 	std::fill(io_write_masks.begin(), io_write_masks.end(), 0xFF);
 
 	io_write_masks[0x44] = 0; //FF44 LY is read-only
-	io_write_masks[0x41] = 0b1111000; //FF41 STAT has writeble 6-3 bits
+	io_write_masks[0x41] = 0b1111000; //FF41 STAT has writeable 6-3 bits
+	io_write_masks[0x00] = 0b0110000; //FF41 STAT has 2 writeable bits
 
 	auto zero_write = [this, io_write_masks](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
@@ -92,13 +93,6 @@ void context::reset()
 			auto *dst = m.raw_pointer_at(0xFE00);
 			std::copy(src, src + 4 * 40, dst);
 
-			return;
-		}
-
-		//P1
-		if (a == 0xFF00)
-		{
-			this->key_handler.on_write(b);
 			return;
 		}
 
@@ -171,7 +165,7 @@ void context::cpu_step()
 	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
 	gpu.step(cycles);
-
+	key_handler.step();
 #ifdef TEST_DEBUG
 	auto new_pc = registers.pc;
 #endif

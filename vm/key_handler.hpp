@@ -6,6 +6,7 @@
 
 namespace yagbe
 {
+
 	class key_handler
 	{
 		uint8_t &P1;
@@ -25,21 +26,31 @@ namespace yagbe
 
 		key_handler(uint8_t &p1, interrupts &i) : P1(p1), _i(i)
 		{
-			P1 = 0;
-		}
-
-		void on_write(uint8_t b)
-		{
-			auto c = b & 0x30;
-
-			if (c & 0x20)
-				_selected_column = 1;
-			else if (c & 0x10)
-				_selected_column = 0;
-
-			P1 = rows[_selected_column];
 			
 		}
+
+		void step()
+		{
+			bool r0 = (P1 & 0x10) != 0;
+			bool r1 = (P1 & 0x20) != 0;
+
+			uint8_t temp = 0xFF;
+
+			if (r0)
+				temp &= rows[0];
+			if (r1)
+				temp &= rows[1];
+
+			auto bit_mask = 0b00001111;
+
+			auto ones_to_write = temp & bit_mask;
+			P1 |= ones_to_write;
+
+			auto zeroes_to_write = ~((~temp) & bit_mask);
+			P1 &= zeroes_to_write;
+
+		}
+
 
 		void set_key(key k, bool v)
 		{
@@ -50,14 +61,12 @@ namespace yagbe
 			bit b(rows[r], i);
 			b = !v; //on bit = released, off - pressed
 
-			P1 = rows[_selected_column];
-
 			_i.joypad();
 		}
 
 	protected:
-		int _selected_column = 0;
-		uint8_t rows[2] = { 0xFF, 0xFF };
+		//int _selected_column = 0;
+		uint8_t rows[2] = { 0b00001111, 0b00001111 };
 		interrupts &_i;
 	};
 
