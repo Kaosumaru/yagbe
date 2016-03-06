@@ -64,11 +64,11 @@ namespace yagbe
 			_m.io_register.STAT_mode_0bit = (mode & 0b01) != 0;
 			_m.io_register.STAT_mode_1bit = (mode & 0b10) != 0;
 
-			if (_mode == mode::horizontal_blank && _m.io_register.STAT_interrupt_mode00)
+			if (_mode == gpu_base::mode::horizontal_blank && _m.io_register.STAT_interrupt_mode00)
 				_i.lcd_status();
-			else if (_mode == mode::vertical_blank && _m.io_register.STAT_interrupt_mode01)
+			else if (_mode == gpu_base::mode::vertical_blank && _m.io_register.STAT_interrupt_mode01)
 				_i.lcd_status();
-			else if (_mode == mode::scanline_OAM && _m.io_register.STAT_interrupt_mode10)
+			else if (_mode == gpu_base::mode::scanline_OAM && _m.io_register.STAT_interrupt_mode10)
 				_i.lcd_status();
 		}
 
