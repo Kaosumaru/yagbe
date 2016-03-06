@@ -19,7 +19,7 @@ struct flag
 
 	explicit operator bool() const
 	{
-		return (_p >> n) & 1;
+		return ((_p >> n) & 1) != 0;
 	}
 protected:
 	uint8_t &_p;
