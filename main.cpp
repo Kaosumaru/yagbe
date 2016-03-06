@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
 	};
 
 	std::string path = YAGBE_ROMS;
-	path += "opus5.gb";
+	path += "ttt.gb";
 
 	if (!ctx.load_rom(path))
 		return -1;
@@ -77,7 +77,9 @@ Left to do:
 - more interrupts
 - window
 - more io_registers
-
+- 16h sprites, background sprites
 
 - more unit tests on GPU & CPU
+
+-sound
 */

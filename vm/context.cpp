@@ -123,11 +123,15 @@ bool context::load_rom(const std::string& path)
 	return true;
 }
 
+//#define TEST_DEBUG
 
 void context::cpu_step()
 {
 	if (stopped) return;
 
+#ifdef TEST_DEBUG
+	auto pc = registers.pc;
+#endif
 
 	auto opcode = read_byte();
 	auto instruction = instructions()[opcode];
