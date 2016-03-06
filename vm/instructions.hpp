@@ -294,6 +294,19 @@ namespace instructions
 		}
 	};
 
+	template<>
+	struct POP<AF> : default_instruction<1, 16>
+	{
+		static_assert(unwrap<AF>::size_of == 2, "Assuming word");
+
+		static int execute(context &c)
+		{
+			unwrap<AF>::get(c) = c.pop();
+			c.registers.f &= 0xF0;
+			return POP::cycles();
+		}
+	};
+
 
 	//--- ARITHMETIC (8 & 16 bit)
 

@@ -148,35 +148,7 @@ namespace instructions
 		constexpr static int size_of = 2;
 		constexpr static int is_pointer = 0;
 
-
-		struct AF_wrapper
-		{
-			AF_wrapper(context &c) : _af(c.registers.af)
-			{
-			}
-
-			~AF_wrapper()
-			{
-				
-			}
-
-			AF_wrapper& operator =(uint16_t b)
-			{
-				_af = b & 0xFFF0;
-				return *this;
-			}
-
-			operator uint16_t() const
-			{
-				return _af;
-			}
-
-
-		protected:
-			uint16_t &_af;
-		};
-
-		static auto get(context &c) { return AF_wrapper{c}; }
+		static auto& get(context &c) { return c.registers.af; }
 	};
 
 	template<>
