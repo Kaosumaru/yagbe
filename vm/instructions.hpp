@@ -382,8 +382,6 @@ namespace instructions
 			overflow_result_type result = (overflow_result_type)arg1 + (overflow_result_type)arg2;
 			
 
-			if (single_byte)
-				c.flags.z = (result == 0);
 			c.flags.n = 0;
 
 			if (single_byte)
@@ -403,6 +401,10 @@ namespace instructions
 				overflow_result_type cmask = (overflow_result_type)0xffff0000;
 				c.flags.c = (result & cmask) != 0;
 			}
+
+
+			if (single_byte)
+				c.flags.z = (arg1 == 0);
 
 
 			return ADD::cycles();
