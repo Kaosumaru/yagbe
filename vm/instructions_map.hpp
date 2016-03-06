@@ -264,7 +264,7 @@ namespace automap
 	template<> struct instruction<0xC3> : instructions::JP<condition::_, d16> {};
 	template<> struct instruction<0xD3> : instructions::UNDEFINED {};
 	template<> struct instruction<0xE3> : instructions::UNDEFINED {};
-	template<> struct instruction<0xF3> : instructions::EI {};
+	template<> struct instruction<0xF3> : instructions::DI {};
 
 	//x4 column
 	template<> struct instruction<0xC4> : instructions::CALL<condition::NZ, d16> {};

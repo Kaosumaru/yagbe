@@ -1,6 +1,7 @@
 #include "context.hpp"
 #include "instructions_map.hpp"
 #include <fstream>
+#include <iostream>
 
 using namespace yagbe;
 
@@ -158,12 +159,6 @@ void context::cpu_step()
 
 #ifdef TEST_DEBUG
 	auto pc = registers.pc;
-
-	if (pc == 0x29b)
-	{
-		int a = 5;
-		a++;
-	}
 #endif
 
 
@@ -177,11 +172,6 @@ void context::cpu_step()
 
 #ifdef TEST_DEBUG
 	auto new_pc = registers.pc;
-	if (new_pc == 0x39 || new_pc == 0x38 || new_pc > 0xFF00)
-	{
-		int a = 5;
-		a++;
-	}
 #endif
 
 //	key_handler.step();
