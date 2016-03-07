@@ -61,8 +61,10 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			if (c.interrupt.enabled)
-				c.halted = true;
+			if ((c.memory.io_register.IE & c.memory.io_register.IF & 0x1F) > 0)
+				return HALT::cycles();
+
+			c.halted = true;
 			return HALT::cycles();
 		}
 	};

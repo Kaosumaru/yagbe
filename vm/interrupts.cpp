@@ -23,13 +23,15 @@ int interrupts::step()
 		enabled = 1;
 
 	
-	if (enabled == 0 )
+	if ((_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
 		return 0;
 
 	_c.halted = false;
-
-	if ((_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
+	if (enabled == 0 )
 		return 0;
+
+
+	
 	
 	for (int i = 0; i < 5; i++)
 	{
