@@ -46,7 +46,16 @@ int main(int argc, char * argv[])
 	std::string path = YAGBE_ROMS;
 
 	//path += "../test_roms/individual/01-special.gb"; //PASSED
-	path += "../test_roms/individual/02-interrupts.gb"; //failing EI
+	path += "../test_roms/individual/02-interrupts.gb"; //failing EI, test address 0xC2B5
+	//fail jump is C1B9, fails at c2c9
+	// cp C0
+	// jp nz, 0xC1B9
+
+	// it goes - load sp-2 into hl, ldi (hl) into a, a should equal C0
+	// sooo.... a should be equal to old stack value.. I think he means "interrupt should occur at C2C0
+
+	//timer interrupt should only increment a.
+
 	//path += "../test_roms/individual/03-op sp,hl.gb"; //PASSED
 
 	//path += "../test_roms/individual/04-op r,imm.gb"; //PASSED
