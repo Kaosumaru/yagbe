@@ -23,12 +23,11 @@ namespace yagbe
 		uint8_t &SC{ _a[0xFF02] }; //X R/W SIO control
 
 		//timers NYI
-		uint8_t &DIV{ _a[0xFF04] }; //X R/W Divider Register
-		uint8_t &TIMA{ _a[0xFF05] }; //X R/W Timer counter
-		uint8_t &TMA{ _a[0xFF06] }; //X R/W timer modulo
-		uint8_t &TAC{ _a[0xFF07] }; //X R/W timer control
-		bit TAC_mode_0bit{ TAC, 0 };
-		bit TAC_mode_1bit{ TAC, 1 };
+		uint8_t &DIV{ _a[0xFF04] }; // R/W Divider Register
+		uint8_t &TIMA{ _a[0xFF05] }; // R/W Timer counter
+		uint8_t &TMA{ _a[0xFF06] }; // R/W timer modulo
+		uint8_t &TAC{ _a[0xFF07] }; // R/W timer control
+
 		bit TAC_running{ TAC, 2 };
 
 		//interrupts
