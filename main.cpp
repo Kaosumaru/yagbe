@@ -42,23 +42,23 @@ int main(int argc, char * argv[])
 
 	std::string path = YAGBE_ROMS;
 
-	//path += "individual/01-special.gb"; //PASSED
-	//path += "individual/02-interrupts.gb"; //failing EI
-	//path += "individual/03-op sp,hl.gb"; //PASSED
+	//path += "../test_roms/individual/01-special.gb"; //PASSED
+	//path += "../test_roms/individual/02-interrupts.gb"; //failing EI
+	//path += "../test_roms/individual/03-op sp,hl.gb"; //PASSED
 
-	//path += "individual/04-op r,imm.gb"; //PASSED
-	//path += "individual/05-op rp.gb"; //PASSED
-	//path += "individual/06-ld r,r.gb"; //PASSED
+	//path += "../test_roms/individual/04-op r,imm.gb"; //PASSED
+	//path += "../test_roms/individual/05-op rp.gb"; //PASSED
+	//path += "../test_roms/individual/06-ld r,r.gb"; //PASSED
 
-	//path += "individual/07-jr,jp,call,ret,rst.gb"; //PASSED
+	//path += "../test_roms/individual/07-jr,jp,call,ret,rst.gb"; //PASSED
 
-	//path += "individual/08-misc instrs.gb"; //PASSED
+	//path += "../test_roms/individual/08-misc instrs.gb"; //PASSED
 
-	//path += "individual/09-op r,r.gb"; //PASSED
+	//path += "../test_roms/individual/09-op r,r.gb"; //PASSED
 
-	//path += "individual/10-bit ops.gb"; //PASSED
+	//path += "../test_roms/individual/10-bit ops.gb"; //PASSED
 	
-	//path += "individual/11-op a,(hl).gb"; //PASSED
+	//path += "../test_roms/individual/11-op a,(hl).gb"; //PASSED
 
 	path += "adjtris.gb";
 	//path += "opus5.gb";
