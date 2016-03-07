@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
 	
 	//path += "individual/11-op a,(hl).gb"; //PASSED
 
-	path += "ttt.gb";
+	path += "tetris.gb";
 
 	if (!ctx.load_rom(path))
 		return -1;
@@ -93,12 +93,9 @@ int main(int argc, char * argv[])
 
 /*
 Left to do:
-- more interrupts
+- probably interrupts are implemented slightly wrong - if two would happen in exactly same time, IF shoud represent this
 - window
-- more io_registers
 - 16h sprites, background sprites
-
-- more unit tests on GPU & CPU
 
 -sound
 */

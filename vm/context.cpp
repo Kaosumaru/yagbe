@@ -60,7 +60,7 @@ void context::reset()
 
 	interrupt.reset();
 	gpu.reset();
-
+	timer.reset();
 
 	cycles_elapsed = 0;
 	stopped = false;
@@ -107,6 +107,18 @@ void context::reset()
 		{
 			//stack memory
 			m.raw_at(a) = b;
+			return;
+		}
+
+		if (a == 0xFF04)
+		{
+			this->timer.write_at_div();
+			return;
+		}
+
+		if (a == 0xFF04)
+		{
+			this->timer.write_at_tima();
 			return;
 		}
 
@@ -164,8 +176,11 @@ void context::cpu_step()
 
 	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
+
 	gpu.step(cycles);
+	timer.step(cycles);
 	key_handler.step();
+
 #ifdef TEST_DEBUG
 	auto new_pc = registers.pc;
 #endif

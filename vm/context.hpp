@@ -5,7 +5,7 @@
 #include "memory.hpp"
 #include "vm/gpu/gpu.hpp"
 #include "key_handler.hpp"
-
+#include "timer.hpp"
 
 namespace yagbe
 {
@@ -32,7 +32,7 @@ namespace yagbe
 		yagbe::memory      memory;
 		yagbe::interrupts  interrupt{ *this };
 		yagbe::gpu         gpu { memory, interrupt };
-
+		yagbe::timer       timer{ memory, interrupt };
 
 		yagbe::key_handler key_handler{ memory.io_register.P1, interrupt };
 

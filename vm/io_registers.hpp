@@ -20,13 +20,16 @@ namespace yagbe
 
 		//serial io NYI
 		uint8_t &SB{ _a[0xFF01] }; //X R/W Serial transfer data
-		uint8_t &SC{ _a[0xFF02] }; //R/W SIO control
+		uint8_t &SC{ _a[0xFF02] }; //X R/W SIO control
 
 		//timers NYI
 		uint8_t &DIV{ _a[0xFF04] }; //X R/W Divider Register
 		uint8_t &TIMA{ _a[0xFF05] }; //X R/W Timer counter
 		uint8_t &TMA{ _a[0xFF06] }; //X R/W timer modulo
 		uint8_t &TAC{ _a[0xFF07] }; //X R/W timer control
+		bit TAC_mode_0bit{ TAC, 0 };
+		bit TAC_mode_1bit{ TAC, 1 };
+		bit TAC_running{ TAC, 2 };
 
 		//interrupts
 		uint8_t &IF{ _a[0xFF0F] }; //R/W Interrupt Flag
@@ -45,7 +48,7 @@ namespace yagbe
 		bit LCDC_display{ LCDC, 7 }; //NYI
 
 
-		uint8_t &STAT{ _a[0xFF41] }; //X R/W LCDC Status
+		uint8_t &STAT{ _a[0xFF41] }; //R/W LCDC Status
 		bit STAT_mode_0bit{ STAT, 0 };
 		bit STAT_mode_1bit{ STAT, 1 };
 		bit STAT_ly_equals_lyc{ STAT, 2 };
@@ -58,9 +61,9 @@ namespace yagbe
 		uint8_t &SCY{ _a[0xFF42] }; //R/W scroll y
 		uint8_t &SCX{ _a[0xFF43] };	//R/W scroll x
 
-		uint8_t &LY{ _a[0xFF44] }; //X R LCDC Y-Coordinate
-		uint8_t &LYC{ _a[0xFF45] }; //X R/W LY Compare
-		uint8_t &DMA{ _a[0xFF46] }; //X W DMA Transfer and Start Address 
+		uint8_t &LY{ _a[0xFF44] }; //R LCDC Y-Coordinate
+		uint8_t &LYC{ _a[0xFF45] }; //R/W LY Compare
+		uint8_t &DMA{ _a[0xFF46] }; //W DMA Transfer and Start Address 
 
 		uint8_t &BGP{ _a[0xFF47] }; //R/W BG & Window Palette Data
 		uint8_t &OBP0{ _a[0xFF48] }; //R/W Object Palette 0 Data
@@ -69,7 +72,7 @@ namespace yagbe
 		uint8_t &WY{ _a[0xFF4A] }; //X R/W Window Y Position
 		uint8_t &WX{ _a[0xFF4B] }; //X R/W Window X Position
 
-		uint8_t &IE{ _a[0xFFFF] }; //X R/W interrupt enable
+		uint8_t &IE{ _a[0xFFFF] }; //R/W interrupt enable
 
 	};
 
