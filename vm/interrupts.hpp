@@ -13,17 +13,21 @@ namespace yagbe
 		interrupts(context &c) : _c(c) {}
 	
 		
-		void vblank() { process_interrupt(type::vblank); }
-		void lcd_status() { process_interrupt(type::lcd_status); }
-		void timer() { process_interrupt(type::timer); }
-		void serial() { process_interrupt(type::serial); }
-		void joypad() { process_interrupt(type::joypad); }
+		void vblank() { acknowledge_interrupt(type::vblank); }
+		void lcd_status() { acknowledge_interrupt(type::lcd_status); }
+		void timer() { acknowledge_interrupt(type::timer); }
+		void serial() { acknowledge_interrupt(type::serial); }
+		void joypad() { acknowledge_interrupt(type::joypad); }
 
 		uint8_t enabled = 1;
 
 		void reset();
+
+		int step();
+
+		void delay_enable(int steps) { _steps_to_enable = steps == 2 && _steps_to_enable == 2 ? 1 : steps; }
 	protected:
-		enum class type 
+		enum class type
 		{
 			vblank = 0,
 			lcd_status,
@@ -31,6 +35,16 @@ namespace yagbe
 			serial,
 			joypad
 		};
+
+		int bit_for_interrupt(type t)
+		{
+			return 1 << (int)t;
+		}
+		
+
+		void acknowledge_interrupt(type t);
+
+
 
 		static uint16_t address_of_interrupt(type t)
 		{
@@ -41,6 +55,7 @@ namespace yagbe
 		void process_interrupt(type t);
 
 	protected:
+		int _steps_to_enable = 0;
 		context &_c;
 	};
 };

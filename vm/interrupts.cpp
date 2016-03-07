@@ -11,24 +11,47 @@ void interrupts::reset()
 	_c.memory.io_register.IF = 0;
 }
 
-void interrupts::process_interrupt(type t)
+
+void interrupts::acknowledge_interrupt(type t)
 {
-	//return;
-	auto address = address_of_interrupt(t);
+	_c.memory.io_register.IF |= bit_for_interrupt(t);
+}
 
-	//1 IF shall be set
-	_c.memory.io_register.IF = 1 << (int)t;
+int interrupts::step()
+{
+	if (_steps_to_enable > 0 && --_steps_to_enable == 0)
+		enabled = 1;
 
-	//2 if IME is set, and corresponding IE is set...
-	if (enabled == 0 || (_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
-		return;
+	
+	if (enabled == 0 )
+		return 0;
 
 	_c.halted = false;
 
-	// reset IME
-	enabled = 0;
+	if ((_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
+		return 0;
+	
+	for (int i = 0; i < 5; i++)
+	{
+		auto interrupt_type = (type)i;
+		auto bit = bit_for_interrupt(interrupt_type);
 
-	// push address
-	_c.push(_c.registers.pc);
-	_c.registers.pc = address;
+		if ((_c.memory.io_register.IF & bit) == 0)
+			continue;
+		if ((_c.memory.io_register.IE & bit) == 0)
+			continue;
+
+		_c.memory.io_register.IF &= ~bit; //reset that bit
+		
+		enabled = 0;
+		auto address = address_of_interrupt(interrupt_type);
+
+		// push address
+		_c.push(_c.registers.pc);
+		_c.registers.pc = address;
+
+		return 20;
+	}
+
+	return 0;
 }

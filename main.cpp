@@ -46,10 +46,7 @@ int main(int argc, char * argv[])
 	std::string path = YAGBE_ROMS;
 
 	//path += "../test_roms/individual/01-special.gb"; //PASSED
-	path += "../test_roms/individual/02-interrupts.gb"; //failing EI, test address 0xC2B5
-	//fail jump is C1B9, fails at c2c9
-	// cp C0
-	// jp nz, 0xC1B9
+	path += "../test_roms/individual/02-interrupts.gb"; //failing HALT 5
 
 	// it goes - load sp-2 into hl, ldi (hl) into a, a should equal C0
 	// sooo.... a should be equal to old stack value.. I think he means "interrupt should occur at C2C0
@@ -75,7 +72,7 @@ int main(int argc, char * argv[])
 	//path += "adjtris.gb";
 	//path += "opus5.gb";
 
-
+	//path += "../proms/tetris.gb";
 
 
 	ctx.gpu.onFrameReady = [&](auto &frame)

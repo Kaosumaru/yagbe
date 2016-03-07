@@ -727,7 +727,10 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			c.interrupt.enabled = 1;
+			int delay = 2;
+			if (c.peek_byte() == 0x76)
+				delay = 1;
+			c.interrupt.delay_enable(delay);
 			return EI::cycles();
 		}
 	};
@@ -736,6 +739,8 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
+			//parentObj.IME = false;
+			//parentObj.IRQEnableDelay = 0;
 			c.interrupt.enabled = 0;
 			return EI::cycles();
 		}

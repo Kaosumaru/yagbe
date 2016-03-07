@@ -52,6 +52,12 @@ namespace yagbe
 		{
 			return memory.read_at(registers.pc++);
 		}
+		
+		//peeks byte at PC
+		uint8_t peek_byte()
+		{
+			return memory.read_at(registers.pc);
+		}
 
 		//reads a word at PC, and increments PC
 		uint16_t read_word()
