@@ -46,7 +46,7 @@ int main(int argc, char * argv[])
 	std::string path = YAGBE_ROMS;
 
 	//path += "../test_roms/individual/01-special.gb"; //PASSED
-	//path += "../test_roms/individual/02-interrupts.gb"; //failing EI
+	path += "../test_roms/individual/02-interrupts.gb"; //failing EI
 	//path += "../test_roms/individual/03-op sp,hl.gb"; //PASSED
 
 	//path += "../test_roms/individual/04-op r,imm.gb"; //PASSED
@@ -63,7 +63,7 @@ int main(int argc, char * argv[])
 	
 	//path += "../test_roms/individual/11-op a,(hl).gb"; //PASSED
 
-	path += "adjtris.gb";
+	//path += "adjtris.gb";
 	//path += "opus5.gb";
 
 

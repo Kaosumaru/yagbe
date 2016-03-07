@@ -56,11 +56,6 @@ namespace yagbe
 			_m.io_register.DIV = 0;
 		}
 
-		void write_at_tima()
-		{
-
-		}
-
 		void reset()
 		{
 			_div_increments_m = 0;

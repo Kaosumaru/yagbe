@@ -25,9 +25,17 @@ void context::reset()
 	//for (int i = 0; i <= 0xFFFF; i++)
 	//	wb(i, 0);
 
+	//from no$gmb
+	wb(0xFF00, 0xCE);
+	wb(0xFF01, 0);
+	wb(0xFF02, 0x7E);
+	wb(0xFF03, 0xFF);
+	wb(0xFF04, 0xAF);
+
 	wb(0xFF05, 0);
 	wb(0xFF06, 0);
-	wb(0xFF07, 0);
+	wb(0xFF07, 0xF8); //from no$gmb, was 0
+
 	wb(0xFF10, 0x80);
 	wb(0xFF11, 0xBF);
 	wb(0xFF12, 0xF3);
@@ -83,6 +91,8 @@ void context::reset()
 	io_write_masks[0x41] = 0b1111000; //FF41 STAT has writeable 6-3 bits
 	io_write_masks[0x00] = 0b0110000; //FF41 STAT has 2 writeable bits
 
+	io_write_masks[0x07] = 0b0111; //FF07 TAC has 3 writable bits
+
 	auto zero_write = [this, io_write_masks](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		//DMA
@@ -113,12 +123,6 @@ void context::reset()
 		if (a == 0xFF04)
 		{
 			this->timer.write_at_div();
-			return;
-		}
-
-		if (a == 0xFF04)
-		{
-			this->timer.write_at_tima();
 			return;
 		}
 
