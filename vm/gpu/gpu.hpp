@@ -38,10 +38,10 @@ namespace yagbe
 		}
 
 
-		
-		tilemap _tilemap     { _m };
-		spritemap _spritemap { _m, _tilemap };
-		std::vector<color> _buffer { (std::size_t) screen_size().x * screen_size().y };
+		tilemap _tilemap     { _m }; //handles BG & WINDOW
+		spritemap _spritemap { _m, _tilemap }; //handles OBJ
+
+		std::vector<color> _buffer { (std::size_t) screen_size().x * screen_size().y }; //output buffer with frame data, provided in onFrameReady
 	};
 
 

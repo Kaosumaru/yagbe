@@ -136,7 +136,6 @@ int main(int argc, char * argv[])
 /*
 Left to do:
 - probably interrupts are implemented slightly wrong - if two would happen in exactly same time, IF shoud represent this
-- window
 - 16h sprites
 
 -sound
