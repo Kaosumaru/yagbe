@@ -23,6 +23,8 @@ void interrupts::process_interrupt(type t)
 	if (enabled == 0 || (_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
 		return;
 
+	_c.halted = false;
+
 	// reset IME
 	enabled = 0;
 

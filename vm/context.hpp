@@ -39,7 +39,7 @@ namespace yagbe
 
 
 		uint32_t cycles_elapsed;
-		bool     stopped;
+		bool     halted;
 
 
 		const instructions_array& instructions();

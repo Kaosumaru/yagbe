@@ -63,7 +63,7 @@ void context::reset()
 	timer.reset();
 
 	cycles_elapsed = 0;
-	stopped = false;
+	halted = false;
 
 	auto null_write = [](yagbe::memory &m, uint16_t a, uint8_t b) 
 	{
@@ -163,18 +163,21 @@ bool context::load_rom(const std::string& path)
 
 void context::cpu_step()
 {
-	if (stopped) return;
+	
 
 #ifdef TEST_DEBUG
 	auto pc = registers.pc;
 #endif
 
+	int cycles = 4;
 
+	if (!halted)
+	{
+		auto opcode = read_byte();
+		auto instruction = instructions()[opcode];
+		cycles = instruction(*this);		
+	}
 
-	auto opcode = read_byte();
-	auto instruction = instructions()[opcode];
-
-	auto cycles = instruction(*this);
 	cycles_elapsed += cycles;
 
 	gpu.step(cycles);

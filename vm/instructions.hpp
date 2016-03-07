@@ -61,7 +61,8 @@ namespace instructions
 	{
 		static int execute(context &c)
 		{
-			throw std::runtime_error("NYI");
+			if (c.interrupt.enabled)
+				c.halted = true;
 			return HALT::cycles();
 		}
 	};
