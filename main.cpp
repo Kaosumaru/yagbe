@@ -15,9 +15,12 @@ using namespace yagbe;
 context ctx;
 sdl2_renderer renderer(gpu::screen_size());
 bool frame_drawn = false;
+bool loaded_rom = false;
 
 void one_iter()
 {
+	if (!loaded_rom)
+		return;
 	frame_drawn = false;
 	while (renderer.step() && !frame_drawn)
 	{
@@ -63,8 +66,7 @@ int main(int argc, char * argv[])
 	path += "adjtris.gb";
 	//path += "opus5.gb";
 
-	if (!ctx.load_rom(path))
-		return -1;
+
 
 
 	ctx.gpu.onFrameReady = [&](auto &frame)
@@ -80,10 +82,49 @@ int main(int argc, char * argv[])
 			ctx.key_handler.set_key(it->second, v);
 	};
 
-
+	
 #ifdef __EMSCRIPTEN__
+	std::cout << "Starting emulator..." << std::endl;
+	if (argc > 1)
+	{
+		std::cout << "Getting rom from: " << argv[1] << std::endl;
+
+		auto onLoad = [](void*, void* b, int s)
+		{
+			std::cout << "Done." << std::endl;
+
+			if (ctx.load_rom((uint8_t*)b, s))
+			{
+				loaded_rom = true;
+				std::cout << "Loaded OK." << std::endl;
+				return;
+			}
+			std::cout << "Loading failed" << std::endl;
+		};
+
+		auto onError = [](void*)
+		{
+			std::cout << "Error." << std::endl;
+		};
+
+
+		emscripten_async_wget_data(argv[1], nullptr, onLoad, onError);
+	}
+	else
+	{
+		if (!ctx.load_rom(path))
+			return -1;
+		loaded_rom = ctx.load_rom(path);
+	}
+		
+
+
 	emscripten_set_main_loop(one_iter, 60, 1);
 #else
+	if (!ctx.load_rom(path))
+		return -1;
+	loaded_rom = true;
+
 	while (renderer.running())
 		one_iter();
 #endif

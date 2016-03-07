@@ -26,6 +26,7 @@ namespace yagbe
 
 		void reset();
 		bool load_rom(const std::string& path);
+		bool load_rom(uint8_t* data, int size);
 
 		yagbe::registers   registers;
 		yagbe::flags       flags;

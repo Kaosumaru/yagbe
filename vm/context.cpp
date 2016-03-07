@@ -159,6 +159,13 @@ bool context::load_rom(const std::string& path)
 	return true;
 }
 
+bool context::load_rom(uint8_t *data, int size)
+{
+	for (uint16_t a = 0; a < size; a++)
+		memory.raw_at(a) = data[a];
+	return true;
+}
+
 //#define TEST_DEBUG
 
 void context::cpu_step()
