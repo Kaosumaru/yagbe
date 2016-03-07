@@ -31,8 +31,7 @@ namespace yagbe
 			}
 		}
 
-	protected:
-		color pixel_at_point(const ipoint& p)
+		int palette_at_point(const ipoint& p)
 		{
 			auto off = offset();
 			int x = ((p.x + off.x) / tile_size().x) % tilemap_size().x;
@@ -46,8 +45,17 @@ namespace yagbe
 			//uint8_t c = 10 * tile_index;
 			//return{ c,c,c,255 };
 
+			auto info = tile_at_index(tile_index);
+			auto c = info->palette_index_at((p.x + off.x) % tile_size().x, (p.y + off.y) % tile_size().y);
+			return c;
+		}
 
-			return color_of_tile_index_pixel(tile_index, (p.x + off.x) % tile_size().x, (p.y + off.y) % tile_size().y);
+	protected:
+		color pixel_at_point(const ipoint& p)
+		{
+			auto pallette_index = palette_at_point(p);
+
+			return color_of_index(pallette_index);
 		}
 
 		ipoint offset()
@@ -79,14 +87,6 @@ namespace yagbe
 
 
 			return info;
-		}
-
-		color color_of_tile_index_pixel(uint8_t i, int x, int y)
-		{
-			auto info = tile_at_index(i);
-			auto c = info->palette_index_at(x, y);
-			return color_of_index(c);
-
 		}
 
 		color color_of_index(uint8_t i)

@@ -40,7 +40,7 @@ namespace yagbe
 
 		
 		tilemap _tilemap     { _m };
-		spritemap _spritemap { _m };
+		spritemap _spritemap { _m, _tilemap };
 		std::vector<color> _buffer { (std::size_t) screen_size().x * screen_size().y };
 	};
 

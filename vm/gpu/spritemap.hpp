@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "tile_info.hpp"
 #include "palette.hpp"
+#include "tilemap.hpp"
 
 namespace yagbe
 {
@@ -51,7 +52,7 @@ namespace yagbe
 
 	public:
 
-		spritemap(memory &m) : _m(m)
+		spritemap(memory &m, tilemap& tm) : _m(m), _tm(tm)
 		{
 
 		}
@@ -110,7 +111,10 @@ namespace yagbe
 				throw std::runtime_error("NYI");
 
 			if (sprite.below_bg())
-				throw std::runtime_error("NYI");
+			{
+				if (_tm.palette_at_point({ x, y }) != 0)
+					return;
+			}
 
 			auto tile = tile_at_index(sprite.tile_index);
 
@@ -185,7 +189,8 @@ namespace yagbe
 		}
 
 
-		memory &_m;
+		memory&  _m;
+		tilemap& _tm;
 	};
 
 
