@@ -43,7 +43,7 @@ int main(int argc, char * argv[])
 	std::string path = YAGBE_ROMS;
 
 	//path += "individual/01-special.gb"; //PASSED
-	//path += "individual/02-interrupts.gb"; //failing EI, due to not implemented timers
+	//path += "individual/02-interrupts.gb"; //failing EI
 	//path += "individual/03-op sp,hl.gb"; //PASSED
 
 	//path += "individual/04-op r,imm.gb"; //PASSED
@@ -60,7 +60,8 @@ int main(int argc, char * argv[])
 	
 	//path += "individual/11-op a,(hl).gb"; //PASSED
 
-	path += "tetris.gb";
+	path += "adjtris.gb";
+	//path += "opus5.gb";
 
 	if (!ctx.load_rom(path))
 		return -1;
@@ -95,7 +96,7 @@ int main(int argc, char * argv[])
 Left to do:
 - probably interrupts are implemented slightly wrong - if two would happen in exactly same time, IF shoud represent this
 - window
-- 16h sprites, background sprites
+- 16h sprites
 
 -sound
 */
