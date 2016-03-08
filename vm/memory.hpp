@@ -34,12 +34,14 @@ namespace yagbe
 
 			~memory_address()
 			{
-				_m.write_byte_at(_a, _b);
+				if (_dirty)
+					_m.write_byte_at(_a, _b);
 			}
 
 			memory_address& operator =(uint8_t b)
 			{
 				_b = b;
+				_dirty = true;
 				return *this;
 			}
 
@@ -51,42 +53,49 @@ namespace yagbe
 
 			memory_address& operator |=(uint8_t v)
 			{
+				_dirty = true;
 				_b |= v;
 				return *this;
 			}
 
 			memory_address& operator &=(uint8_t v)
 			{
+				_dirty = true;
 				_b &= v;
 				return *this;
 			}
 
 			memory_address& operator +=(uint8_t v)
 			{
+				_dirty = true;
 				_b += v;
 				return *this;
 			}
 
 			memory_address& operator -=(uint8_t v)
 			{
+				_dirty = true;
 				_b -= v;
 				return *this;
 			}
 
 			memory_address& operator >>=(uint8_t v)
 			{
+				_dirty = true;
 				_b >>= v;
 				return *this;
 			}
 
 			memory_address& operator <<=(uint8_t v)
 			{
+				_dirty = true;
 				_b <<= v;
 				return *this;
 			}
 
 
 		protected:
+			bool _dirty = false;
 			memory& _m;
 			uint16_t _a;
 			uint8_t _b;
