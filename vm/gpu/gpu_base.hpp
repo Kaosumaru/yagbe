@@ -79,7 +79,7 @@ namespace yagbe
 
 			_m.io_register.STAT_ly_equals_lyc = l == _m.io_register.LYC;
 
-			if (_m.io_register.STAT_interrupt_ly_equals_lyc)
+			if (_m.io_register.STAT_interrupt_ly_equals_lyc && _m.io_register.STAT_ly_equals_lyc)
 				_i.lcd_status();
 				
 		}
