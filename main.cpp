@@ -62,11 +62,26 @@ int main(int argc, char * argv[])
 	//path += "../test_roms/individual/10-bit ops.gb"; //PASSED
 	
 	//path += "../test_roms/individual/11-op a,(hl).gb"; //PASSED
+	//path += "../test_roms/instr_timing.gb"; //FAILED, timer doesn't work properly
 
 	//path += "adjtris.gb";
 	//path += "opus5.gb";
 
 	//path += "../proms/tetris.gb";
+	/*
+	0x2ed
+
+	LD A, 0xFF85
+	AND A
+	JR Z, loop
+
+	ff85 is probably written to at 205 or 2F3
+
+	seems like a wrong order, 0x205 is setting ff85 to 1, and 0x2f3 is setting it to 0
+
+	this loops goes on and on, blocking writes to 0xff85, and fixing it at 1 ends loops, but game is buggy
+	*/
+
 
 
 	ctx.gpu.onFrameReady = [&](auto &frame)
