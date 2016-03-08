@@ -16,7 +16,7 @@ namespace yagbe
 			auto delta_mclock = delta_tclock / 4;
 
 			_div_increments_m += delta_mclock;
-			_tima_increments_m += delta_mclock;
+			
 
 			{
 				auto div_steps = _div_increments_m / _div_speed;
@@ -33,21 +33,25 @@ namespace yagbe
 			{
 				auto speed_mode = _m.io_register.TAC & 0b11;
 				_tima_speed = mode_speeds()[speed_mode];
+				_tima_increments_m += delta_mclock;
 
-				auto tima_steps = _tima_increments_m / _tima_speed;
+				int tima_steps = _tima_increments_m / _tima_speed;
 				_tima_increments_m %= _tima_speed;
-				bool interrupt = false;
+				
 
 				while (tima_steps > 0)
 				{
 					if (_m.io_register.TIMA == 255)
-						_m.io_register.TIMA = _m.io_register.TMA, interrupt = true;
-					_m.io_register.TIMA ++;
+					{
+						_m.io_register.TIMA = _m.io_register.TMA;
+						_i.timer();
+					}
+					else
+						_m.io_register.TIMA++;
+
 					tima_steps--;
 				}
-
-				if (interrupt)
-					_i.timer();
+					
 			}
 		}
 
