@@ -29,9 +29,9 @@ namespace yagbe
 		constexpr static std::array<yagbe::color, 4> colors()
 		{ 
 			return std::array<yagbe::color, 4>{
-				yagbe::color{ 255,255,255,255 },
-				yagbe::color{ 192,192,192,255 },
-				yagbe::color{ 96,96,96,255 },
+				yagbe::color{ 250,250,250,255 },
+				yagbe::color{ 116,116,116,255 },
+				yagbe::color{ 188,188,188,255 },
 				yagbe::color{ 0,0,0,255 },
 			};
 		}
