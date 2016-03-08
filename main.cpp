@@ -70,20 +70,7 @@ int main(int argc, char * argv[])
 
 	//path += "../proms/tetris.gb";
 	path += "../proms/sml.gb";
-	
-	/*
-	0x2ed
 
-	LD A, 0xFF85
-	AND A
-	JR Z, loop
-
-	ff85 is probably written to at 205 or 2F3
-
-	seems like a wrong order, 0x205 is setting ff85 to 1, and 0x2f3 is setting it to 0
-
-	this loops goes on and on, blocking writes to 0xff85, and fixing it at 1 ends loops, but game is buggy
-	*/
 
 
 

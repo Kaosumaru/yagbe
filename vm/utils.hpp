@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <tuple>
 
+//travis has old version of gcc & clang, and updating them takes time, so here is few "polyfills" that yagbe will work on older compilers
 #ifdef YAGBE_TRAVIS
 namespace std
 {
@@ -14,6 +15,12 @@ namespace std
 
 	template <std::size_t I, class T>
 	using tuple_element_t = typename std::tuple_element<I, T>::type;
+
+	template< class T, class... Args >
+	std::unique_ptr<T> make_unique(Args&&... args)
+	{
+		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+	}
 }
 
 #endif
