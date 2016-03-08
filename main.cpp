@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
 
 
 	//path += "hangman.gb";
-	path += "opus5.gb";
+	//path += "sml.gb";
 
 	//path += "../proms/tetris.gb";
 
@@ -96,10 +96,11 @@ int main(int argc, char * argv[])
 		auto onLoad = [](void*, void* b, int s)
 		{
 			std::cout << "Done." << std::endl;
+			auto rom_info = ctx.load_rom((uint8_t*)b, s);
 			if (rom_info)
 			{
 				loaded_rom = true;
-				std::cout << "Loaded OK, name: " << rom_info->name << std::endl;
+				std::cout << "Loaded OK, name: " << rom_info->title << std::endl;
 				return;
 			}
 			std::cout << "Loading failed" << std::endl;
@@ -123,7 +124,7 @@ int main(int argc, char * argv[])
 		
 
 
-	emscripten_set_main_loop(one_iter, 60, 1);
+	emscripten_set_main_loop(one_iter, 0, 1);
 #else
 	auto rom_info = ctx.load_rom(path);
 	if (!rom_info)
