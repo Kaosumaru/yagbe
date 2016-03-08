@@ -64,10 +64,13 @@ int main(int argc, char * argv[])
 	//path += "../test_roms/individual/11-op a,(hl).gb"; //PASSED
 	//path += "../test_roms/instr_timing.gb"; //FAILED, timer doesn't work properly
 
-	//path += "adjtris.gb";
+
+	//path += "hangman.gb";
 	//path += "opus5.gb";
 
 	//path += "../proms/tetris.gb";
+	path += "../proms/sml.gb";
+	
 	/*
 	0x2ed
 
@@ -107,11 +110,10 @@ int main(int argc, char * argv[])
 		auto onLoad = [](void*, void* b, int s)
 		{
 			std::cout << "Done." << std::endl;
-
-			if (ctx.load_rom((uint8_t*)b, s))
+			if (rom_info)
 			{
 				loaded_rom = true;
-				std::cout << "Loaded OK." << std::endl;
+				std::cout << "Loaded OK, name: " << rom_info->name << std::endl;
 				return;
 			}
 			std::cout << "Loading failed" << std::endl;
@@ -127,7 +129,8 @@ int main(int argc, char * argv[])
 	}
 	else
 	{
-		if (!ctx.load_rom(path))
+		auto rom_info = ctx.load_rom(path);
+		if (!rom_info)
 			return -1;
 		loaded_rom = ctx.load_rom(path);
 	}
@@ -136,7 +139,8 @@ int main(int argc, char * argv[])
 
 	emscripten_set_main_loop(one_iter, 60, 1);
 #else
-	if (!ctx.load_rom(path))
+	auto rom_info = ctx.load_rom(path);
+	if (!rom_info)
 		return -1;
 	loaded_rom = true;
 
@@ -150,7 +154,6 @@ int main(int argc, char * argv[])
 
 /*
 Left to do:
-- probably interrupts are implemented slightly wrong - if two would happen in exactly same time, IF shoud represent this
 - 16h sprites
 
 -sound

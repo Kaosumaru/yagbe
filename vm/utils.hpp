@@ -61,4 +61,15 @@ namespace yagbe
 		uint8_t n;
 	};
 
+	//only bits that are 1 in mask will be written from source to d
+	template<typename T>
+	void update_byte_with_mask(T &d, T source, T bit_mask)
+	{
+		auto ones_to_write = source & bit_mask;
+		d |= ones_to_write;
+
+		auto zeroes_to_write = ~((~source) & bit_mask);
+		d &= zeroes_to_write;
+	}
+
 }

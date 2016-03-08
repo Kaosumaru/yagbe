@@ -92,14 +92,25 @@ void context::reset()
 	interrupt.reset();
 	gpu.reset();
 	timer.reset();
+	_mbc_handler.reset();
 
 	cycles_elapsed = 0;
 	halted = false;
 
-	auto null_write = [](yagbe::memory &m, uint16_t a, uint8_t b) 
+	auto mbc_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
 	{
+		if (_mbc_handler)
+			return _mbc_handler->handle_read(a);
+		return m.raw_at(a);
 	};
-	memory.map_interceptors(0x0000, 0x7FFF, nullptr, null_write); //resetting ROM intercepts
+
+	auto mbc_write = [&](yagbe::memory &m, uint16_t a, uint8_t b) 
+	{
+		if (_mbc_handler)
+			_mbc_handler->handle_write(a, b);
+	};
+
+	memory.map_interceptors(0x0000, 0x7FFF, mbc_read, mbc_write); //resetting ROM intercepts
 
 	auto shadow_read = [](yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };
 	auto shadow_write = [](yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
@@ -149,21 +160,17 @@ void context::reset()
 			return;
 		}
 
-		//TODO check this
+
 		auto &destination = m.raw_at(a);
 		auto bit_mask = io_write_masks[a & 0xFF];
 
-		auto ones_to_write = b & bit_mask;
-		destination |= ones_to_write;
-
-		auto zeroes_to_write = ~((~b) & bit_mask);
-		destination &= zeroes_to_write;
+		update_byte_with_mask(destination, b, bit_mask);
 	};
 
 	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write); //resetting zero RAM (IO) interceptors
 }
 
-bool context::load_rom(const std::string& path)
+rom_info* context::load_rom(const std::string& path)
 {
 	reset();
 
@@ -171,27 +178,48 @@ bool context::load_rom(const std::string& path)
 	fs.open(path, std::fstream::binary);
 
 	if (!fs)
-		return false;
+		return nullptr;
 
 	auto it_begin = std::istreambuf_iterator<char>(fs);
 	auto it_end = std::istreambuf_iterator<char>();
 
-	uint16_t a = 0;
-	for (auto it = it_begin; it != it_end; it++)
-	{
-		memory.raw_at(a) = *it;
-		a++;
-	}
 
-	return true;
+	std::vector<uint8_t> data;
+	
+	std::streampos fsize = 0;
+	fs.seekg(0, std::ios::end);
+	fsize = fs.tellg();
+	fs.seekg(0, std::ios::beg);
+
+	data.resize(fsize);
+	std::copy(it_begin, it_end, data.begin());
+	return load_rom(std::move(data));
+
 }
 
-bool context::load_rom(uint8_t *data, int size)
+rom_info* context::load_rom(uint8_t *data, int size)
 {
-	for (uint16_t a = 0; a < size; a++)
-		memory.raw_at(a) = data[a];
-	return true;
+	std::vector<uint8_t> vdata;
+	vdata.resize(size);
+	std::copy(data, data+size, vdata.begin());
+
+	return load_rom(std::move(vdata));
 }
+
+rom_info* context::load_rom(std::vector<uint8_t>&& data)
+{
+	auto kb_rom_size = 0x8000;
+	for (uint16_t a = 0; a < kb_rom_size; a++) //load first 32kb directly into memory, mbc handler is getting full data
+		memory.raw_at(a) = data[a]; 
+
+	auto info = (rom_info*)memory.raw_pointer_at(rom_info::address());
+	_mbc_handler = mbc_handler::create_for(info, memory, std::move(data));
+	if (!_mbc_handler)
+		return nullptr;
+	return info;
+}
+
+
 
 //#define TEST_DEBUG
 

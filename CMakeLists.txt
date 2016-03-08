@@ -23,6 +23,7 @@ endif(MSVC)
 
 add_folder(vm)
 add_folder(vm/gpu)
+add_folder(vm/rom)
 
 if(YAGBE_TRAVIS)
 	add_definitions(-DYAGBE_TRAVIS)

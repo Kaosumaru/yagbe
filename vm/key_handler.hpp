@@ -41,13 +41,7 @@ namespace yagbe
 			if (r1)
 				temp &= rows[1];
 
-			auto bit_mask = 0b00001111;
-
-			auto ones_to_write = temp & bit_mask;
-			P1 |= ones_to_write;
-
-			auto zeroes_to_write = ~((~temp) & bit_mask);
-			P1 &= zeroes_to_write;
+			update_byte_with_mask<uint8_t>(P1, temp, 0b00001111);
 
 		}
 

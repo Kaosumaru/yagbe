@@ -6,6 +6,8 @@
 #include "vm/gpu/gpu.hpp"
 #include "key_handler.hpp"
 #include "timer.hpp"
+#include "rom/rom_info.hpp"
+#include "rom/mbc_handler.hpp"
 
 namespace yagbe
 {
@@ -25,8 +27,9 @@ namespace yagbe
 		}
 
 		void reset();
-		bool load_rom(const std::string& path);
-		bool load_rom(uint8_t* data, int size);
+		rom_info* load_rom(const std::string& path);
+		rom_info* load_rom(uint8_t* data, int size);
+		rom_info* load_rom(std::vector<uint8_t>&& data);
 
 		yagbe::registers   registers;
 		yagbe::flags       flags;
@@ -86,5 +89,7 @@ namespace yagbe
 			return w.word;
 		}
 
+	protected:
+		mbc_handler::pointer _mbc_handler;
 	};
 };
