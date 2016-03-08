@@ -97,25 +97,51 @@ void context::reset()
 	cycles_elapsed = 0;
 	halted = false;
 
-	auto mbc_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
 	{
-		if (_mbc_handler)
-			return _mbc_handler->handle_read(a);
-		return m.raw_at(a);
-	};
+		auto mbc_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
+		{
+			if (_mbc_handler)
+				return _mbc_handler->handle_read(a);
+			return m.raw_at(a);
+		};
 
-	auto mbc_write = [&](yagbe::memory &m, uint16_t a, uint8_t b) 
+		auto mbc_write = [&](yagbe::memory &m, uint16_t a, uint8_t b)
+		{
+			if (_mbc_handler)
+				_mbc_handler->handle_write(a, b);
+		};
+
+		memory.map_interceptors(0x0000, 0x7FFF, mbc_read, mbc_write); //resetting ROM intercepts
+	}
+
 	{
-		if (_mbc_handler)
-			_mbc_handler->handle_write(a, b);
-	};
+		auto mbc_ram_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
+		{
+			if (_mbc_handler)
+				return _mbc_handler->handle_ram_read(a);
+			return m.raw_at(a);
+		};
 
-	memory.map_interceptors(0x0000, 0x7FFF, mbc_read, mbc_write); //resetting ROM intercepts
+		auto mbc_ram_write = [&](yagbe::memory &m, uint16_t a, uint8_t b)
+		{
+			if (_mbc_handler)
+				_mbc_handler->handle_ram_write(a, b);
+			else
+				m.raw_at(a) = b;
+		};
 
-	auto shadow_read = [](yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };
-	auto shadow_write = [](yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
+		memory.map_interceptors(0xA000, 0xBFFF, mbc_ram_read, mbc_ram_write); //resetting ROM intercepts
+	}
 
-	memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
+
+
+	{
+		auto shadow_read = [](yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };
+		auto shadow_write = [](yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
+
+		memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
+	}
+
 
 
 	std::array<uint8_t, 256> io_write_masks;

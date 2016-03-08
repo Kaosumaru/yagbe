@@ -34,14 +34,35 @@ class generic_mbc_handler : public mbc_handler
 		return *(address_of_current_bank() + offset);
 	}
 
-protected:
-	void select_rom_bank(int bank)
+	uint8_t handle_ram_read(uint16_t address) override
 	{
-		std::set<int> bugged_banks = { 0x00, 0x20, 0x40, 0x60 };
-		if (bugged_banks.find(bank) != bugged_banks.end())
+		return *(address_of_current_ram_bank() + (int)address - ram_offset());
+	}
+	void handle_ram_write(uint16_t address, uint8_t byte) override
+	{
+		*(address_of_current_ram_bank() + (int)address - ram_offset()) = byte;
+	}
+
+protected:
+	virtual void select_rom_bank(int bank) 
+	{
+		if (bank == 0)
 			bank++;
 
 		_selected_rom_bank = bank;
+	}
+
+
+	void select_ram_bank(int bank)
+	{
+		if (bank >= 4)
+			throw std::runtime_error("NYI");
+		_ram_bank = bank;
+	}
+
+	int ram_offset()
+	{
+		return 0xA000;
 	}
 
 	int rom_bank_size()
@@ -54,7 +75,17 @@ protected:
 		return _rom_data.data() + rom_bank_size() * _selected_rom_bank;
 	}
 
+	uint8_t* address_of_current_ram_bank()
+	{
+		return _ram_banks[_ram_bank].data();
+	}
+
+	using RamBankType = std::array<uint8_t, 0x2000>;
+
+
+	std::vector<RamBankType> _ram_banks{ 4 };
 	uint8_t _selected_rom_bank = 1;
+	int     _ram_bank = 0;
 };
 
 class mbc1_handler : public generic_mbc_handler
@@ -81,22 +112,36 @@ class mbc1_handler : public generic_mbc_handler
 			}
 			else
 			{
-				//NYI
+				select_ram_bank(byte);
 			}
 		}
 		else
 		{
 			_rom_mode = byte == 0;
+
+			if (_rom_mode)
+				select_ram_bank(0);
 		}
 	}
 
+
+
+
 protected:
+	void select_rom_bank(int bank) override
+	{
+		std::set<int> bugged_banks = { 0x00, 0x20, 0x40, 0x60 };
+		if (bugged_banks.find(bank) != bugged_banks.end())
+			bank++;
+
+		_selected_rom_bank = bank;
+	}
+
+
 	bool _rom_mode = true;
-	
 	uint8_t _rom_bank_temp = 0;
 
 	bool _ram_enabled = false;
-	int _ram_bank = 0;
 };
 
 
@@ -117,6 +162,10 @@ class mbc3_handler : public generic_mbc_handler
 		}
 		else if (address < 0x6000)	//RAM Bank Number - or -RTC Register Select(Write Only)
 		{
+			if (byte >= 4)
+				throw std::runtime_error("NYI");
+
+			select_ram_bank(byte);
 			//NYI
 		}
 		else //Latch Clock Data (Write Only)
@@ -126,6 +175,7 @@ class mbc3_handler : public generic_mbc_handler
 	}
 
 protected:
+
 
 	uint8_t _rom_bank_temp = 0;
 

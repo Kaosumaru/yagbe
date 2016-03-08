@@ -19,6 +19,15 @@ namespace yagbe
 		virtual uint8_t handle_read(uint16_t address) = 0;
 		virtual void handle_write(uint16_t address, uint8_t byte) = 0;
 
+		virtual uint8_t handle_ram_read(uint16_t address)
+		{
+			return _m.raw_at(address);
+		}
+		virtual void handle_ram_write(uint16_t address, uint8_t byte)
+		{
+			_m.raw_at(address) = byte;
+		}
+
 		static pointer create_for(rom_info *info, memory& m, std::vector<uint8_t>&& data);
 	protected:
 		std::vector<uint8_t> _rom_data;
