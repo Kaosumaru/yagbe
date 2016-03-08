@@ -101,42 +101,53 @@ namespace yagbe
 				return in_range(s->screen_x(), sprite_width, x);
 			};
 
+
 			auto it = std::find_if(sprites.begin(), sprites.end(), finder);
-			if (it == sprites.end())
-				return;
-			auto &sprite = **it;
 
-			//ok, we found corresponding sprite, now few checks...
-			if (get_sprite_height() != 8)
-				throw std::runtime_error("NYI");
 
-			if (sprite.below_bg())
+			while (true)
 			{
-				if (_tm.palette_at_point({ x, y }) != 0)
+				if (it == sprites.end())
 					return;
+
+				auto &sprite = **it;
+
+				//ok, we found corresponding sprite, now few checks...
+				if (get_sprite_height() != 8)
+					throw std::runtime_error("NYI");
+
+				if (sprite.below_bg())
+				{
+					if (_tm.palette_at_point({ x, y }) != 0)
+						return;
+				}
+
+				auto tile = tile_at_index(sprite.tile_index);
+
+				int tile_x = x - sprite.screen_x();
+				int tile_y = y - sprite.screen_y();
+
+				if (sprite.is_flipped_x())
+					tile_x = 7 - tile_x;
+				if (sprite.is_flipped_y())
+					tile_y = 7 - tile_y;
+
+				auto palette_index = tile->palette_index_at(tile_x, tile_y);
+				if (palette_index == 0)
+				{
+					it++; //this sprite is transparent here, maybe next will fit
+					it = std::find_if(it, sprites.end(), finder);
+					continue;
+				}
+					
+				pixel = color_of_index(sprite, palette_index);
+				return;;
 			}
-
-			auto tile = tile_at_index(sprite.tile_index);
-
-			int tile_x = x - sprite.screen_x();
-			int tile_y = y - sprite.screen_y();
-
-			if (sprite.is_flipped_x())
-				tile_x = 7 - tile_x;
-			if (sprite.is_flipped_y())
-				tile_y = 7 - tile_y;
-
-
-
-			auto palette_index = tile->palette_index_at(tile_x, tile_y);
-			if (palette_index == 0)
-				return;
-			pixel = color_of_index(sprite, palette_index);
 		}
 
 		color color_of_index(sprite_info& sprite, uint8_t i)
 		{
-			auto raw_palette = sprite.palette_index() ? _m.io_register.OBP0 : _m.io_register.OBP1;
+			auto raw_palette = sprite.palette_index() == 0 ? _m.io_register.OBP0 : _m.io_register.OBP1;
 			return palette_entry{ raw_palette }.color(i);
 		}
 
