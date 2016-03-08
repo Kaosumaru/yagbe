@@ -269,15 +269,16 @@ void context::cpu_step()
 	cycles_elapsed += cycles;
 
 	gpu.step(cycles);
-	timer.step(cycles);
+	timer.step(cycles, cycles_elapsed);
 	key_handler.step();
 
 	{
 		cycles = interrupt.step();
 		if (cycles)
 		{
+			cycles_elapsed += cycles;
 			gpu.step(cycles);
-			timer.step(cycles);
+			timer.step(cycles, cycles_elapsed);
 		}
 	}
 	
