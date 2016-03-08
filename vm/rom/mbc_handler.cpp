@@ -104,15 +104,18 @@ mbc_handler::pointer mbc_handler::create_for(rom_info *info, memory& m, std::vec
 
 	switch (mbc_type)
 	{
-	case 0: //rom only
+	case 0x00: //rom only
 		return std::make_unique<mbc_handler_0>(m, std::move(data));
-	case 1: //MBC1
+	case 0x01: //MBC1
 		return std::make_unique<mbc1_handler>(m, std::move(data));
-	case 2: //MBC1+RAM
+	case 0x02: //MBC1+RAM
 		return std::make_unique<mbc1_handler>(m, std::move(data));
-	case 3: //MBC1+RAM+BATT
+	case 0x03: //MBC1+RAM+BATT
 		return std::make_unique<mbc1_handler>(m, std::move(data));
 
+	case 0x04: //MBC2+RAM
+	case 0x05: //MBC2+RAM+BATT
+		break;
 	}
 
 	throw std::runtime_error("Not implemented this MBC");

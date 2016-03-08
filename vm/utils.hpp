@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <tuple>
+#include <memory>
 
 //travis has old version of gcc & clang, and updating them takes time, so here is few "polyfills" that yagbe will work on older compilers
 #ifdef YAGBE_TRAVIS

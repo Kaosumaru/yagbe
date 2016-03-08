@@ -66,10 +66,9 @@ int main(int argc, char * argv[])
 
 
 	//path += "hangman.gb";
-	//path += "opus5.gb";
+	path += "opus5.gb";
 
 	//path += "../proms/tetris.gb";
-	path += "../proms/sml.gb";
 
 
 
@@ -142,6 +141,7 @@ int main(int argc, char * argv[])
 /*
 Left to do:
 - 16h sprites
+- RAM & timers in MBC1-3
 
 -sound
 */
