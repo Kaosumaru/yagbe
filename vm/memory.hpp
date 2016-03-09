@@ -6,16 +6,22 @@
 
 namespace yagbe
 {
+	class context;
+
 	class memory
 	{
 	public:
 		struct interceptor
 		{
-			using ReadCallback = std::function<uint8_t(memory &m, uint16_t)>;
-			using WriteCallback = std::function<void(memory &m, uint16_t, uint8_t)>;
+			interceptor() {}
+			//using ReadCallback = std::function<uint8_t(memory &m, uint16_t)>;
+			//using WriteCallback = std::function<void(memory &m, uint16_t, uint8_t)>;
 
-			ReadCallback  onRead;
-			WriteCallback onWrite;
+			using ReadCallback = uint8_t(*)(memory &m, uint16_t);
+			using WriteCallback = void(*)(memory &m, uint16_t, uint8_t);
+
+			ReadCallback  onRead = nullptr;
+			WriteCallback onWrite = nullptr;
 		};
 
 		//TODO endianess
@@ -101,6 +107,11 @@ namespace yagbe
 			uint8_t _b;
 		};
 
+		memory(context &c) : _c(c)
+		{
+
+		}
+
 		io_registers io_register{ data };
 
 		memory_address at(uint16_t address)
@@ -161,6 +172,7 @@ namespace yagbe
 			}
 		}
 
+		context &c() { return _c; }
 protected:
 		interceptor& interceptor_at(uint16_t address)
 		{
@@ -172,6 +184,7 @@ protected:
 		std::array<interceptor, interceptor_range> _interceptors;
 		uint8_t data[0xFFFF];
 		
+		context &_c;
 
 	};
 };
