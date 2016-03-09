@@ -33,7 +33,7 @@ namespace yagbe
 
 		yagbe::registers   registers;
 		yagbe::flags       flags;
-		yagbe::memory      memory;
+		yagbe::memory      memory{ *this };
 		yagbe::interrupts  interrupt{ *this };
 		yagbe::gpu         gpu { memory, interrupt };
 		yagbe::timer       timer{ memory, interrupt };
@@ -89,6 +89,7 @@ namespace yagbe
 			return w.word;
 		}
 
+		const mbc_handler::pointer& current_mbc_handler() { return _mbc_handler; }
 	protected:
 		mbc_handler::pointer _mbc_handler;
 	};

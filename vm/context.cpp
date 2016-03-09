@@ -98,34 +98,34 @@ void context::reset()
 	halted = false;
 
 	{
-		auto mbc_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
+		auto mbc_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
 		{
-			if (_mbc_handler)
-				return _mbc_handler->handle_read(a);
+			if (m.c().current_mbc_handler())
+				return m.c().current_mbc_handler()->handle_read(a);
 			return m.raw_at(a);
 		};
 
-		auto mbc_write = [&](yagbe::memory &m, uint16_t a, uint8_t b)
+		auto mbc_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
 		{
-			if (_mbc_handler)
-				_mbc_handler->handle_write(a, b);
+			if (m.c().current_mbc_handler())
+				m.c().current_mbc_handler()->handle_write(a, b);
 		};
 
 		memory.map_interceptors(0x0000, 0x7FFF, mbc_read, mbc_write); //resetting ROM intercepts
 	}
 
 	{
-		auto mbc_ram_read = [&](yagbe::memory &m, uint16_t a) -> uint8_t
+		auto mbc_ram_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
 		{
-			if (_mbc_handler)
-				return _mbc_handler->handle_ram_read(a);
+			if (m.c().current_mbc_handler())
+				return m.c().current_mbc_handler()->handle_ram_read(a);
 			return m.raw_at(a);
 		};
 
-		auto mbc_ram_write = [&](yagbe::memory &m, uint16_t a, uint8_t b)
+		auto mbc_ram_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
 		{
-			if (_mbc_handler)
-				_mbc_handler->handle_ram_write(a, b);
+			if (m.c().current_mbc_handler())
+				m.c().current_mbc_handler()->handle_ram_write(a, b);
 			else
 				m.raw_at(a) = b;
 		};
@@ -144,7 +144,7 @@ void context::reset()
 
 
 
-	std::array<uint8_t, 256> io_write_masks;
+	static std::array<uint8_t, 256> io_write_masks;
 	std::fill(io_write_masks.begin(), io_write_masks.end(), 0xFF);
 
 	io_write_masks[0x44] = 0; //FF44 LY is read-only
@@ -153,7 +153,7 @@ void context::reset()
 
 	io_write_masks[0x07] = 0b0111; //FF07 TAC has 3 writable bits
 
-	auto zero_write = [this, io_write_masks](yagbe::memory &m, uint16_t a, uint8_t b)
+	auto zero_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		//DMA
 		if (a == 0xFF46)
@@ -182,7 +182,7 @@ void context::reset()
 
 		if (a == 0xFF04)
 		{
-			this->timer.write_at_div();
+			m.c().timer.write_at_div();
 			return;
 		}
 

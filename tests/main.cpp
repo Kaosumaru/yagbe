@@ -22,7 +22,7 @@ using namespace yagbe::instructions::automap;
 bool test_opus5()
 {
 	std::string path = YAGBE_ROMS;
-	path += "opus5.gb";
+	path += "../test_roms/opus5.gb";
 
 	context c;
 	if (!c.load_rom(path))
