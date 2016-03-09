@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
 	//path += "hangman.gb";
 	//path += "sml.gb";
 
-	path += "sml.gb";
+	path += "adjtris.gb";
 
 
 
