@@ -89,7 +89,7 @@ namespace yagbe
 			return w.word;
 		}
 
-		const mbc_handler::pointer& mbc_handler() { return _mbc_handler; }
+		const mbc_handler::pointer& current_mbc_handler() { return _mbc_handler; }
 	protected:
 		mbc_handler::pointer _mbc_handler;
 	};

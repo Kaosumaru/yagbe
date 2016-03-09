@@ -100,15 +100,15 @@ void context::reset()
 	{
 		auto mbc_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
 		{
-			if (m.c().mbc_handler())
-				return m.c().mbc_handler()->handle_read(a);
+			if (m.c().current_mbc_handler())
+				return m.c().current_mbc_handler()->handle_read(a);
 			return m.raw_at(a);
 		};
 
 		auto mbc_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
 		{
-			if (m.c().mbc_handler())
-				m.c().mbc_handler()->handle_write(a, b);
+			if (m.c().current_mbc_handler())
+				m.c().current_mbc_handler()->handle_write(a, b);
 		};
 
 		memory.map_interceptors(0x0000, 0x7FFF, mbc_read, mbc_write); //resetting ROM intercepts
@@ -117,15 +117,15 @@ void context::reset()
 	{
 		auto mbc_ram_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
 		{
-			if (m.c().mbc_handler())
-				return m.c().mbc_handler()->handle_ram_read(a);
+			if (m.c().current_mbc_handler())
+				return m.c().current_mbc_handler()->handle_ram_read(a);
 			return m.raw_at(a);
 		};
 
 		auto mbc_ram_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
 		{
-			if (m.c().mbc_handler())
-				m.c().mbc_handler()->handle_ram_write(a, b);
+			if (m.c().current_mbc_handler())
+				m.c().current_mbc_handler()->handle_ram_write(a, b);
 			else
 				m.raw_at(a) = b;
 		};
