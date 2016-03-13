@@ -3,7 +3,7 @@ Yet Another GB Emulator (WIP)
 
 # Test roms:
 
-[opus5](http://kaosumaru.github.io/yagbe/emulator/yagbe_rom.html?http://kaosumaru.github.io/yagbe/games/opus5.gb)
+[cpu_instrs](http://kaosumaru.github.io/yagbe/emulator/yagbe_rom.html?http://kaosumaru.github.io/yagbe/games/cpu_instrs.gb)
 
 [ttt](http://kaosumaru.github.io/yagbe/emulator/yagbe_rom.html?http://kaosumaru.github.io/yagbe/games/ttt.gb)
 
