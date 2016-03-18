@@ -110,9 +110,8 @@ namespace yagbe
 				tile_x %= tilemap_size().x;
 				tile_y %= tilemap_size().y;
 
-				info.reset_tile_offset_to = tile_offset_from({0, p.y});
-				info.reset_tile_offset_at = tile_offset_from({ tilemap_pixel_size().x, p.y });
-
+				info.reset_tile_offset_to = tile_offset_from({0, pix_y});
+				info.reset_tile_offset_at = info.reset_tile_offset_to + tilemap_size().x;
 			}
 			else
 			{
@@ -154,26 +153,32 @@ namespace yagbe
 			if (!enabled())
 				return false;
 
-			auto render_info = render_info_at_point({ 0, line_index });
+			render_info rinfo = render_info_at_point({ 0, line_index });
+			render_info prinfo;
+
+			if (_parent_tilemap && _parent_tilemap->enabled())
+				prinfo = _parent_tilemap->render_info_at_point({ 0, line_index });
 
 			for (int i = 0; i < width; i++)
 			{
 				if (_parent_tilemap && _parent_tilemap->enabled())
 				{
-					auto palette_index = _parent_tilemap->palette_at_point({ i, line_index });
+					auto palette_index = prinfo.palette_at_current_pixel();
 					if (palette_index != -1)
 					{
 						line[i] = color_of_index(palette_index);
 
-						render_info.advance_x();
+						rinfo.advance_x();
+						prinfo.advance_x();
 						continue;
 					}
 				}
 
-				auto palette_index = render_info.palette_at_current_pixel();
+				auto palette_index = rinfo.palette_at_current_pixel();
 				if (palette_index != -1)
 					line[i] = color_of_index(palette_index);
-				render_info.advance_x();
+				rinfo.advance_x();
+				prinfo.advance_x();
 			}
 
 			return true;
