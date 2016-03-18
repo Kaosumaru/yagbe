@@ -13,7 +13,7 @@ namespace yagbe
 
 		void step(uint32_t delta_tclock, uint32_t cycles_elapsed)
 		{
-			_m.io_register.DIV = cycles_elapsed / 16;
+			_m.io_register.DIV = cycles_elapsed / 256;
 
 			if (!_m.io_register.TAC_running)
 				return;
