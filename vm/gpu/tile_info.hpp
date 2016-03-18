@@ -19,7 +19,7 @@ namespace yagbe
 			auto b1 = bit{ row.byte[0], x } ? 1 : 0;
 			auto b2 = bit{ row.byte[1], x } ? 1 : 0;
 
-			return b1 << 1 | b2;
+			return b1 | b2 << 1;
 		}
 	};
 };

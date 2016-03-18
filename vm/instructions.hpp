@@ -75,7 +75,9 @@ namespace instructions
 		static int execute(context &c)
 		{
 			c.read_byte();
+#ifdef _DEBUG
 			throw std::runtime_error("NYI");
+#endif
 			return STOP::cycles();
 		}
 	};

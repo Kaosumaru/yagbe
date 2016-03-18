@@ -148,7 +148,7 @@ namespace yagbe
 		color color_of_index(sprite_info& sprite, uint8_t i)
 		{
 			auto raw_palette = sprite.palette_index() == 0 ? _m.io_register.OBP0 : _m.io_register.OBP1;
-			return sprite_palette_entry{ raw_palette }.color(i);
+			return palette_entry{ raw_palette }.color(i);
 		}
 
 
