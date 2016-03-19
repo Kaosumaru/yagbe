@@ -30,6 +30,7 @@ namespace yagbe
 			render_info() {}
 			bool visible = true;
 
+			int visible_in = 0;
 			int tile_offset;
 			int in_tile_y;
 			int in_tile_x;
@@ -42,8 +43,13 @@ namespace yagbe
 			tile_info *tile_set_pointer;
 			int tile_set_index;
 
-			int palette_at_current_pixel() const 
+			int palette_at_current_pixel()
 			{
+				if (visible_in > 0)
+				{
+					visible_in--;
+					return -1;
+				}
 				if (!visible)
 					return -1;
 				auto info = current_tile();
@@ -83,16 +89,6 @@ namespace yagbe
 		};
 
 
-		auto tile_offset_from(const ipoint& p)
-		{
-			//auto off = offset();
-			int pix_x = p.x;// +off.x;
-			int pix_y = p.y;// +off.y;
-
-			int tile_x = (pix_x / tile_size().x);
-			int tile_y = (pix_y / tile_size().y);
-			return tile_x + tile_y * tilemap_size().x;
-		}
 
 		auto render_info_at_point(const ipoint& p)
 		{
@@ -110,13 +106,17 @@ namespace yagbe
 				tile_x %= tilemap_size().x;
 				tile_y %= tilemap_size().y;
 
-				info.reset_tile_offset_to = tile_offset_from({0, pix_y});
+				info.reset_tile_offset_to = tile_y * tilemap_size().x;
 				info.reset_tile_offset_at = info.reset_tile_offset_to + tilemap_size().x;
 			}
 			else
 			{
-				if (pix_x < 0 || tile_x >= tilemap_size().x)
+				if (tile_x >= tilemap_size().x)
 					info.visible = false;
+
+				if (pix_x < 0)
+					info.visible_in = -pix_x;
+
 				if (pix_y < 0 || tile_y >= tilemap_size().y)
 					info.visible = false;
 
@@ -134,17 +134,12 @@ namespace yagbe
 			return info;
 		}
 
-		int palette_at_render_info(const render_info& p)
-		{
-			return p.palette_at_current_pixel();
-		}
 
 		int palette_at_point(const ipoint& p)
 		{
 			auto info = render_info_at_point(p);
 			return info.palette_at_current_pixel();
 		}
-
 
 
 
@@ -159,30 +154,48 @@ namespace yagbe
 			if (_parent_tilemap && _parent_tilemap->enabled())
 				prinfo = _parent_tilemap->render_info_at_point({ 0, line_index });
 
-			for (int i = 0; i < width; i++)
+
+			bool parent_tilemap_enabled_in_row = _parent_tilemap && _parent_tilemap->enabled() && prinfo.visible;
+
+			if (parent_tilemap_enabled_in_row)
 			{
-				if (_parent_tilemap && _parent_tilemap->enabled())
+				//render tilemap & window
+				for (int i = 0; i < width; i++)
 				{
 					auto palette_index = prinfo.palette_at_current_pixel();
+
 					if (palette_index != -1)
 					{
 						line[i] = color_of_index(palette_index);
-
-						rinfo.advance_x();
-						prinfo.advance_x();
-						continue;
 					}
-				}
+					else
+					{
+						palette_index = rinfo.palette_at_current_pixel();
+						if (palette_index != -1)
+							line[i] = color_of_index(palette_index);
+					}
 
-				auto palette_index = rinfo.palette_at_current_pixel();
-				if (palette_index != -1)
+					rinfo.advance_x();
+					prinfo.advance_x();
+				}
+			}
+			else
+			{
+				//render tilemap
+				for (int i = 0; i < width; i++)
+				{
+					auto palette_index = rinfo.palette_at_current_pixel();
 					line[i] = color_of_index(palette_index);
-				rinfo.advance_x();
-				prinfo.advance_x();
+					rinfo.advance_x();
+				}
 			}
 
 			return true;
 		}
+
+
+
+
 
 	public:
 
@@ -212,7 +225,7 @@ namespace yagbe
 			return palette_entry{ _m.io_register.BGP }.color(i);
 		}
 
-		int tileset_index()
+		int tileset_index() const
 		{
 			return _m.io_register.LCDC_background_tile_set ? 1 : 0;
 		}
@@ -223,7 +236,7 @@ namespace yagbe
 		}
 
 	protected:
-		tile_info* tileset_pointer()
+		tile_info* tileset_pointer() const
 		{
 			if (tileset_index() == 0)
 				return (tile_info*)_m.raw_pointer_at(0x9000);
