@@ -112,17 +112,11 @@ namespace yagbe
 
 				auto &sprite = **it;
 
-				//ok, we found corresponding sprite, now few checks...
-				if (get_sprite_height() != 8)
-					throw std::runtime_error("NYI");
-
 				if (sprite.below_bg())
 				{
 					if (_tm.palette_at_point({ x, y }) != 0)
 						return;
 				}
-
-				auto tile = tile_at_index(sprite.tile_index);
 
 				int tile_x = x - sprite.screen_x();
 				int tile_y = y - sprite.screen_y();
@@ -130,7 +124,26 @@ namespace yagbe
 				if (sprite.is_flipped_x())
 					tile_x = 7 - tile_x;
 				if (sprite.is_flipped_y())
-					tile_y = 7 - tile_y;
+					tile_y = (sprite_height-1) - tile_y;
+
+
+				auto tile_index = sprite.tile_index;
+
+				//handle big sprites
+				if (sprite_height == 16)
+				{
+					if (tile_y <= 7)
+						tile_index &= ~1; //first tile, disable 0 bit
+					else
+					{
+						tile_index |= 1; //second tile, enable 0 bit
+						tile_y -= 8;
+					}
+						
+				}
+
+
+				auto tile = tile_at_index(tile_index);
 
 				auto palette_index = tile->palette_index_at(tile_x, tile_y);
 				if (palette_index == 0)
