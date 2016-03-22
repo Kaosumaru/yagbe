@@ -439,7 +439,6 @@ namespace instructions
 	};
 
 
-	//sigh... this add DOESN'T set n flag
 	template<>
 	struct ADD<SP, r8_as_word> : default_instruction<1, 4>
 	{
