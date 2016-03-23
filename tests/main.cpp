@@ -128,6 +128,22 @@ const lest::test specification[] =
 		EXPECT(test_opus5());
 	},
 
+	CASE("INC")
+	{
+		context ctx;
+
+		{
+			ctx.registers.b = 1;
+			ctx.registers.c = 2;
+			using inc_bc = INC<BC>;
+			inc_bc::execute(ctx);
+			EXPECT(ctx.registers.b == 1);
+			EXPECT(ctx.registers.c == 3);
+		}
+
+
+	},
+
 	CASE("LD")
 	{
 		context ctx;

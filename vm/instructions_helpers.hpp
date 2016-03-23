@@ -333,6 +333,20 @@ namespace instructions
 		constexpr static int size_of = 2;
 		constexpr static int is_pointer = 0;
 
+		static auto get(context &c) 
+		{ 
+			int16_t temp_var = (int8_t)c.read_byte();
+			uint16_t v  = (c.registers.sp + temp_var) & 0xFFFF;
+			temp_var = c.registers.sp ^ temp_var ^ v;
+
+			c.flags.c = ((temp_var & 0x100) == 0x100);
+			c.flags.h = ((temp_var & 0x10) == 0x10);
+			c.flags.z = false;
+			c.flags.n = false;
+
+			return v; 
+		}
+
 	};
 
 	//conditions

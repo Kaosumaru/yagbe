@@ -271,30 +271,6 @@ namespace instructions
 		}
 	};
 
-	//specialized LD<d16_pointer, SP> LD HL,SP+r8
-	template<>
-	struct LD<HL, SP_p_r8> : default_instruction<2, 12>
-	{
-		static int execute(context &c)
-		{
-			int16_t temp_var = (int8_t)c.read_byte();
-
-			c.registers.hl = (c.registers.sp + temp_var) & 0xFFFF;
-
-			temp_var = c.registers.sp ^ temp_var ^ c.registers.hl;
-			c.flags.c = ((temp_var & 0x100) == 0x100);
-			c.flags.h = ((temp_var & 0x10) == 0x10);
-			c.flags.z = false;
-			c.flags.n = false;
-
-			//auto address = c.read_word();
-			//c.memory.write_word_at(address, c.registers.sp);
-			return LD::cycles();
-		}
-	};
-
-
-
 	//PUSH
 	template<typename Arg>
 	struct PUSH : default_instruction<1, 16>
