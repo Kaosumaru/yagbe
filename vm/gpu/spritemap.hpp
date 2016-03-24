@@ -67,10 +67,14 @@ namespace yagbe
 			if (sprites.empty())
 				return;
 
+			auto current_sprite = sprites.cbegin();
 			for (int x = 0; x < width; x++)
 			{
 				auto &pixel = line[x];
-				fill_pixel_at(x, line_index, pixel, sprites);
+				current_sprite = fill_pixel_at(x, line_index, pixel, sprites, current_sprite);
+
+				if (current_sprite == sprites.cend())
+					return;
 			}
 		}
 
@@ -91,7 +95,7 @@ namespace yagbe
 			return v >= s && v < s + w;
 		}
 
-		void fill_pixel_at(int x, int y, yagbe::color& pixel, const sprite_list& sprites)
+		sprite_list::const_iterator fill_pixel_at(int x, int y, yagbe::color& pixel, const sprite_list& sprites, sprite_list::const_iterator start_sprite)
 		{
 			auto sprite_width = get_sprite_width();
 			auto sprite_height = get_sprite_height();
@@ -101,21 +105,30 @@ namespace yagbe
 				return in_range(s->screen_x(), sprite_width, x);
 			};
 
-
-			auto it = std::find_if(sprites.begin(), sprites.end(), finder);
-
+			auto first_fitting_it = start_sprite;
+			auto it = std::find_if(start_sprite, sprites.end(), finder);
+			
+			if (it != sprites.end())
+				first_fitting_it = it;
+			else
+			{
+				//nothing matches, are we after last sprite?
+				if (x >= sprites.back()->screen_x() + sprite_width)
+					return sprites.cend();
+				return first_fitting_it;
+			}
 
 			while (true)
 			{
 				if (it == sprites.end())
-					return;
+					break;
 
 				auto &sprite = **it;
 
 				if (sprite.below_bg())
 				{
 					if (_tm.palette_at_point({ x, y }) != 0)
-						return;
+						break;
 				}
 
 				int tile_x = x - sprite.screen_x();
@@ -154,8 +167,10 @@ namespace yagbe
 				}
 					
 				pixel = color_of_index(sprite, palette_index);
-				return;;
+				break;
 			}
+
+			return first_fitting_it;
 		}
 
 		color color_of_index(sprite_info& sprite, uint8_t i)
