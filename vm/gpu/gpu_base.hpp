@@ -21,6 +21,7 @@ namespace yagbe
 			scanline_VRAM,
 		};
 
+		constexpr static ipoint screen_size() { return{ 160, 144 }; }
 		constexpr static std::array<int,4> mode_durations() { return{ 204, 456, 80, 172 }; }
 
 		void step(uint32_t delta)

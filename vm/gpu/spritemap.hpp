@@ -23,8 +23,8 @@ namespace yagbe
 
 			uint8_t flags;
 
-			int screen_x() { return (int)sprite_x - 8; }
-			int screen_y() { return (int)sprite_y - 16; }
+			int screen_x() const { return (int)sprite_x - 8; }
+			int screen_y() const { return (int)sprite_y - 16; }
 
 			uint8_t palette_index() const
 			{
@@ -51,6 +51,7 @@ namespace yagbe
 		using sprite_list = std::vector<sprite_info*>;
 
 	public:
+		constexpr static ipoint screen_size() { return{ 160, 144 }; }
 
 		spritemap(memory &m, tilemap& tm) : _m(m), _tm(tm)
 		{
@@ -67,15 +68,54 @@ namespace yagbe
 			if (sprites.empty())
 				return;
 
-			auto current_sprite = sprites.cbegin();
-			for (int x = 0; x < width; x++)
-			{
-				auto &pixel = line[x];
-				current_sprite = fill_pixel_at(x, line_index, pixel, sprites, current_sprite);
 
-				if (current_sprite == sprites.cend())
-					return;
+			auto current_sprite = sprites.cbegin();
+			auto start_x = 0;
+
+
+			while (render_first_visible_sprite(start_x, line_index, current_sprite, sprites, line))
+			{}
+		}
+
+		bool render_first_visible_sprite(int &start_x, int y, sprite_list::const_iterator &start_sprite, const sprite_list& sprites, yagbe::color* line)
+		{
+			auto sprite_width = get_sprite_width();
+			auto sprite_height = get_sprite_height();
+
+			//find next sprite to the right of pixel
+			for (; start_sprite != sprites.end(); ++start_sprite)
+			{
+				if ((*start_sprite)->screen_x() + sprite_width > start_x)
+					break;
+				if ((*start_sprite)->screen_x() >= screen_size().x)
+					return false;
 			}
+
+			if (start_sprite == sprites.end())
+				return false;
+
+
+			//skip start_x to sprite pos if needed
+			auto sprite_pos_x = (*start_sprite)->screen_x();
+			if (sprite_pos_x > start_x)
+				start_x = sprite_pos_x;
+				
+
+			//draw sprite
+			auto this_sprite_end = sprite_pos_x + sprite_width;
+			if (this_sprite_end > screen_size().x)
+				this_sprite_end = screen_size().x;
+
+			for (; start_x < this_sprite_end; start_x++)
+			{
+				auto &pixel = line[start_x];
+				fill_pixel(start_x, y, pixel, sprites, start_sprite);
+			}
+
+			//this sprite is all used up, start with next
+			start_sprite++;
+
+			return start_sprite != sprites.end();
 		}
 
 	protected:
@@ -95,28 +135,17 @@ namespace yagbe
 			return v >= s && v < s + w;
 		}
 
-		sprite_list::const_iterator fill_pixel_at(int x, int y, yagbe::color& pixel, const sprite_list& sprites, sprite_list::const_iterator start_sprite)
+		void fill_pixel(int x, int y, yagbe::color& pixel, const sprite_list& sprites, sprite_list::const_iterator start_sprite)
 		{
 			auto sprite_width = get_sprite_width();
 			auto sprite_height = get_sprite_height();
+
+			auto it = start_sprite;
 
 			auto finder = [&](sprite_info* s)
 			{
 				return in_range(s->screen_x(), sprite_width, x);
 			};
-
-			auto first_fitting_it = start_sprite;
-			auto it = std::find_if(start_sprite, sprites.end(), finder);
-			
-			if (it != sprites.end())
-				first_fitting_it = it;
-			else
-			{
-				//nothing matches, are we after last sprite?
-				if (x >= sprites.back()->screen_x() + sprite_width)
-					return sprites.cend();
-				return first_fitting_it;
-			}
 
 			while (true)
 			{
@@ -127,6 +156,7 @@ namespace yagbe
 
 				if (sprite.below_bg())
 				{
+					//TODO theoretically, next sprite could not be below_bg, and mask this
 					if (_tm.palette_at_point({ x, y }) != 0)
 						break;
 				}
@@ -137,7 +167,7 @@ namespace yagbe
 				if (sprite.is_flipped_x())
 					tile_x = 7 - tile_x;
 				if (sprite.is_flipped_y())
-					tile_y = (sprite_height-1) - tile_y;
+					tile_y = (sprite_height - 1) - tile_y;
 
 
 				auto tile_index = sprite.tile_index;
@@ -152,7 +182,7 @@ namespace yagbe
 						tile_index |= 1; //second tile, enable 0 bit
 						tile_y -= 8;
 					}
-						
+
 				}
 
 
@@ -162,15 +192,17 @@ namespace yagbe
 				if (palette_index == 0)
 				{
 					it++; //this sprite is transparent here, maybe next will fit
-					it = std::find_if(it, sprites.end(), finder);
+					if (it == sprites.end())
+						break;
+					if (!finder(*it))
+						break;
 					continue;
 				}
-					
+
 				pixel = color_of_index(sprite, palette_index);
 				break;
 			}
 
-			return first_fitting_it;
 		}
 
 		color color_of_index(sprite_info& sprite, uint8_t i)

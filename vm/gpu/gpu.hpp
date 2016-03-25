@@ -13,7 +13,7 @@ namespace yagbe
 	class gpu : public gpu_base
 	{
 	public:
-		constexpr static ipoint screen_size() { return{ 160, 144 }; }
+
 
 		gpu(memory &m, interrupts &i) : gpu_base(m, i) {}
 
