@@ -179,7 +179,8 @@ namespace yagbe
 		void serialize(Archive & ar)
 		{
 			//bg, ram
-			ar(cereal::binary_data(data + 0x8000, 0x4000));
+			ar(cereal::binary_data(data + 0x8000, 0x2000));
+			ar(cereal::binary_data(data + 0xC000, 0x2000));
 
 			//oam
 			ar(cereal::binary_data(data + 0xFE00, 0xA0));
