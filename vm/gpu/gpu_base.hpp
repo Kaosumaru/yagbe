@@ -58,11 +58,9 @@ namespace yagbe
 		}
 
 		template <typename Archive>
-		void operator & (Archive& archive)
+		void serialize(Archive & ar)
 		{
-			_line & archive;
-			_mode & archive;
-			_clock & archive;
+			ar(_line, _mode, _clock);
 		}
 	protected:
 		void on_mode_changed()

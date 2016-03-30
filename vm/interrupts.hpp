@@ -28,10 +28,9 @@ namespace yagbe
 		void delay_enable(int steps) { _steps_to_enable = steps == 2 && _steps_to_enable == 2 ? 1 : steps; }
 
 		template <typename Archive>
-		void operator & (Archive& archive)
+		void serialize(Archive & ar)
 		{
-			_steps_to_enable & archive;
-			enabled & archive;
+			ar(_steps_to_enable, enabled);
 		}
 	protected:
 		enum class type

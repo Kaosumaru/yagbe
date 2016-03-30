@@ -82,15 +82,10 @@ struct registers
 	uint16_t pc = 0x100;
 
 	template <typename Archive>
-	void operator & (Archive& archive)
+	void serialize(Archive & ar)
 	{
-		af & archive;
-		cb & archive;
-		de & archive;
-		hl & archive;
-
-		sp & archive;
-		pc & archive;
+		ar(af, bc, de, hl,
+			sp, pc);
 	}
 };
  

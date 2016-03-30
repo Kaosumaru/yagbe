@@ -6,7 +6,7 @@ include(CommonFunctions)
 
 project (yagbe)
 include_directories( ${PROJECT_SOURCE_DIR} )
-
+include_directories( "${PROJECT_SOURCE_DIR}/include" )
 
 option(BUILD_TESTS "Build tests only" OFF)
 option(YAGBE_TRAVIS "On travis" OFF)

@@ -56,11 +56,9 @@ namespace yagbe
 		}
 
 		template <typename Archive>
-		void operator & (Archive& archive)
+		void serialize(Archive & ar)
 		{
-			_tima_increments & archive;
-			_div_increments & archive;
-			_div_speed & archive;
+			ar(_tima_increments, _div_increments, _div_speed);
 		}
 
 	protected:
