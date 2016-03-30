@@ -26,6 +26,13 @@ namespace yagbe
 		int step();
 
 		void delay_enable(int steps) { _steps_to_enable = steps == 2 && _steps_to_enable == 2 ? 1 : steps; }
+
+		template <typename Archive>
+		void operator & (Archive& archive)
+		{
+			_steps_to_enable & archive;
+			enabled & archive;
+		}
 	protected:
 		enum class type
 		{

@@ -90,6 +90,24 @@ namespace yagbe
 		}
 
 		const mbc_handler::pointer& current_mbc_handler() { return _mbc_handler; }
+
+
+		template <typename Archive>
+		void operator & (Archive& archive)
+		{
+			int version = 0;
+			version & archive;
+
+			cycles_elapsed & archive;
+			halted & archive;
+
+			registers & archive;
+			memory & archive;
+			interrupt & archive;
+
+			timer & archive;
+			gpu & archive;
+		}
 	protected:
 		mbc_handler::pointer _mbc_handler;
 	};

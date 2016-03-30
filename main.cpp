@@ -70,9 +70,6 @@ int main(int argc, char * argv[])
 
 	path += "adjtris.gb";
 
-
-
-
 	ctx.gpu.onFrameReady = [&](auto &frame)
 	{
 		renderer.accept_image(frame);

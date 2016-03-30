@@ -29,6 +29,12 @@ namespace yagbe
 		}
 
 		static pointer create_for(rom_info *info, memory& m, std::vector<uint8_t>&& data);
+
+		template <typename Archive>
+		void operator & (Archive &archive)
+		{
+
+		}
 	protected:
 		std::vector<uint8_t> _rom_data;
 		memory& _m;

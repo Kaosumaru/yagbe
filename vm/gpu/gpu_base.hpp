@@ -56,6 +56,14 @@ namespace yagbe
 			_clock = 0;
 			on_mode_changed();
 		}
+
+		template <typename Archive>
+		void operator & (Archive& archive)
+		{
+			_line & archive;
+			_mode & archive;
+			_clock & archive;
+		}
 	protected:
 		void on_mode_changed()
 		{

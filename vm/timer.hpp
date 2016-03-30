@@ -55,6 +55,14 @@ namespace yagbe
 			_div_increments = 0;
 		}
 
+		template <typename Archive>
+		void operator & (Archive& archive)
+		{
+			_tima_increments & archive;
+			_div_increments & archive;
+			_div_speed & archive;
+		}
+
 	protected:
 		//M-Clock = 1,048,576Hz
 

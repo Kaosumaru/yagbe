@@ -173,6 +173,23 @@ namespace yagbe
 		}
 
 		context &c() { return _c; }
+
+		template <typename Archive>
+		void operator & (Archive& archive)
+		{
+			//bg, ram
+			for (auto i = 0x8000; i < 0xC000; i++)
+				data[i] & archive;
+
+			//oam
+			for (auto i = 0xFE00; i < 0xFEA0; i++)
+				data[i] & archive;
+
+			//zero ram
+			for (auto i = 0xFF00; i < 0x10000; i++)
+				data[i] & archive;
+
+		}
 protected:
 		interceptor& interceptor_at(uint16_t address)
 		{
