@@ -31,7 +31,8 @@ void one_iter()
 	frame_drawn = false;
 	while (renderer.step() && !frame_drawn)
 	{
-		ctx.cpu_step();
+		for(int i = 0; i < 10; i ++)
+			ctx.cpu_step();
 	}
 }
 
