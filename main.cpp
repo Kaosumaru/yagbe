@@ -3,11 +3,11 @@
 #include <sstream>
 #include <string>
 #include <map>
-#include <cereal/cereal.hpp>
-#include <cereal/archives/binary.hpp>
+
 
 #include "vm/context.hpp"
 #include "renderer/sdl2_renderer.hpp"
+#include "serializer/serializer.hpp"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -16,11 +16,13 @@ using namespace yagbe;
 
 context ctx;
 sdl2_renderer renderer(gpu::screen_size());
+quicksave_serializer saves(ctx);
+
+
 bool frame_drawn = false;
 bool loaded_rom = false;
 
 
-std::stringstream saves[10];
 
 void one_iter()
 {
@@ -85,22 +87,13 @@ int main(int argc, char * argv[])
 	{
 		if (c == SDLK_1 && v)
 		{
-			saves[0].seekg(0);
-			saves[0].seekp(0);
-
-			saves[0].clear();
-			cereal::BinaryOutputArchive oarchive(saves[0]);
-			oarchive(ctx);
+			saves.save_state(0);
 			return;
 		}
 
 		if (c == SDLK_2 && v)
 		{
-			saves[0].seekg(0);
-			saves[0].seekp(0);
-
-			cereal::BinaryInputArchive iarchive(saves[0]);
-			iarchive(ctx);
+			saves.load_state(0);
 			return;
 		}
 

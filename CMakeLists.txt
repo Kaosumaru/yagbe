@@ -24,6 +24,7 @@ endif(MSVC)
 add_folder(vm)
 add_folder(vm/gpu)
 add_folder(vm/rom)
+add_folder(serializer)
 
 if(YAGBE_TRAVIS)
 	add_definitions(-DYAGBE_TRAVIS)
