@@ -6,7 +6,7 @@ include(CommonFunctions)
 
 project (yagbe)
 include_directories( ${PROJECT_SOURCE_DIR} )
-
+include_directories( "${PROJECT_SOURCE_DIR}/include" )
 
 option(BUILD_TESTS "Build tests only" OFF)
 option(YAGBE_TRAVIS "On travis" OFF)
@@ -24,6 +24,7 @@ endif(MSVC)
 add_folder(vm)
 add_folder(vm/gpu)
 add_folder(vm/rom)
+add_folder(serializer)
 
 if(YAGBE_TRAVIS)
 	add_definitions(-DYAGBE_TRAVIS)

@@ -3,6 +3,7 @@
 #include <functional>
 #include <array>
 #include "io_registers.hpp"
+#include <cereal/cereal.hpp>
 
 namespace yagbe
 {
@@ -173,6 +174,20 @@ namespace yagbe
 		}
 
 		context &c() { return _c; }
+
+		template <typename Archive>
+		void serialize(Archive & ar)
+		{
+			//bg, ram
+			ar(cereal::binary_data(data + 0x8000, 0x2000));
+			ar(cereal::binary_data(data + 0xC000, 0x2000));
+
+			//oam
+			ar(cereal::binary_data(data + 0xFE00, 0xA0));
+
+			//zero ram
+			ar(cereal::binary_data(data + 0xFF00, 0x100));
+		}
 protected:
 		interceptor& interceptor_at(uint16_t address)
 		{

@@ -55,6 +55,12 @@ namespace yagbe
 			_div_increments = 0;
 		}
 
+		template <typename Archive>
+		void serialize(Archive & ar)
+		{
+			ar(_tima_increments, _div_increments, _div_speed);
+		}
+
 	protected:
 		//M-Clock = 1,048,576Hz
 

@@ -90,6 +90,33 @@ namespace yagbe
 		}
 
 		const mbc_handler::pointer& current_mbc_handler() { return _mbc_handler; }
+
+
+
+
+		template<class Archive>
+		void save(Archive & ar) const
+		{
+			ar(cycles_elapsed, halted,
+				registers, memory, interrupt,
+				timer, gpu
+				);
+
+			if (_mbc_handler)
+				_mbc_handler->save(ar);
+		}
+
+		template<class Archive>
+		void load(Archive & ar)
+		{
+			ar(cycles_elapsed, halted,
+				registers, memory, interrupt,
+				timer, gpu
+				);
+
+			if (_mbc_handler)
+				_mbc_handler->load(ar);
+		}
 	protected:
 		mbc_handler::pointer _mbc_handler;
 	};

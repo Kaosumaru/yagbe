@@ -57,6 +57,12 @@ namespace yagbe
 			_clock = 0;
 			on_mode_changed();
 		}
+
+		template <typename Archive>
+		void serialize(Archive & ar)
+		{
+			ar(_line, _mode, _clock);
+		}
 	protected:
 		void on_mode_changed()
 		{

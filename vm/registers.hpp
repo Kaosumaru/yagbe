@@ -80,6 +80,13 @@ struct registers
  
 	uint16_t sp = 0xFFFE;
 	uint16_t pc = 0x100;
+
+	template <typename Archive>
+	void serialize(Archive & ar)
+	{
+		ar(af, bc, de, hl,
+			sp, pc);
+	}
 };
  
 

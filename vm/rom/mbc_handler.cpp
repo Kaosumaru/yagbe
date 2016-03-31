@@ -1,9 +1,16 @@
+#include <cereal/types/memory.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/archives/binary.hpp>
+
 #include "mbc_handler.hpp"
 #include "vm/utils.hpp"
 #include <set>
+#include <sstream>
+
+
 
 using namespace yagbe;
-
 
 class mbc_handler_0 : public mbc_handler
 {
@@ -42,6 +49,18 @@ class generic_mbc_handler : public mbc_handler
 	{
 		*(address_of_current_ram_bank() + (int)address - ram_offset()) = byte;
 	}
+
+public:
+	void load(cereal::BinaryInputArchive& ar) override
+	{
+		ar(_ram_bank, _selected_rom_bank, _ram_banks);
+	}
+
+	void save(cereal::BinaryOutputArchive& ar) const override
+	{
+		ar(_ram_bank, _selected_rom_bank, _ram_banks);
+	}
+
 
 protected:
 	virtual void select_rom_bank(int bank) 
@@ -124,6 +143,17 @@ class mbc1_handler : public generic_mbc_handler
 		}
 	}
 
+	void load(cereal::BinaryInputArchive& ar) override
+	{
+		generic_mbc_handler::load(ar);
+		ar(_rom_mode, _rom_bank_temp, _ram_enabled);
+	}
+
+	void save(cereal::BinaryOutputArchive& ar) const override
+	{
+		generic_mbc_handler::save(ar);
+		ar(_rom_mode, _rom_bank_temp, _ram_enabled);
+	}
 
 
 
@@ -143,6 +173,7 @@ protected:
 
 	bool _ram_enabled = false;
 };
+
 
 
 
@@ -174,6 +205,18 @@ class mbc3_handler : public generic_mbc_handler
 		}
 	}
 
+public:
+	void load(cereal::BinaryInputArchive& ar) override
+	{
+		generic_mbc_handler::load(ar);
+		ar(_rom_bank_temp, _ram_enabled, _ram_bank);
+	}
+
+	void save(cereal::BinaryOutputArchive& ar) const override
+	{
+		generic_mbc_handler::save(ar);
+		ar(_rom_bank_temp, _ram_enabled, _ram_bank);
+	}
 protected:
 
 
@@ -182,6 +225,7 @@ protected:
 	bool _ram_enabled = false;
 	int _ram_bank = 0;
 };
+
 
 mbc_handler::pointer mbc_handler::create_for(rom_info *info, memory& m, std::vector<uint8_t>&& data)
 {

@@ -4,8 +4,10 @@
 #include <string>
 #include <map>
 
+
 #include "vm/context.hpp"
 #include "renderer/sdl2_renderer.hpp"
+#include "serializer/serializer.hpp"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -14,8 +16,13 @@ using namespace yagbe;
 
 context ctx;
 sdl2_renderer renderer(gpu::screen_size());
+quicksave_serializer saves(ctx);
+
+
 bool frame_drawn = false;
 bool loaded_rom = false;
+
+
 
 void one_iter()
 {
@@ -70,9 +77,6 @@ int main(int argc, char * argv[])
 
 	path += "adjtris.gb";
 
-
-
-
 	ctx.gpu.onFrameReady = [&](auto &frame)
 	{
 		renderer.accept_image(frame);
@@ -81,6 +85,18 @@ int main(int argc, char * argv[])
 
 	renderer.onKeyChanged = [&](SDL_Keycode c, bool v)
 	{
+		if (c == SDLK_1 && v)
+		{
+			saves.save_state(0);
+			return;
+		}
+
+		if (c == SDLK_2 && v)
+		{
+			saves.load_state(0);
+			return;
+		}
+
 		auto it = keys.find(c);
 		if (it != keys.end())
 			ctx.key_handler.set_key(it->second, v);

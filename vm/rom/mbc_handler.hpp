@@ -29,6 +29,18 @@ namespace yagbe
 		}
 
 		static pointer create_for(rom_info *info, memory& m, std::vector<uint8_t>&& data);
+
+		virtual void load(cereal::BinaryInputArchive& ar)
+		{
+
+		}
+
+		virtual void save(cereal::BinaryOutputArchive& ar) const
+		{
+
+		}
+
+
 	protected:
 		std::vector<uint8_t> _rom_data;
 		memory& _m;
