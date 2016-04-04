@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
 			if (rom_info)
 			{
 				loaded_rom = true;
-				std::cout << "Loaded OK, name: " << rom_info->title << std::endl;
+				std::cout << "Loaded OK, name: " << rom_info->game_title() << std::endl;
 				return;
 			}
 			std::cout << "Loading failed" << std::endl;

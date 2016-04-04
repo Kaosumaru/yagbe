@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <string>
 
 namespace yagbe
 {
@@ -10,7 +11,10 @@ namespace yagbe
 		uint32_t entry_point;
 		uint8_t logo[48];
 
-		uint8_t title[16];
+		uint8_t title[11];
+		uint8_t game_code[4];
+		uint8_t cgb_support;
+
 		uint8_t publisher[2];
 
 		uint8_t sgc;
@@ -26,7 +30,11 @@ namespace yagbe
 		uint8_t  header_checksum;
 		uint16_t rom_checksum;
 
-		int rom_size_bytes() { return (32 * 1024) << rom_size_flag; }
+		int rom_size_bytes() const { return (32 * 1024) << rom_size_flag; }
+
+		std::string game_title() const { return { (char*)title, 11 }; }
+		bool supports_cgb() const { return cgb_support == 0x80 || requires_cgb(); }
+		bool requires_cgb() const { return cgb_support == 0xC0; }
 	};
 
 	static_assert(sizeof(rom_info) == 80, "Wrong size, padding?");

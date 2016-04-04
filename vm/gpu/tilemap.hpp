@@ -202,6 +202,7 @@ namespace yagbe
 		//those are different for bg, and different for window
 		bool enabled()
 		{
+			//GBC TODO: BG always on
 			return !_window_mode ? (bool)_m.io_register.LCDC_background : (bool)_m.io_register.LCDC_window;
 		}
 

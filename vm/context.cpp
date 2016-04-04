@@ -8,7 +8,7 @@ using namespace yagbe;
 
 void context::reset()
 {
-	registers.a = 0x01;
+	registers.a = is_cbg() ? 0x11 : 0x01;
 	registers.f = 0xb0;
 	registers.b = 0x00;
 	registers.c = 0x13;

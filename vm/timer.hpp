@@ -11,6 +11,7 @@ namespace yagbe
 	public:
 		timer(memory &m, interrupts &i) : _m(m), _i(i) {}
 
+		//GBC TODO: operates on different speed
 		void step(uint32_t delta_tclock, uint32_t cycles_elapsed)
 		{
 
