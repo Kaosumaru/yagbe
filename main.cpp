@@ -16,7 +16,12 @@ using namespace yagbe;
 
 context ctx;
 sdl2_renderer renderer(gpu::screen_size());
+
+#ifdef __EMSCRIPTEN__
 quicksave_serializer saves(ctx);
+#else
+filesave_serializer saves(ctx);
+#endif
 
 
 bool frame_drawn = false;

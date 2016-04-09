@@ -2,11 +2,14 @@
 #include <cstdint>
 #include <array>
 #include <sstream>
+#include <fstream>
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/binary.hpp>
 
 #include "vm/context.hpp"
+
+#include <direct.h>
 
 namespace yagbe
 {
@@ -20,7 +23,6 @@ namespace yagbe
 		template<typename Stream>
 		void save(Stream& stream)
 		{
-			stream.seekg(0);
 			stream.seekp(0);
 			stream.clear();
 
@@ -32,7 +34,6 @@ namespace yagbe
 		void load(Stream& stream)
 		{
 			stream.seekg(0);
-			stream.seekp(0);
 			stream.clear();
 
 			cereal::BinaryInputArchive iarchive(stream);
@@ -48,14 +49,16 @@ namespace yagbe
 	public:
 		using serializer::serializer;
 
-		void load_state(int n)
+		bool load_state(int n)
 		{
 			load(_saves[n]);
+			return true;
 		}
 
-		void save_state(int n)
+		bool save_state(int n)
 		{
 			save(_saves[n]);
+			return true;
 		}
 
 	protected:
@@ -65,16 +68,35 @@ namespace yagbe
 	class filesave_serializer : public serializer
 	{
 	public:
-		filesave_serializer(context &c, const std::string& base_path) : serializer(c), _base_path(base_path)
+		filesave_serializer(context &c, const std::string& base_path = "saves/") : serializer(c), _base_path(base_path)
 		{
+			_mkdir(base_path.c_str());
 		}
 
+		bool load_state(int n)
+		{
+			std::ifstream file{ filename_for_index(n), std::ios::binary };
+			if (!file)
+				return false;
+			load(file);
+			return true;
+		}
+
+		bool save_state(int n)
+		{
+			std::ofstream file{ filename_for_index(n), std::ios::binary };
+			if (!file)
+				return false;
+			save(file);
+			return !!file;
+		}
 	protected:
-		auto filename_for_index(int i)
+		std::string filename_for_index(int i)
 		{
 			std::stringstream ss;
 			ss << _base_path;
-			//ss << _c.current_rom_info()->
+			ss << _c.current_rom_info()->game_title() << "." << "sav" << i;
+			return ss.str();
 		}
 
 		std::string _base_path;
