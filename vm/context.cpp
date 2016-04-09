@@ -238,7 +238,7 @@ rom_info* context::load_rom(std::vector<uint8_t>&& data)
 	for (uint16_t a = 0; a < kb_rom_size; a++) //load first 32kb directly into memory, mbc handler is getting full data
 		memory.raw_at(a) = data[a]; 
 
-	auto info = (rom_info*)memory.raw_pointer_at(rom_info::address());
+	auto info = current_rom_info();
 	_mbc_handler = mbc_handler::create_for(info, memory, std::move(data));
 	if (!_mbc_handler)
 		return nullptr;

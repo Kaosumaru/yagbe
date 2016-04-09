@@ -117,6 +117,11 @@ namespace yagbe
 			if (_mbc_handler)
 				_mbc_handler->load(ar);
 		}
+
+		auto current_rom_info()
+		{
+			return (rom_info*)memory.raw_pointer_at(rom_info::address());
+		}
 	protected:
 		mbc_handler::pointer _mbc_handler;
 	};
