@@ -84,18 +84,15 @@ int main(int argc, char * argv[])
 		frame_drawn = true;
 	};
 
-	renderer.onKeyChanged = [&](SDL_Keycode c, bool v)
+	renderer.onKeyChanged = [&](SDL_Keycode c, bool v, const sdl2_renderer::key_info& info)
 	{
-		if (c == SDLK_1 && v)
+		if (c >= SDLK_0 && c <= SDLK_9 && v)
 		{
-			saves.save_state(0);
-			return;
-		}
-
-		if (c == SDLK_2 && v)
-		{
-			saves.load_state(0);
-			return;
+			int index = c - SDLK_0;
+			if (info.shift)
+				saves.save_state(index);
+			else
+				saves.load_state(index);
 		}
 
 		auto it = keys.find(c);

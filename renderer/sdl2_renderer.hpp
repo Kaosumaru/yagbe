@@ -74,7 +74,12 @@ namespace yagbe
 
 		bool running() { return _running; }
 
-		std::function<void(SDL_Keycode, bool)> onKeyChanged;
+		struct key_info
+		{
+			bool shift = false;
+		};
+
+		std::function<void(SDL_Keycode, bool, const key_info&)> onKeyChanged;
 	protected:
 		void accept_raw_image(const uint8_t *input)
 		{
@@ -111,8 +116,12 @@ namespace yagbe
 				if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
 				{
 					auto key_code = e.key.keysym.sym;
+					key_info info;
+					info.shift = (e.key.keysym.mod & KMOD_SHIFT) != 0;
+
 					if (onKeyChanged)
-						onKeyChanged(key_code, e.type == SDL_KEYDOWN);
+						onKeyChanged(key_code, e.type == SDL_KEYDOWN, info);
+					return;
 				}
 			}
 		}
