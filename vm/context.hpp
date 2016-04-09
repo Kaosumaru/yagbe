@@ -21,6 +21,11 @@ namespace yagbe
 
 
 	public:
+		bool is_cbg()
+		{
+			return false;
+		}
+
 		context() : flags(registers.f)
 		{
 			reset();

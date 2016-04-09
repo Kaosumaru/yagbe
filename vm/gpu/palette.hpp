@@ -53,5 +53,20 @@ namespace yagbe
 		uint8_t _entry;
 	};
 
+	class cgb_specific_palette
+	{
+		struct entry
+		{
+			std::array<yagbe::color, 3> color;
+		};
+
+	};
+
+	class palette
+	{
+	public:
+		
+	};
+
 
 };

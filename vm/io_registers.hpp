@@ -36,7 +36,7 @@ namespace yagbe
 		//FF10-FF40 - music
 
 
-		uint8_t &LCDC{ _a[0xFF40] }; //X R/W LCD Control
+		uint8_t &LCDC{ _a[0xFF40] }; //R/W LCD Control
 		bit LCDC_background { LCDC, 0 };
 		bit LCDC_sprites { LCDC, 1 };
 		bit LCDC_sprites_size { LCDC, 2 };
@@ -68,8 +68,29 @@ namespace yagbe
 		uint8_t &OBP0{ _a[0xFF48] }; //R/W Object Palette 0 Data
 		uint8_t &OBP1{ _a[0xFF49] }; //R/W Object Palette 1 Data
 
-		uint8_t &WY{ _a[0xFF4A] }; //X R/W Window Y Position
-		uint8_t &WX{ _a[0xFF4B] }; //X R/W Window X Position
+		uint8_t &WY{ _a[0xFF4A] }; //R/W Window Y Position
+		uint8_t &WX{ _a[0xFF4B] }; //R/W Window X Position
+
+		//cbg
+		uint8_t &KEY1{ _a[0xFF4D] }; //X cpu speed
+		uint8_t &VBK{ _a[0xFF4F] }; //X vram bank
+
+		uint8_t &HDMA1{ _a[0xFF51] }; //X HDMA1
+		uint8_t &HDMA2{ _a[0xFF52] }; //X HDMA2
+		uint8_t &HDMA3{ _a[0xFF53] }; //X HDMA3
+		uint8_t &HDMA4{ _a[0xFF54] }; //X HDMA4
+		uint8_t &HDMA5{ _a[0xFF55] }; //X HDMA5
+
+		uint8_t &RP{ _a[0xFF56] }; //X infrared
+
+		uint8_t &BCPS{ _a[0xFF68] }; //X palette BG write spec
+		uint8_t &BCPD{ _a[0xFF69] }; //X palette BG write data
+
+		uint8_t &OCPS{ _a[0xFF6A] }; //X palette OBJ write spec
+		uint8_t &OCPD{ _a[0xFF6B] }; //X palette OBJ write data
+
+		uint8_t &SVBK{ _a[0xFF70] }; //X WRAM bank spec
+
 
 		uint8_t &IE{ _a[0xFFFF] }; //R/W interrupt enable
 
