@@ -18,9 +18,9 @@ context ctx;
 sdl2_renderer renderer(gpu::screen_size());
 
 #ifdef __EMSCRIPTEN__
-quicksave_serializer saves(ctx);
+emscripten_serializer saves(ctx);
 #else
-filesave_serializer saves(ctx);
+quicksave_serializer saves(ctx);
 #endif
 
 
@@ -138,6 +138,7 @@ int main(int argc, char * argv[])
 		auto rom_info = ctx.load_rom(path);
 		if (!rom_info)
 			return -1;
+		std::cout << "Loaded built-in OK, name: " << rom_info->game_title() << std::endl;
 		loaded_rom = ctx.load_rom(path);
 	}
 		
