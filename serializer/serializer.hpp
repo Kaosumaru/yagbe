@@ -14,8 +14,11 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #else
-#if 0
+#if _WIN32
 #include <direct.h>
+#else
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 #endif
 
@@ -73,13 +76,17 @@ namespace yagbe
 		std::stringstream _saves[10];
 	};
 
-#if 0
+
 	class filesave_serializer : public serializer
 	{
 	public:
 		filesave_serializer(context &c, const std::string& base_path = "saves/") : serializer(c), _base_path(base_path)
 		{
+#if _WIN32
 			_mkdir(base_path.c_str());
+#else
+			mkdir(base_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
 		}
 
 		bool load_state(int n)
@@ -110,7 +117,7 @@ namespace yagbe
 
 		std::string _base_path;
 	};
-#endif	
+
 
 #ifdef __EMSCRIPTEN__
 	class emscripten_serializer : public serializer
