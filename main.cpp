@@ -20,7 +20,7 @@ sdl2_renderer renderer(gpu::screen_size());
 #ifdef __EMSCRIPTEN__
 emscripten_serializer saves(ctx);
 #else
-quicksave_serializer saves(ctx);
+filesave_serializer saves(ctx);
 #endif
 
 
