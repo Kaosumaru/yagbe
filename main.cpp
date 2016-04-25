@@ -3,7 +3,8 @@
 #include <sstream>
 #include <string>
 #include <map>
-
+#include <set>
+#include <iomanip> 
 
 #include "vm/context.hpp"
 #include "renderer/sdl2_renderer.hpp"
@@ -29,6 +30,70 @@ bool loaded_rom = false;
 
 
 
+std::ofstream iterfile{ "d:/sl/iter.txt" };
+int ix = 409;
+
+void log_more()
+{
+	if (ix != 0)
+	{
+
+		iterfile << std::hex << std::setw(2) << std::setfill('0') << (int)ctx.registers.pc << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.sp << " "
+
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.a << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.b << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.c << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.d << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.e << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.h << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.l << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.registers.f << " "
+			<< std::setw(2) << std::setfill('0') << (int)ctx.cycles_elapsed / 4
+
+			<< "\n";
+		//iterfile << ctx.registers.pc << "\n";
+	}
+
+	if (ctx.registers.pc == 0x3c)
+	{
+		ix = 0;
+		iterfile.close();
+	}
+}
+
+
+void log_tst()
+{
+	if (ix <= 0)
+	{
+		iterfile.close();
+		return;
+	}
+
+	static std::set<int> all;
+
+	if (!all.insert(ctx.registers.pc).second)
+		return;
+
+	iterfile << std::hex << ctx.registers.pc 
+		<< " " << (int)ctx.registers.a
+		<< " " << (int)ctx.registers.b
+		<< " " << (int)ctx.registers.c
+		<< " " << (int)ctx.registers.d
+		<< " " << (int)ctx.registers.e
+		<< " " << (int)ctx.registers.h 
+		<< " " << (int)ctx.registers.l
+		<< " " << (int)ctx.registers.f
+		<< " " << (int)(ctx.registers.sp >> 8)
+		<< " " << (int)(ctx.registers.sp & 0xFF)
+		<< " " << (int)ctx.memory.at(0x9800)
+		<< "\n";
+	ix--;
+}
+
+
+
 void one_iter()
 {
 	if (!loaded_rom)
@@ -36,8 +101,19 @@ void one_iter()
 	frame_drawn = false;
 	while (renderer.step() && !frame_drawn)
 	{
-		for(int i = 0; i < 10; i ++)
+		for (int i = 0; i < 10; i++)
+		{
+			//log_more()
+			log_tst();
+			if (ctx.registers.pc == 0xc0c3)
+			{
+				int a = 6; 
+				a++;
+			}
+				
 			ctx.cpu_step();
+
+		}
 	}
 }
 
@@ -58,7 +134,7 @@ int main(int argc, char * argv[])
 
 	std::string path = YAGBE_ROMS;
 
-	//path += "../test_roms/individual/01-special.gb"; //PASSED
+	path += "../test_roms/individual/01-special.gb"; //PASSED
 	//path += "../test_roms/individual/02-interrupts.gb"; //PASSED
 	//path += "../test_roms/individual/03-op sp,hl.gb"; //PASSED
 
@@ -81,7 +157,7 @@ int main(int argc, char * argv[])
 	//path += "hangman.gb";
 	//path += "sml.gb";
 
-	path += "adjtris.gb";
+	//path += "../test_roms/opus5.gb";
 
 	ctx.gpu.onFrameReady = [&](auto &frame)
 	{
