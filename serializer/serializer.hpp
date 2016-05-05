@@ -77,6 +77,7 @@ namespace yagbe
 	};
 
 
+#ifndef __EMSCRIPTEN__
 	class filesave_serializer : public serializer
 	{
 	public:
@@ -117,7 +118,7 @@ namespace yagbe
 
 		std::string _base_path;
 	};
-
+#endif
 
 #ifdef __EMSCRIPTEN__
 	class emscripten_serializer : public serializer
