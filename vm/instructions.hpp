@@ -286,7 +286,7 @@ namespace instructions
 
 	//POP
 	template<typename Arg>
-	struct POP : default_instruction<1, 16>
+	struct POP : default_instruction<1, 12>
 	{
 		static_assert(unwrap<Arg>::size_of == 2, "Assuming word");
 
@@ -298,7 +298,7 @@ namespace instructions
 	};
 
 	template<>
-	struct POP<AF> : default_instruction<1, 16>
+	struct POP<AF> : default_instruction<1, 12>
 	{
 		static_assert(unwrap<AF>::size_of == 2, "Assuming word");
 

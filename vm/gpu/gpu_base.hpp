@@ -63,6 +63,14 @@ namespace yagbe
 		{
 			ar(_line, _mode, _clock);
 		}
+
+		void on_updated_ly_lyc()
+		{
+			_m.io_register.STAT_ly_equals_lyc = _m.io_register.LY == _m.io_register.LYC;
+
+			if (_m.io_register.STAT_interrupt_ly_equals_lyc && _m.io_register.STAT_ly_equals_lyc)
+				_i.lcd_status();
+		}
 	protected:
 		void on_mode_changed()
 		{
@@ -83,10 +91,7 @@ namespace yagbe
 			_line = l;
 			_m.io_register.LY = l;
 
-			_m.io_register.STAT_ly_equals_lyc = l == _m.io_register.LYC;
-
-			if (_m.io_register.STAT_interrupt_ly_equals_lyc && _m.io_register.STAT_ly_equals_lyc)
-				_i.lcd_status();
+			on_updated_ly_lyc();
 				
 		}
 
