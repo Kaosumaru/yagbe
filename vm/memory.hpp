@@ -18,8 +18,8 @@ namespace yagbe
 			//using ReadCallback = std::function<uint8_t(memory &m, uint16_t)>;
 			//using WriteCallback = std::function<void(memory &m, uint16_t, uint8_t)>;
 
-			using ReadCallback = uint8_t(*)(memory &m, uint16_t);
-			using WriteCallback = void(*)(memory &m, uint16_t, uint8_t);
+			using ReadCallback = uint8_t(*)(context &ctx, memory &m, uint16_t);
+			using WriteCallback = void(*)(context &ctx, memory &m, uint16_t, uint8_t);
 
 			ReadCallback  onRead = nullptr;
 			WriteCallback onWrite = nullptr;
@@ -136,7 +136,7 @@ namespace yagbe
 			auto& inter = interceptor_at(address).onRead;
 			if (!inter)
 				return data[address];
-			return inter(*this, address);
+			return inter(_c, *this, address);
 		}
 
 		void write_byte_at(uint16_t address, uint8_t byte)
@@ -145,7 +145,7 @@ namespace yagbe
 			if (!inter)
 				data[address] = byte;
 			else
-				inter(*this, address, byte);
+				inter(_c, *this, address, byte);
 		}
 
 		void write_word_at(uint16_t address, uint16_t word)

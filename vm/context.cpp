@@ -98,14 +98,14 @@ void context::reset()
 	halted = false;
 
 	{
-		auto mbc_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
+		auto mbc_read = [](context &ctx, yagbe::memory &m, uint16_t a) -> uint8_t
 		{
 			if (m.c().current_mbc_handler())
 				return m.c().current_mbc_handler()->handle_read(a);
 			return m.raw_at(a);
 		};
 
-		auto mbc_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
+		auto mbc_write = [](context &ctx, yagbe::memory &m, uint16_t a, uint8_t b)
 		{
 			if (m.c().current_mbc_handler())
 				m.c().current_mbc_handler()->handle_write(a, b);
@@ -115,14 +115,14 @@ void context::reset()
 	}
 
 	{
-		auto mbc_ram_read = [](yagbe::memory &m, uint16_t a) -> uint8_t
+		auto mbc_ram_read = [](context &ctx, yagbe::memory &m, uint16_t a) -> uint8_t
 		{
 			if (m.c().current_mbc_handler())
 				return m.c().current_mbc_handler()->handle_ram_read(a);
 			return m.raw_at(a);
 		};
 
-		auto mbc_ram_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
+		auto mbc_ram_write = [](context &ctx, yagbe::memory &m, uint16_t a, uint8_t b)
 		{
 			if (m.c().current_mbc_handler())
 				m.c().current_mbc_handler()->handle_ram_write(a, b);
@@ -136,8 +136,8 @@ void context::reset()
 
 
 	{
-		auto shadow_read = [](yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };
-		auto shadow_write = [](yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
+		auto shadow_read = [](context &ctx, yagbe::memory &m, uint16_t a) -> uint8_t { return m.read_at(a - 0x2000); };
+		auto shadow_write = [](context &ctx, yagbe::memory &m, uint16_t a, uint8_t b) { return m.write_byte_at(a - 0x2000, b); };
 
 		memory.map_interceptors(0xE000, 0xFDFF, shadow_read, shadow_write); //resetting shadow RAM interceptors
 	}
@@ -153,7 +153,7 @@ void context::reset()
 
 	io_write_masks[0x07] = 0b0111; //FF07 TAC has 3 writable bits
 
-	auto zero_write = [](yagbe::memory &m, uint16_t a, uint8_t b)
+	auto zero_write = [](context &ctx, yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		//DMA
 		if (a == 0xFF46)
@@ -162,6 +162,14 @@ void context::reset()
 			auto *dst = m.raw_pointer_at(0xFE00);
 			std::copy(src, src + 4 * 40, dst);
 
+			return;
+		}
+
+		//LYC
+		if (a == 0xFF45)
+		{
+			m.raw_at(a) = b;
+			ctx.gpu.on_updated_ly_lyc();
 			return;
 		}
 
