@@ -158,7 +158,6 @@ void context::reset()
 		//DMA
 		if (a == 0xFF46)
 		{
-			//throw std::runtime_error("NYI");
 			auto *src = m.raw_pointer_at((int)b*0x100);
 			auto *dst = m.raw_pointer_at(0xFE00);
 			std::copy(src, src + 4 * 40, dst);
