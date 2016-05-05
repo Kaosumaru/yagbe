@@ -14,7 +14,11 @@ void interrupts::reset()
 
 void interrupts::acknowledge_interrupt(type t)
 {
-	_c.memory.io_register.IF |= bit_for_interrupt(t);
+	auto bit = bit_for_interrupt(t);
+	_c.memory.io_register.IF |= bit;
+
+	if ((bit & _c.memory.io_register.IE) != 0)
+		_c.halted = false;
 }
 
 int interrupts::step()
@@ -26,7 +30,7 @@ int interrupts::step()
 	if ((_c.memory.io_register.IF & _c.memory.io_register.IE) == 0)
 		return 0;
 
-	_c.halted = false;
+	
 	if (enabled == 0 )
 		return 0;
 
