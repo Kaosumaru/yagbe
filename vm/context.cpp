@@ -158,10 +158,21 @@ void context::reset()
 		//DMA
 		if (a == 0xFF46)
 		{
+            auto src_address = (int)b * 0x100;
+            auto dest_address = 0xFE00;
+            int size = 4 * 40;
+
+            for (int i = 0; i < size; i++)
+            {
+                auto data = m.read_at(src_address + i);
+                m.write_byte_at(dest_address + i, data);
+            }
+
+#if 0       //this doesn't take banking into account
 			auto *src = m.raw_pointer_at((int)b*0x100);
 			auto *dst = m.raw_pointer_at(0xFE00);
 			std::copy(src, src + 4 * 40, dst);
-
+#endif
 			return;
 		}
 
