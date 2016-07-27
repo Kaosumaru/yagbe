@@ -26,9 +26,19 @@ namespace yagbe
 			int screen_x() const { return (int)sprite_x - 8; }
 			int screen_y() const { return (int)sprite_y - 16; }
 
+            uint8_t cgb_colo_palette() const
+            {
+                return flags & 0b111;
+            }
+
+            uint8_t cgb_character_bank() const
+            {
+                return is_bit_set(flags, 5) ? 1 : 0;
+            }
+
 			uint8_t palette_index() const
 			{
-				return is_bit_set(flags, 4);
+				return is_bit_set(flags, 4) ? 1 : 0;
 			}
 
 			bool is_flipped_x() const

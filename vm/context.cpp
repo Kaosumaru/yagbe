@@ -153,6 +153,13 @@ void context::reset()
 
 	io_write_masks[0x07] = 0b0111; //FF07 TAC has 3 writable bits
 
+
+    io_write_masks[0x51] = 0b11111111; //HDMA1
+    io_write_masks[0x52] = 0b11110000; //HDMA2
+    io_write_masks[0x53] = 0b00011111; //HDMA3
+    io_write_masks[0x54] = 0b11110000; //HDMA4
+
+
 	auto zero_write = [](context &ctx, yagbe::memory &m, uint16_t a, uint8_t b)
 	{
 		//DMA
