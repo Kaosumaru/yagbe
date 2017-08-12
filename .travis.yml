@@ -47,4 +47,4 @@ script:
   - cd build
   - make
   - cd ..
-  - ./build/yagbe -p
+  - ./build/bin/yagbe -p
