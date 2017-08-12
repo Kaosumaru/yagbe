@@ -1,0 +1,3 @@
+[submodule "include/EmTools"]
+	path = include/EmTools
+	url = git@github.com:Kaosumaru/EmTools.git

@@ -77,6 +77,7 @@ namespace yagbe
 		struct key_info
 		{
 			bool shift = false;
+			bool capslock = false;
 		};
 
 		std::function<void(SDL_Keycode, bool, const key_info&)> onKeyChanged;
@@ -108,9 +109,9 @@ namespace yagbe
 		void handle_events()
 		{
 			SDL_Event e;
-			while (SDL_PollEvent(&e)) 
+			while (SDL_PollEvent(&e))
 			{
-				if (e.type == SDL_QUIT) 
+				if (e.type == SDL_QUIT)
 					_running = false;
 
 				if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
@@ -118,6 +119,7 @@ namespace yagbe
 					auto key_code = e.key.keysym.sym;
 					key_info info;
 					info.shift = (e.key.keysym.mod & KMOD_SHIFT) != 0;
+					info.capslock = (e.key.keysym.mod & KMOD_CAPS) != 0;
 
 					if (onKeyChanged)
 						onKeyChanged(key_code, e.type == SDL_KEYDOWN, info);

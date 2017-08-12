@@ -8,6 +8,7 @@
 #include "vm/context.hpp"
 #include "renderer/sdl2_renderer.hpp"
 #include "serializer/serializer.hpp"
+#include "serializer/cloud_serializer.hpp"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -19,6 +20,7 @@ sdl2_renderer renderer(gpu::screen_size());
 
 #ifdef __EMSCRIPTEN__
 emscripten_serializer saves(ctx);
+drive_serializer cloud_saves(ctx);
 #else
 filesave_serializer saves(ctx);
 #endif
@@ -73,7 +75,7 @@ int main(int argc, char * argv[])
 	//path += "../test_roms/individual/09-op r,r.gb"; //PASSED
 
 	//path += "../test_roms/individual/10-bit ops.gb"; //PASSED
-	
+
 	//path += "../test_roms/individual/11-op a,(hl).gb"; //PASSED
 	//path += "../test_roms/instr_timing.gb"; //FAILED, timer doesn't work properly
 
@@ -94,6 +96,18 @@ int main(int argc, char * argv[])
 		if (c >= SDLK_0 && c <= SDLK_9 && v)
 		{
 			int index = c - SDLK_0;
+#ifdef __EMSCRIPTEN__
+			if (info.capslock)
+			{
+				std::cout << "Using cloud saves" << std::endl;
+				if (info.shift)
+					cloud_saves.save_state(index);
+				else
+					cloud_saves.load_state(index);
+				return;
+			}
+#endif
+			std::cout << "Using disk saves" << std::endl;
 			if (info.shift)
 				saves.save_state(index);
 			else
@@ -105,7 +119,7 @@ int main(int argc, char * argv[])
 			ctx.key_handler.set_key(it->second, v);
 	};
 
-	
+
 #ifdef __EMSCRIPTEN__
 	std::cout << "Starting emulator..." << std::endl;
 	if (argc > 1)
@@ -141,7 +155,7 @@ int main(int argc, char * argv[])
 		std::cout << "Loaded built-in OK, name: " << rom_info->game_title() << std::endl;
 		loaded_rom = ctx.load_rom(path);
 	}
-		
+
 
 
 	emscripten_set_main_loop(one_iter, 0, 1);
