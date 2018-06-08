@@ -10,19 +10,71 @@ namespace yagbe
 	{
 		uint8_t *_a;
 	public:
+		struct AudioSquare
+		{
+			unsigned int sweep_shift : 3;
+			unsigned int sweep_negate : 1;
+			unsigned int sweep_time : 3; // X * 128Hz
+			unsigned int : 0;
+
+			unsigned int length_data : 6; // counter for counter_enabled
+			unsigned int waveform_duty : 2; // shape of waveform
+
+			unsigned int envelope_length : 3; // length of envelope steps
+			unsigned int envelope_add_mode : 1; // 0 = decrese, 1 = increase
+			unsigned int envelope_default_volume : 4; // default envelope value
+
+			unsigned int frequency : 11;
+			unsigned int : 3;
+
+			// Counter / Continous Selection	
+			//   0:  Outputs continuous sound regardless of length data in register NR21 (length_data). 
+			//   1 : Outputs sound for the duration specified by the length data in register NR21 (length_data). 
+			//       When sound output is finished, bit 1 of register NR52, the Sound 2 ON flag, is reset.
+			unsigned int counter_enabled : 1; 
+			unsigned int initialize : 1; //Setting this bit to 1 restarts Sound
+		};
+
+		struct VolumeControl
+		{
+			//FF24
+			unsigned int right_volume : 3;
+			unsigned int right_enable : 1;
+
+			unsigned int left_volume : 3;
+			unsigned int left_enable : 1;
+		};
+
+		struct WaveTable
+		{
+			uint8_t * _a;
+		public:
+			WaveTable(uint8_t* a) : _a(a) {}
+
+			uint8_t get(int i)
+			{
+				int in = i / 2;
+				int m = i % 2;
+				auto r = _a[in];
+				r >>= m * 4;
+				return r & 0b1111;
+			}
+		};
+
+
 		io_registers(uint8_t *a) : _a(a)
 		{
 
 		}
 
-		//controls NYI
-		uint8_t &P1{ _a[0xFF00] }; //R/W Register for reading joy pad info and determining system type
+		// controls NYI
+		uint8_t &P1{ _a[0xFF00] }; // R/W Register for reading joy pad info and determining system type
 
-		//serial io NYI
+		// serial io NYI
 		uint8_t &SB{ _a[0xFF01] }; //X R/W Serial transfer data
 		uint8_t &SC{ _a[0xFF02] }; //X R/W SIO control
 
-		//timers NYI
+		// timers NYI
 		uint8_t &DIV{ _a[0xFF04] }; // R/W Divider Register
 		uint8_t &TIMA{ _a[0xFF05] }; // R/W Timer counter
 		uint8_t &TMA{ _a[0xFF06] }; // R/W timer modulo
@@ -30,10 +82,37 @@ namespace yagbe
 
 		bit TAC_running{ TAC, 2 };
 
-		//interrupts
-		uint8_t &IF{ _a[0xFF0F] }; //R/W Interrupt Flag
+		// interrupts
+		uint8_t &IF{ _a[0xFF0F] }; //  R/W Interrupt Flag
 
-		//FF10-FF40 - music
+		// FF10-FF40 - music
+		AudioSquare &AUDIO_square1 { (AudioSquare&)_a[0xFF10] };
+		AudioSquare &AUDIO_square2 { (AudioSquare&)_a[0xFF15] };
+		//sound3
+		//sound4
+
+		VolumeControl &AUDIO_volume { (VolumeControl&)_a[0xFF24] };
+
+		// wave table 0xFF30
+
+		uint8_t &AUDIO_output { _a[0xFF25] };
+		bit AUDIO_s1_to_so1 { AUDIO_output, 0 };
+		bit AUDIO_s2_to_so1 { AUDIO_output, 1 };
+		bit AUDIO_s3_to_so1 { AUDIO_output, 2 };
+		bit AUDIO_s4_to_so1 { AUDIO_output, 3 };
+		bit AUDIO_s1_to_so2 { AUDIO_output, 4 };
+		bit AUDIO_s2_to_so2 { AUDIO_output, 5 };
+		bit AUDIO_s3_to_so2 { AUDIO_output, 6 };
+		bit AUDIO_s4_to_so2 { AUDIO_output, 7 };
+
+		uint8_t &AUDIO_control { _a[0xFF26] };
+		bit AUDIO_s1_enabled { AUDIO_control, 0 };
+		bit AUDIO_s2_enabled { AUDIO_control, 1 };
+		bit AUDIO_s3_enabled { AUDIO_control, 2 };
+		bit AUDIO_s4_enabled { AUDIO_control, 3 };
+		bit AUDIO_all_enabled { AUDIO_control, 7 };
+
+		WaveTable AUDIO_wave_table { _a[0xFF30] };
 
 
 		uint8_t &LCDC{ _a[0xFF40] }; //R/W LCD Control
@@ -42,9 +121,9 @@ namespace yagbe
 		bit LCDC_sprites_size { LCDC, 2 };
 		bit LCDC_background_tile_map { LCDC, 3 };
 		bit LCDC_background_tile_set { LCDC, 4 };
-		bit LCDC_window{ LCDC, 5 }; //NYI
-		bit LCDC_window_tile_map{ LCDC, 6 }; //NYI
-		bit LCDC_display{ LCDC, 7 }; //NYI
+		bit LCDC_window{ LCDC, 5 };
+		bit LCDC_window_tile_map{ LCDC, 6 };
+		bit LCDC_display{ LCDC, 7 };
 
 
 		uint8_t &STAT{ _a[0xFF41] }; //R/W LCDC Status
