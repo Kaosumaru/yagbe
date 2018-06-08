@@ -17,19 +17,24 @@ namespace yagbe
 			unsigned int sweep_time : 3; // X * 128Hz
 			unsigned int : 0;
 
-			unsigned int length_data : 6; // counter for counter_enabled
+			unsigned int sound_length : 6; // counter for counter_enabled, (64 - t1) x (1/256) sec
 			unsigned int waveform_duty : 2; // shape of waveform
 
-			unsigned int envelope_length : 3; // length of envelope steps
+			unsigned int envelope_length : 3; // length of envelope steps, N x (1/64) sec
 			unsigned int envelope_add_mode : 1; // 0 = decrese, 1 = increase
 			unsigned int envelope_default_volume : 4; // default envelope value
 
+			// f = 4194304 / (4 x 2^3 x (2048 - X)) Hz
+			//X = 0<->2047
+			// 0 = 64
+			// 2047 = 131072
+			// Thus, the minimum frequency is 64 Hz and the maximum is 131.1 KHz.
 			unsigned int frequency : 11;
 			unsigned int : 3;
 
 			// Counter / Continous Selection	
-			//   0:  Outputs continuous sound regardless of length data in register NR21 (length_data). 
-			//   1 : Outputs sound for the duration specified by the length data in register NR21 (length_data). 
+			//   0:  Outputs continuous sound regardless of length data in register NR21 (sound_length). 
+			//   1 : Outputs sound for the duration specified by the length data in register NR21 (sound_length). 
 			//       When sound output is finished, bit 1 of register NR52, the Sound 2 ON flag, is reset.
 			unsigned int counter_enabled : 1; 
 			unsigned int initialize : 1; //Setting this bit to 1 restarts Sound
@@ -112,7 +117,7 @@ namespace yagbe
 		bit AUDIO_s4_enabled { AUDIO_control, 3 };
 		bit AUDIO_all_enabled { AUDIO_control, 7 };
 
-		WaveTable AUDIO_wave_table { _a[0xFF30] };
+		WaveTable AUDIO_wave_table { _a + 0xFF30 };
 
 
 		uint8_t &LCDC{ _a[0xFF40] }; //R/W LCD Control

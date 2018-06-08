@@ -86,19 +86,37 @@ namespace yagbe
 	protected:
 		void audio_callback(float* buff, int len) 
 		{
-			static double secondsFromStart = 0;
+			
 			int channels = 2;
 			for (int i = 0; i < len; i += channels)
 			{
 				auto& outLeft = buff[i];
 				auto& outRight = buff[i + 1];
+				
 
-				//one sample is 1/freq of second
-				//so, elapsed time is:
-				secondsFromStart += _audioStep;
+				auto sine = [=](double freq) {
+					static double secondsFromStart = 0;
+					secondsFromStart += _audioStep;
+					return (float)sin(secondsFromStart * freq * M_PI * 2.0);
+				};
 
-				//outLeft = outRight = (float) sin(secondsFromStart * 1000.0 * M_PI * 2.0);
-				outLeft = outRight = 0.0f;
+				auto square = [=](double freq) {
+					static double len = 1.0 / freq / 2.0;
+					static double acc = 0.0;
+					static double v = 0.25;
+					acc += _audioStep;
+					if (acc > len) { acc = 0.0; v = -v; };
+					return v;
+				};
+
+				auto silence = [=]() {
+					return 0.0;
+				};
+
+				//square 1000
+
+
+				outLeft = outRight = (float)silence();
 			}
 		}
 
