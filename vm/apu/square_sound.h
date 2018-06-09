@@ -13,7 +13,11 @@ namespace yagbe
 
 			float time_step(double delta)
 			{
-				set_gb_waveform(_control.waveform_duty);
+				if (_control.initialize)
+				{
+					set_gb_waveform(_control.waveform_duty);
+				}
+				
 				static float cycleOut[2] = {1.0f, -1.0f};
 				auto &currentCycleDuration = _cycleDuration[_cycle];
 
@@ -44,6 +48,7 @@ namespace yagbe
 		protected:
 			void set_waveform(double w1, double w2)
 			{
+				if (_waveForm[0] == w1 && _waveForm[1] == w2) return;
 				_waveForm[0] = w1;
 				_waveForm[1] = w2;
 				set_frequency(_frequency);
@@ -52,8 +57,6 @@ namespace yagbe
 			void set_gb_waveform(int i)
 			{
 				double waveForms[] = {0.125, 0.25, 0.5, 0.75};
-				if (_currentWaveForm == i) return;
-				_currentWaveForm = i;
 				auto l = waveForms[i];
 				set_waveform(l, 1.0 - l);
 			}
@@ -64,7 +67,6 @@ namespace yagbe
 			double _waveForm[2] = {.5, .5};
 			double _cycleDuration[2] = {1.0, 1.0};
 			double _frequency;
-			int    _currentWaveForm = 2;
 		};
 
 		class Sweep
@@ -73,29 +75,29 @@ namespace yagbe
 		public:
 			Sweep(io_registers::AudioSquare& control, bool enabled) : _control(control), _sweepEnabled(enabled) {}
 
+			void initialize()
+			{
+				_sweepAcc = 0.0;
+				_sweepTime = (double)_control.sweep_time * (1.0 / 128.0);
+			}
+
 			// sweep
 			void calculate(double delta)
 			{
-				//TODO not sure that counter may be changed without sending initialize
 				if (_control.initialize)
 				{
-					_sweepAcc = 0.0;
+					initialize();
 				}
 
 				if (!_sweepEnabled) return;
-				if (_control.sweep_time == 0)
-				{
-					_sweepAcc = 0.0;
-					return;
-				}
+				if (_sweepTime == 0) return;
 				int add = _control.sweep_negate ? -1 : 1;
 
-				double sweepTime = (double)_control.sweep_time * (1.0 / 128.0);
-				_sweepAcc += sweepTime;
+				_sweepAcc += delta;
 
-				while (_sweepAcc > sweepTime)
+				while (_sweepAcc > _sweepTime)
 				{
-					_sweepAcc -= sweepTime;
+					_sweepAcc -= _sweepTime;
 				}
 				// NYI
 			}
@@ -103,6 +105,7 @@ namespace yagbe
 			io_registers::AudioSquare& _control;
 			bool _sweepEnabled = false;
 			double _sweepAcc = 0.0;
+			double _sweepTime = 0.0;
 		};
 
 	public:
@@ -127,11 +130,11 @@ namespace yagbe
 		channels_type time_step(double delta)
 		{
 			// Overview:
-			// This channel creates square wave, with given frequency (_squareControl.lfrequency/_squareControl.hfrequency)
-			// You can also change waveform (_squareControl.waveform_duty).
-			// It have own timer (calculate_counter) which can disable sound after certain amount of time.
-			// It also have sweep (only sound1) & envelope function.
-			// envelope function can set volume, and optionally modify (increase/decrease) it in time.
+			// This channel creates square wave, with given frequency (_squareControl.lfrequency/_squareControl.hfrequency) //_frequency
+			// You can also change waveform (_squareControl.waveform_duty) //_generator
+			// It have own timer (calculate_counter) which can disable sound after certain amount of time. //_counter
+			// It also have sweep (only sound1) & envelope function. //_sweep
+			// envelope function can set volume, and optionally modify (increase/decrease) it in time. //_envelope
 
 			_frequency.get([&](double f) {_generator.set_frequency(f); });
 			_sweep.calculate(delta);

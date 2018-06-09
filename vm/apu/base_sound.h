@@ -138,7 +138,7 @@ namespace yagbe
 				// 2047 = 131072
 				// Thus, the minimum frequency is 64 Hz and the maximum is 131.1 KHz.
 
-				//TODO not sure that this may be changed without sending initialize
+				if (_control.initialize) return;
 
 				auto controlFreq = _control.lfrequency + (_control.hfrequency << 8);
 				if (controlFreq == _frequency) return;
