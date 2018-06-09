@@ -7,9 +7,21 @@
 #include "vm/interrupts.hpp"
 #include "vm/apu/square_sound.h"
 #include "vm/apu/wave_sound.h"
+#include "vm/apu/noise_sound.h"
 
 namespace yagbe
 {
+	//TODO
+	// sweep
+	// noise
+	// check if disable flag should stop circuits
+	// check if reset is OK
+	// check obscure behavior
+	// rewrite timings using cycles?
+	// sync to audio
+	// saving state
+	// frequency is probably calculated in other way in wave, thus 2.0 in set_frequency
+
 	class apu
 	{
 	public:
@@ -62,6 +74,12 @@ namespace yagbe
 			mixSound(_sound2);
 			mixSound(_sound3);
 
+			float left = (_m.io_register.AUDIO_volume.left_volume / 7.0f);
+			float right = (_m.io_register.AUDIO_volume.right_volume / 7.0f);
+
+			channels[0] *= left ;
+			channels[1] *= right;
+
 			return channels;
 		}
 
@@ -84,7 +102,7 @@ namespace yagbe
 		square_sound _sound1 { _m.io_register.AUDIO_square1, _m.io_register.AUDIO_s1_enabled, _m.io_register.AUDIO_s1_to_so1, _m.io_register.AUDIO_s1_to_so2, true};
 		square_sound _sound2 { _m.io_register.AUDIO_square2, _m.io_register.AUDIO_s2_enabled, _m.io_register.AUDIO_s2_to_so1, _m.io_register.AUDIO_s2_to_so2, false};
 		wave_sound   _sound3 { _m.io_register.AUDIO_wave, _m.io_register.AUDIO_s3_enabled, _m.io_register.AUDIO_s3_to_so1, _m.io_register.AUDIO_s3_to_so2, _m.io_register.AUDIO_wave_table };
-		//random_sound _sound4; NYI
+		noise_sound  _sound4 { _m.io_register.AUDIO_noise, _m.io_register.AUDIO_s4_enabled, _m.io_register.AUDIO_s4_to_so1, _m.io_register.AUDIO_s4_to_so2 };
 	};
 
 

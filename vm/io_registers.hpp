@@ -88,10 +88,10 @@ namespace yagbe
 		{
 			//FF24
 			unsigned int right_volume : 3;
-			unsigned int right_enable : 1;
+			unsigned int right_enable_vin : 1;
 
 			unsigned int left_volume : 3;
-			unsigned int left_enable : 1;
+			unsigned int left_enable_vin : 1;
 		};
 
 		struct WaveTable

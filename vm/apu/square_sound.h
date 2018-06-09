@@ -96,12 +96,15 @@ namespace yagbe
 				int add = _control.sweep_negate ? -1 : 1;
 
 				_sweepAcc += delta;
+				auto n = _control.sweep_shift;
 
 				while (_sweepAcc > _sweepTime)
 				{
 					_sweepAcc -= _sweepTime;
+					// NYI
+					// freq = freq +- freq / 2^n;
 				}
-				// NYI
+				
 			}
 		protected:
 			io_registers::AudioSquare& _control;
