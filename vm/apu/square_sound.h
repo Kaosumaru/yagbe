@@ -136,7 +136,7 @@ namespace yagbe
 			// It also have sweep (only sound1) & envelope function. //_sweep
 			// envelope function can set volume, and optionally modify (increase/decrease) it in time. //_envelope
 
-			_frequency.get([&](double f) {_generator.set_frequency(f); });
+			_frequency.get([&](double f) { _generator.set_frequency(f); });
 			_sweep.calculate(delta);
 			_counter.step(delta);
 			auto volume = _envelope.get_volume(delta);

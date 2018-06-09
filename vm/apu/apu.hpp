@@ -6,6 +6,7 @@
 #include "vm/memory.hpp"
 #include "vm/interrupts.hpp"
 #include "vm/apu/square_sound.h"
+#include "vm/apu/wave_sound.h"
 
 namespace yagbe
 {
@@ -59,6 +60,7 @@ namespace yagbe
 
 			mixSound(_sound1);
 			mixSound(_sound2);
+			mixSound(_sound3);
 
 			return channels;
 		}
@@ -81,7 +83,7 @@ namespace yagbe
 
 		square_sound _sound1 { _m.io_register.AUDIO_square1, _m.io_register.AUDIO_s1_enabled, _m.io_register.AUDIO_s1_to_so1, _m.io_register.AUDIO_s1_to_so2, true};
 		square_sound _sound2 { _m.io_register.AUDIO_square2, _m.io_register.AUDIO_s2_enabled, _m.io_register.AUDIO_s2_to_so1, _m.io_register.AUDIO_s2_to_so2, false};
-		//wav_sound _sound3; NYI
+		wave_sound   _sound3 { _m.io_register.AUDIO_wave, _m.io_register.AUDIO_s3_enabled, _m.io_register.AUDIO_s3_to_so1, _m.io_register.AUDIO_s3_to_so2, _m.io_register.AUDIO_wave_table };
 		//random_sound _sound4; NYI
 	};
 
