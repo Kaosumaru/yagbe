@@ -23,9 +23,9 @@ namespace yagbe
 			if (!_enabled) return;
 			sample *= _maxVolume;
 			if (_left_enabled)
-				channels[0] = sample;
-			if (_right_enabled)
 				channels[1] = sample;
+			if (_right_enabled)
+				channels[0] = sample;
 		}
 
 	protected:
