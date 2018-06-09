@@ -67,11 +67,49 @@ namespace yagbe
 			int    _currentWaveForm = 2;
 		};
 
+		class Sweep
+		{
+			using Control = io_registers::AudioSquare;
+		public:
+			Sweep(io_registers::AudioSquare& control, bool enabled) : _control(control), _sweepEnabled(enabled) {}
+
+			// sweep
+			void calculate(double delta)
+			{
+				//TODO not sure that counter may be changed without sending initialize
+				if (_control.initialize)
+				{
+					_sweepAcc = 0.0;
+				}
+
+				if (!_sweepEnabled) return;
+				if (_control.sweep_time == 0)
+				{
+					_sweepAcc = 0.0;
+					return;
+				}
+				int add = _control.sweep_negate ? -1 : 1;
+
+				double sweepTime = (double)_control.sweep_time * (1.0 / 128.0);
+				_sweepAcc += sweepTime;
+
+				while (_sweepAcc > sweepTime)
+				{
+					_sweepAcc -= sweepTime;
+				}
+				// NYI
+			}
+		protected:
+			io_registers::AudioSquare& _control;
+			bool _sweepEnabled = false;
+			double _sweepAcc = 0.0;
+		};
+
 	public:
 		square_sound(io_registers::AudioSquare& squareControl, bit e, bit l, bit r, bool sweepEnabled) 
 			: base_sound(e, l, r), 
 			_squareControl(squareControl),
-			_sweepEnabled(sweepEnabled),
+			_sweep(squareControl, sweepEnabled),
 			_counter(squareControl, e),
 			_envelope(squareControl),
 			_frequency(squareControl),
@@ -96,7 +134,7 @@ namespace yagbe
 			// envelope function can set volume, and optionally modify (increase/decrease) it in time.
 
 			_frequency.get([&](double f) {_generator.set_frequency(f); });
-			calculate_sweep(delta);
+			_sweep.calculate(delta);
 			_counter.step(delta);
 			auto volume = _envelope.get_volume(delta);
 
@@ -115,42 +153,12 @@ namespace yagbe
 		}
 
 	protected:
-		// sweep
-		void calculate_sweep(double delta)
-		{
-			//TODO not sure that counter may be changed without sending initialize
-			if (_squareControl.initialize)
-			{
-				_sweepAcc = 0.0;
-			}
 
-			if (!_sweepEnabled) return;
-			if (_squareControl.sweep_time == 0)
-			{
-				_sweepAcc = 0.0;
-				return;
-			}
-			int add = _squareControl.sweep_negate ? -1 : 1;
-
-			double sweepTime = (double)_squareControl.sweep_time * (1.0/128.0);
-			_sweepAcc += sweepTime;
-
-			while (_sweepAcc > sweepTime)
-			{
-				_sweepAcc -= sweepTime;
-			}
-			// NYI
-		}
-		bool _sweepEnabled = false;
-		double _sweepAcc = 0.0;
-		
-
+		io_registers::AudioSquare& _squareControl;
+		Sweep _sweep;
 		Counter<io_registers::AudioSquare>  _counter;
 		Envelope<io_registers::AudioSquare> _envelope;
 		Frequency<io_registers::AudioSquare> _frequency;
 		square_generator _generator;
-
-		io_registers::AudioSquare& _squareControl;
-		
 	};
 };
