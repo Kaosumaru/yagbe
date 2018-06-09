@@ -50,6 +50,8 @@ namespace yagbe
 			base_sound::channels_type channels {0.0, 0.0};
 			if (!_m.io_register.AUDIO_all_enabled) return channels;
 			_sound1.time_step(_sampleDuration, channels);
+			//channels = {0,0};
+			//_sound2.time_step(_sampleDuration, channels);
 
 			return channels;
 		}
@@ -71,6 +73,7 @@ namespace yagbe
 
 
 		square_sound _sound1 { _m.io_register.AUDIO_square1, _m.io_register.AUDIO_s1_enabled, _m.io_register.AUDIO_s1_to_so1, _m.io_register.AUDIO_s1_to_so2};
+		square_sound _sound2 { _m.io_register.AUDIO_square2, _m.io_register.AUDIO_s2_enabled, _m.io_register.AUDIO_s2_to_so1, _m.io_register.AUDIO_s2_to_so2};
 		//square_sound _sound2; NYI
 		//wav_sound _sound3; NYI
 		//random_sound _sound4; NYI

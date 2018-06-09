@@ -192,8 +192,13 @@ void context::reset()
 			return;
 		}
 
-		if (a >= 0xFF10 && a <= 0xFF10)
+		if (a >= 0xFF10 && a <= 0xFF30)
 		{
+			if (a == 0xFF14)
+			{
+				int z = 0;
+				z++;
+			}
 			//sounds, NYI
 			m.raw_at(a) = b;
 			return;

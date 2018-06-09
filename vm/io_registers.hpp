@@ -12,33 +12,31 @@ namespace yagbe
 	public:
 		struct AudioSquare
 		{
+			//BYTE 1
 			unsigned int sweep_shift : 3;
 			unsigned int sweep_negate : 1;
 			unsigned int sweep_time : 3; // X * 128Hz
-			unsigned int : 0;
+			unsigned int : 1;
 
+			//BYTE 2
 			unsigned int sound_length : 6; // counter for counter_enabled, (64 - t1) x (1/256) sec
 			unsigned int waveform_duty : 2; // shape of waveform
 
+			//BYTE 3
 			unsigned int envelope_length : 3; // length of envelope steps, N x (1/64) sec
 			unsigned int envelope_add_mode : 1; // 0 = decrese, 1 = increase
 			unsigned int envelope_default_volume : 4; // default envelope value
 
-			// f = 4194304 / (4 x 2^3 x (2048 - X)) Hz
-			//X = 0<->2047
-			// 0 = 64
-			// 2047 = 131072
-			// Thus, the minimum frequency is 64 Hz and the maximum is 131.1 KHz.
-			unsigned int frequency : 11;
-			unsigned int : 3;
+			//BYTE 4
+			unsigned int lfrequency : 8; // lower byte of frequency
 
-			// Counter / Continous Selection	
-			//   0:  Outputs continuous sound regardless of length data in register NR21 (sound_length). 
-			//   1 : Outputs sound for the duration specified by the length data in register NR21 (sound_length). 
-			//       When sound output is finished, bit 1 of register NR52, the Sound 2 ON flag, is reset.
-			unsigned int counter_enabled : 1; 
+			//BYTE 5
+			unsigned int hfrequency : 3; // higher part of frequency
+			unsigned int : 3;
+			unsigned int counter_enabled : 1; // if 'sound off' counter enabled (will disable sound after sound_length)
 			unsigned int initialize : 1; //Setting this bit to 1 restarts Sound
 		};
+
 
 		struct VolumeControl
 		{
@@ -91,14 +89,14 @@ namespace yagbe
 		uint8_t &IF{ _a[0xFF0F] }; //  R/W Interrupt Flag
 
 		// FF10-FF40 - music
-		AudioSquare &AUDIO_square1 { (AudioSquare&)_a[0xFF10] };
-		AudioSquare &AUDIO_square2 { (AudioSquare&)_a[0xFF15] };
-		//sound3
-		//sound4
+		AudioSquare &AUDIO_square1 { *(AudioSquare*)(_a + 0xFF10) };
+		AudioSquare &AUDIO_square2 { *(AudioSquare*)(_a + 0xFF15) };
+
+		uint8_t &FF14 {_a[0xFF14]};
+		//X sound3
+		//X sound4
 
 		VolumeControl &AUDIO_volume { (VolumeControl&)_a[0xFF24] };
-
-		// wave table 0xFF30
 
 		uint8_t &AUDIO_output { _a[0xFF25] };
 		bit AUDIO_s1_to_so1 { AUDIO_output, 0 };
