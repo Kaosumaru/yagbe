@@ -52,13 +52,13 @@ namespace yagbe
 
 			auto mixSound = [&](auto& sound)
 			{
-				auto sample = _sound1.time_step(_sampleDuration);
+				auto sample = sound.time_step(_sampleDuration);
 				channels[0] += sample[0];
 				channels[1] += sample[1];
 			};
 
 			mixSound(_sound1);
-			//mixSound(_sound2);
+			mixSound(_sound2);
 
 			return channels;
 		}

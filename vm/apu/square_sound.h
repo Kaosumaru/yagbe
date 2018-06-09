@@ -74,7 +74,7 @@ namespace yagbe
 			// It also have sweep (only sound1) & envelope function.
 			// envelope function can set volume, and optionally modify (increase/decrease) it in time.
 
-			channels_type channels;
+			channels_type channels = {0, 0};
 			if (_squareControl.initialize)
 			{
 				reset();
