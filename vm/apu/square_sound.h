@@ -15,6 +15,7 @@ namespace yagbe
 			{
 				if (_control.initialize)
 				{
+					reset();
 					set_gb_waveform(_control.waveform_duty);
 				}
 				
@@ -22,13 +23,13 @@ namespace yagbe
 				auto &currentCycleDuration = _cycleDuration[_cycle];
 
 				_accTime += delta;
-				if (_accTime < currentCycleDuration)
-					return cycleOut[_cycle];
-				
-				_accTime -= currentCycleDuration;
 
-				_cycle++;
-				_cycle %= 2;
+				while (_accTime > currentCycleDuration)
+				{
+					_accTime -= currentCycleDuration;
+					_cycle++;
+					_cycle %= 2;
+				}
 
 				return cycleOut[_cycle];
 			}
@@ -43,6 +44,7 @@ namespace yagbe
 			void reset()
 			{
 				_accTime = 0.0f;
+				_cycle = 0;
 			}
 
 		protected:
@@ -62,11 +64,11 @@ namespace yagbe
 			}
 
 			io_registers::AudioSquare& _control;
-			int    _cycle;
+			int    _cycle = 0;
 			double _accTime = 0.0f;
 			double _waveForm[2] = {.5, .5};
 			double _cycleDuration[2] = {1.0, 1.0};
-			double _frequency;
+			double _frequency = 1.0;
 		};
 
 		class Sweep

@@ -103,7 +103,7 @@ namespace yagbe
 			uint8_t get(int i)
 			{
 				int in = i / 2;
-				int m = i % 2;
+				int m = 1 - (i % 2);
 				auto r = _a[in];
 				r >>= m * 4;
 				return r & 0b1111;

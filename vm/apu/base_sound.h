@@ -20,7 +20,7 @@ namespace yagbe
 
 		void apply_sample_to_output(float sample, channels_type &channels)
 		{
-			if (!_enabled) return;
+			if (!_enabled) return; //TODO probably should pause everything in sound circuit
 			sample *= _maxVolume;
 			if (_left_enabled)
 				channels[1] = sample;

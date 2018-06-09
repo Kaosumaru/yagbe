@@ -5,6 +5,60 @@ namespace yagbe
 {
 	class wave_sound : public base_sound
 	{
+		class wave_generator
+		{
+			using Control = io_registers::AudioWave;
+			static constexpr int SamplesCount = 32;
+		public:
+			wave_generator(io_registers::AudioWave& control) : _control(control) {}
+
+			float time_step(double delta)
+			{
+				if (_control.initialize)
+				{
+					_cycle = 0;
+				}
+
+				static float cycleOut[2] = {1.0f, -1.0f};
+				
+
+				_accTime += delta;
+				while (_accTime > _cycleDuration)
+				{
+					_accTime -= _cycleDuration;
+					_cycle++;
+					_cycle %= SamplesCount;
+				}
+
+
+				
+
+
+
+				return cycleOut[_cycle];
+			}
+
+			void set_frequency(double freq)
+			{
+				_frequency = freq;
+				_cycleDuration = (1.0 / _frequency) / (double)SamplesCount;
+			}
+
+			void reset()
+			{
+				_accTime = 0.0f;
+			}
+
+		protected:
+
+
+			io_registers::AudioWave& _control;
+			int    _cycle = 0;
+			double _accTime = 0.0f;
+			double _waveForm[2] = {.5, .5};
+			double _cycleDuration = 1.0;
+			double _frequency = 1.0;
+		};
 
 	public:
 		wave_sound(io_registers::AudioWave& control, bit e, bit l, bit r)
