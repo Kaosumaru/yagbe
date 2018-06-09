@@ -80,7 +80,7 @@ int main(int argc, char * argv[])
 	//path += "hangman.gb";
 	//path += "sml.gb";
 
-	path += "tetris.gb";
+	path += "adjtris.gb";
 
 	renderer.initialize(ctx);
 
