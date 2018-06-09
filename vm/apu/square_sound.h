@@ -82,11 +82,12 @@ namespace yagbe
 				_soundLength = (64.0 - _squareControl.sound_length) * (1.0 / 256.0);
 				_envelopeVolume = _squareControl.envelope_default_volume;
 				_envAcc = 0.0;
+				_sweepAcc = 0.0;
 				_squareControl.initialize = 0;
 			}
 
 			calculate_frequency();
-			// sweep
+			calculate_sweep(delta);
 			calculate_counter(delta);
 			calculate_waveform();
 			auto volume = calculate_envelope_volume(delta);
@@ -114,11 +115,29 @@ namespace yagbe
 		}
 		int _frequency = 0;
 
-		void calculate_sweep()
+		void calculate_sweep(double delta)
 		{
+			//TODO not sure that counter may be changed without sending initialize
+
 			if (!_sweepEnabled) return;
+			if (_squareControl.sweep_time == 0)
+			{
+				_sweepAcc = 0.0;
+				return;
+			}
+			int add = _squareControl.sweep_negate ? -1 : 1;
+
+			double sweepTime = (double)_squareControl.sweep_time * (1.0/128.0);
+			_sweepAcc += sweepTime;
+
+			while (_sweepAcc > sweepTime)
+			{
+				_sweepAcc -= sweepTime;
+			}
+			// NYI
 		}
 		bool _sweepEnabled = false;
+		double _sweepAcc = 0.0;
 
 		void calculate_counter(double delta)
 		{
