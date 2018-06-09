@@ -113,6 +113,14 @@ namespace yagbe
 
 		}
 
+		uint32_t clock_speed_hz() {
+			return 4194304;
+		}
+
+		double length_of_cycle() {
+			return 1.0 / (double)clock_speed_hz();
+		}
+
 		io_registers io_register{ data };
 
 		memory_address at(uint16_t address)

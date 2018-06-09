@@ -24,7 +24,6 @@ filesave_serializer saves(ctx);
 #endif
 
 
-bool frame_drawn = false;
 bool loaded_rom = false;
 
 
@@ -33,8 +32,8 @@ void one_iter()
 {
 	if (!loaded_rom)
 		return;
-	frame_drawn = false;
-	while (renderer.step() && !frame_drawn)
+	renderer.next_frame();
+	while (renderer.step() && !renderer.frame_drawn())
 	{
 		for(int i = 0; i < 10; i ++)
 			ctx.cpu_step();
@@ -81,13 +80,9 @@ int main(int argc, char * argv[])
 	//path += "hangman.gb";
 	//path += "sml.gb";
 
-	path += "adjtris.gb";
+	path += "tetris.gb";
 
-	ctx.gpu.onFrameReady = [&](auto &frame)
-	{
-		renderer.accept_image(frame);
-		frame_drawn = true;
-	};
+	renderer.initialize(ctx);
 
 	renderer.onKeyChanged = [&](SDL_Keycode c, bool v, const sdl2_renderer::key_info& info)
 	{

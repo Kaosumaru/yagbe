@@ -13,6 +13,7 @@
 
 
 #include "vm/utils.hpp"
+#include "vm/context.hpp"
 
 namespace yagbe
 {
@@ -42,12 +43,33 @@ namespace yagbe
 			SDL_Quit();
 		}
 
+		void initialize(yagbe::context &ctx)
+		{
+			ctx.gpu.onFrameReady = [&](auto& frame)
+			{
+				accept_image(frame);
+			};
+
+			ctx.apu.configure(_audioSpec.freq, _audioSpec.samples / 4);
+			ctx.apu.onSamplesReady = [&](auto&& samples)
+			{
+				accept_samples(std::move(samples));
+			};
+		}
+
+		bool frame_drawn()
+		{
+			return _frame_drawn;
+		}
+
+		void next_frame()
+		{
+			_frame_drawn = false;
+		}
+
 		bool step()
 		{
 			handle_events();
-
-
-
 			return _running;
 		}
 
@@ -73,6 +95,11 @@ namespace yagbe
 				throw std::runtime_error("accept_image wrong size");
 
 			accept_raw_image((uint8_t*)image.data());
+		}
+
+		void accept_samples(const std::vector<float>&& samples)
+		{
+			SDL_QueueAudio(_audio, samples.data(), (Uint32)samples.size() * sizeof(float));
 		}
 
 		bool running() { return _running; }
@@ -122,33 +149,37 @@ namespace yagbe
 
 		void open_audio()
 		{
-			SDL_AudioSpec want, have;
+			SDL_AudioSpec want;
 
+			SDL_memset(&_audioSpec, 0, sizeof(_audioSpec));
 			SDL_memset(&want, 0, sizeof(want)); /* or SDL_zero(want) */
 			want.freq = 48000;
 			want.format = AUDIO_F32;
 			want.channels = 2;
 			want.samples = 4096;
 			want.userdata = this;
-			want.callback = [](void*  userdata, Uint8* stream, int len) 
+			want.callback = nullptr;
+			
+			/*
+			[](void*  userdata, Uint8* stream, int len)
 			{
 				((sdl2_renderer*)userdata)->audio_callback((float*)stream, len/sizeof(float));
-			};
+			};*/
 
 
-			_audio = SDL_OpenAudioDevice(NULL, 0, &want, &have, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+			_audio = SDL_OpenAudioDevice(NULL, 0, &want, &_audioSpec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
 			if (_audio == 0) {
 				SDL_Log("Failed to open audio: %s", SDL_GetError());
 			}
 			else {
-				_audioFrequency = have.freq;
-				_audioStep = 1.0 / (double)_audioFrequency;
+				_audioStep = 1.0 / (double)_audioSpec.freq;
 				SDL_PauseAudioDevice(_audio, 0); /* start audio playing. */
 			}
 		}
 
 		void accept_raw_image(const uint8_t *input)
 		{
+			_frame_drawn = true;
 			auto texture = _texture.get();
 			uint8_t *pixels;
 			int pitch;
@@ -193,12 +224,13 @@ namespace yagbe
 		}
 
 		int _w, _h;
+		bool _frame_drawn = false;
 		const static int channels = 4;
 		std::unique_ptr<SDL_Window, void(*)(SDL_Window*)> _window = { nullptr, SDL_DestroyWindow };
 		std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> _renderer = { nullptr, SDL_DestroyRenderer };
 		std::unique_ptr<SDL_Texture, void(*)(SDL_Texture*)> _texture = { nullptr, SDL_DestroyTexture };
 		SDL_AudioDeviceID _audio = 0;
-		int _audioFrequency = 0;
+		SDL_AudioSpec _audioSpec = {};
 		double _audioStep = 0.0f;
 		bool _running = true;
 	};

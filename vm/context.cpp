@@ -91,6 +91,7 @@ void context::reset()
 
 	interrupt.reset();
 	gpu.reset();
+	apu.reset();
 	timer.reset();
 	_mbc_handler.reset();
 
@@ -276,7 +277,7 @@ rom_info* context::load_rom(std::vector<uint8_t>&& data)
 
 void context::cpu_step()
 {
-	
+
 
 #ifdef TEST_DEBUG
 	auto pc = registers.pc;
@@ -284,26 +285,31 @@ void context::cpu_step()
 
 	int cycles = 4;
 
+	auto passCycles = [&](int c) {
+		cycles_elapsed += c;
+
+		this->gpu.step(c);
+		this->apu.step(c);
+		this->timer.step(c, cycles_elapsed);
+	};
+
 	if (!halted)
 	{
 		auto opcode = read_byte();
 		auto instruction = instructions()[opcode];
-		cycles = instruction(*this);		
+		cycles = instruction(*this);
 	}
 
-	cycles_elapsed += cycles;
 
-	gpu.step(cycles);
-	timer.step(cycles, cycles_elapsed);
+
+	passCycles(cycles);
 	key_handler.step();
 
 	{
 		cycles = interrupt.step();
 		if (cycles)
 		{
-			cycles_elapsed += cycles;
-			gpu.step(cycles);
-			timer.step(cycles, cycles_elapsed);
+			passCycles(cycles);
 		}
 	}
 	

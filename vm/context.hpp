@@ -4,6 +4,7 @@
 #include "interrupts.hpp"
 #include "memory.hpp"
 #include "vm/gpu/gpu.hpp"
+#include "vm/apu/apu.hpp"
 #include "key_handler.hpp"
 #include "timer.hpp"
 #include "rom/rom_info.hpp"
@@ -40,7 +41,8 @@ namespace yagbe
 		yagbe::flags       flags;
 		yagbe::memory      memory{ *this };
 		yagbe::interrupts  interrupt{ *this };
-		yagbe::gpu         gpu { memory, interrupt };
+		yagbe::gpu         gpu{ memory, interrupt };
+		yagbe::apu         apu{ memory };
 		yagbe::timer       timer{ memory, interrupt };
 
 		yagbe::key_handler key_handler{ memory.io_register.P1, interrupt };
