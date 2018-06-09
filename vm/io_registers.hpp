@@ -48,7 +48,7 @@ namespace yagbe
 
 			//BYTE 3
 			unsigned int : 4;
-			unsigned int output_level : 2; // 0 = decrese, 1 = increase
+			unsigned int output_level : 2;
 			unsigned int : 2;
 
 			//BYTE 4

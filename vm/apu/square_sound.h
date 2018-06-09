@@ -109,17 +109,15 @@ namespace yagbe
 		};
 
 	public:
-		square_sound(io_registers::AudioSquare& squareControl, bit e, bit l, bit r, bool sweepEnabled) 
+		square_sound(io_registers::AudioSquare& control, bit e, bit l, bit r, bool sweepEnabled) 
 			: base_sound(e, l, r), 
-			_squareControl(squareControl),
-			_sweep(squareControl, sweepEnabled),
-			_counter(squareControl, e),
-			_envelope(squareControl),
-			_frequency(squareControl),
-			_generator(squareControl)
+			_control(control),
+			_sweep(control, sweepEnabled),
+			_counter(control, e),
+			_envelope(control),
+			_frequency(control),
+			_generator(control)
 		{
-			int x = sizeof(io_registers::AudioSquare);
-			_generator.set_frequency(5000);
 		}
 
 		void reset()
@@ -130,8 +128,8 @@ namespace yagbe
 		channels_type time_step(double delta)
 		{
 			// Overview:
-			// This channel creates square wave, with given frequency (_squareControl.lfrequency/_squareControl.hfrequency) //_frequency
-			// You can also change waveform (_squareControl.waveform_duty) //_generator
+			// This channel creates square wave, with given frequency (_control.lfrequency/_control.hfrequency) //_frequency
+			// You can also change waveform (_control.waveform_duty) //_generator
 			// It have own timer (calculate_counter) which can disable sound after certain amount of time. //_counter
 			// It also have sweep (only sound1) & envelope function. //_sweep
 			// envelope function can set volume, and optionally modify (increase/decrease) it in time. //_envelope
@@ -141,11 +139,11 @@ namespace yagbe
 			_counter.step(delta);
 			auto volume = _envelope.get_volume(delta);
 
-			if (_squareControl.initialize)
+			if (_control.initialize)
 			{
 				reset();
 				_enabled = true;
-				_squareControl.initialize = 0;
+				_control.initialize = 0;
 			}
 
 			channels_type channels = {0, 0};
@@ -157,7 +155,7 @@ namespace yagbe
 
 	protected:
 
-		io_registers::AudioSquare& _squareControl;
+		io_registers::AudioSquare& _control;
 		Sweep _sweep;
 		Counter<io_registers::AudioSquare>  _counter;
 		Envelope<io_registers::AudioSquare> _envelope;
