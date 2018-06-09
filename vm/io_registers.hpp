@@ -74,8 +74,8 @@ namespace yagbe
 
 			//BYTE 3
 			unsigned int poly_division : 3;
-			unsigned int poly_steps : 1;
-			unsigned int poly_frequency : 4;
+			unsigned int poly_width : 1;
+			unsigned int poly_shift : 4;
 
 			//BYTE 4
 			unsigned int : 6;

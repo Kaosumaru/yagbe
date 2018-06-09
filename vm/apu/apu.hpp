@@ -13,7 +13,6 @@ namespace yagbe
 {
 	//TODO
 	// sweep
-	// noise
 	// check if disable flag should stop circuits
 	// check if reset is OK
 	// check obscure behavior
@@ -73,6 +72,7 @@ namespace yagbe
 			mixSound(_sound1);
 			mixSound(_sound2);
 			mixSound(_sound3);
+			mixSound(_sound4);
 
 			float left = (_m.io_register.AUDIO_volume.left_volume / 7.0f);
 			float right = (_m.io_register.AUDIO_volume.right_volume / 7.0f);

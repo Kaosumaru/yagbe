@@ -17,32 +17,71 @@ namespace yagbe
 					reset();
 				}
 
-
 				_accTime += delta;
 				while (_accTime > _cycleDuration)
 				{
 					_accTime -= _cycleDuration;
-					//TODO
+					shift_noise();
 				}
 
-				return (float)0.0f;
+				//bool b = rand() % 2;
+				bool b = _hiddenNoise & 1;
+
+				return b ? -1.0f : 1.0f;
 			}
 
-			void set_frequency(double freq)
+			void shift_noise()
 			{
-				_frequency = freq;
+				auto set = [](auto& p, int v, int n)
+				{
+					p ^= (-v ^ p) & (1 << n);
+				};
+
+				auto get = [](auto p, int n)
+				{
+					return (p >> n) & 1;
+				};
+
+				int x = get(_hiddenNoise, 0) ^ get(_hiddenNoise, 1);
+				set(_hiddenNoise, x, 15);
+
+				if (_control.poly_width)
+				{
+					//read about LFSR, this was suggested by the guy on nesdev, but seems wrong
+					//int x = get(_hiddenNoise, 0) ^ get(_hiddenNoise, 6);
+					//set(_hiddenNoise, x, 15);
+					set(_hiddenNoise, x, 6);
+				}
+				_hiddenNoise >>= 1;
+			}
+
+			void set_frequency()
+			{
+				//why this is so cryptic...
+				//http://problemkaputt.de/pandocs.htm#soundcontroller
+				//http://forums.nesdev.com/viewtopic.php?f=3&t=13767
+				//http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
+
+				double magic_frequency = 524288.0;
+
+				double r = _control.poly_division;
+				if (r == 0) r = 0.5;
+				double s = 2 << (_control.poly_shift + 1);
+
+				//524288 Hz / r / 2 ^ (s + 1);
+				_frequency = magic_frequency / r / s;
 				_cycleDuration = (1.0 / _frequency);
 			}
 
 			void reset()
 			{
+				set_frequency();
 				_accTime = 0.0f;
 			}
 
 		protected:
-
-
 			io_registers::AudioNoise& _control;
+			uint16_t _hiddenNoise = 1;
 			double _cycleDuration = 1.0;
 			double _accTime = 0.0f;
 			double _frequency = 1.0;
