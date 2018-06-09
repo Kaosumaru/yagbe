@@ -35,7 +35,7 @@ before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DYAGBE_TRAVIS=ON
+  - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_CXX_COMPILER=$COMPILER -DBUILD_TESTS=ON -DYAGBE_TRAVIS=ON
   - cd ..
 
 script:
