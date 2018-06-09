@@ -4,28 +4,6 @@
 #include <tuple>
 #include <memory>
 
-//travis has old version of gcc & clang, and updating them takes time, so here is few "polyfills" that yagbe will work on older compilers
-#ifdef YAGBE_TRAVIS
-namespace std
-{
-	template< bool B, class T = void >
-	using enable_if_t = typename std::enable_if<B, T>::type;
-
-	template< bool B, class T1, class T2 >
-	using conditional_t = typename std::conditional<B, T1, T2>::type;
-
-	template <std::size_t I, class T>
-	using tuple_element_t = typename std::tuple_element<I, T>::type;
-
-	template< class T, class... Args >
-	std::unique_ptr<T> make_unique(Args&&... args)
-	{
-		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-	}
-}
-
-#endif
-
 namespace yagbe
 {
 	struct ipoint
