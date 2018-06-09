@@ -44,7 +44,8 @@ namespace yagbe
 			void set_frequency(double freq)
 			{
 				_frequency = freq;
-				_cycleDuration = (2.0 / _frequency) / (double)SamplesCount;
+				_cycleDuration = (1.0 / _frequency) / (double)SamplesCount;
+				_cycleDuration *= 2.0;
 			}
 
 			void reset()
@@ -60,7 +61,6 @@ namespace yagbe
 			io_registers::WaveTable& _table;
 			int    _cycle = 0;
 			double _accTime = 0.0f;
-			double _waveForm[2] = {.5, .5};
 			double _cycleDuration = 1.0;
 			double _frequency = 1.0;
 		};
@@ -83,8 +83,6 @@ namespace yagbe
 
 		channels_type time_step(double delta)
 		{
-
-
 			_frequency.get([&](double f) {  _generator.set_frequency(f); });
 			_counter.step(delta);
 			auto volume = 1.0;
