@@ -33,18 +33,25 @@ namespace yagbe
 			if (_elapsedTime < _sampleDuration) return;
 			_elapsedTime -= _sampleDuration;
 			
-			base_sound::channels_type channels;
-			//_sound1.time_step(_sampleDuration, channels);
-			channels = {0.0, 0.0};
 
-			for (auto channel : channels)
+			auto sample = generate_sample();
+			for (auto channel : sample)
 				_samples.push_back(channel * _masterVolume);
 
-			if (_samples.size() < _maxSamples * channels.size()) return;
+			if (_samples.size() < _maxSamples * sample.size()) return;
 
 			if (onSamplesReady)
 				onSamplesReady(std::move(_samples));
 			_samples.clear();
+		}
+
+		base_sound::channels_type generate_sample()
+		{
+			base_sound::channels_type channels {0.0, 0.0};
+			if (!_m.io_register.AUDIO_all_enabled) return channels;
+			_sound1.time_step(_sampleDuration, channels);
+
+			return channels;
 		}
 
 		void reset()
@@ -63,7 +70,7 @@ namespace yagbe
 		memory &_m;
 
 
-		square_sound _sound1;
+		square_sound _sound1 { _m.io_register.AUDIO_square1, _m.io_register.AUDIO_s1_enabled, _m.io_register.AUDIO_s1_to_so1, _m.io_register.AUDIO_s1_to_so2};
 		//square_sound _sound2; NYI
 		//wav_sound _sound3; NYI
 		//random_sound _sound4; NYI

@@ -46,9 +46,9 @@ namespace yagbe
 		};
 
 	public:
-		square_sound()
+		square_sound(io_registers::AudioSquare& squareControl, bit e, bit l, bit r) : base_sound(e, l, r), _squareControl(squareControl)
 		{
-			_generator.set_frequency(2500);
+			_generator.set_frequency(5000);
 		}
 
 		void reset()
@@ -62,6 +62,7 @@ namespace yagbe
 			apply_sample_to_output(sample, channels);
 		}
 
+		io_registers::AudioSquare& _squareControl;
 		square_generator _generator;
 	};
 };

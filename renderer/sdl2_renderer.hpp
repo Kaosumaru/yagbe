@@ -53,7 +53,9 @@ namespace yagbe
 			ctx.apu.configure(_audioSpec.freq, _audioSpec.samples / 4);
 			ctx.apu.onSamplesReady = [&](auto&& samples)
 			{
+#ifdef _DEBUG
 				accept_samples(std::move(samples));
+#endif
 			};
 		}
 
