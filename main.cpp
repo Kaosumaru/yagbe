@@ -130,6 +130,7 @@ int main(int argc, char * argv[])
 	}
 	else
 	{
+		std::cout << "Loading built-in rom" << std::endl;
 		auto rom_info = ctx.load_rom(path);
 		if (!rom_info)
 			return -1;
