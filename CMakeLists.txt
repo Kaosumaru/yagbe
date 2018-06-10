@@ -35,9 +35,14 @@ else(BUILD_TESTS)
 		message("Building for emscripten")
 
 		set(CMAKE_EXECUTABLE_SUFFIX ".html")
-		add_definitions("-std=c++17")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 --use-preload-plugins")
-		set_target_properties(yagbe PROPERTIES LINK_FLAGS "-s USE_SDL=2 --use-preload-plugins --preload-file ../tests/roms/")
+		add_definitions("-std=c++14")
+
+		target_compile_options(yagbe PUBLIC "-s" "USE_SDL=2" --use-preload-plugins)
+		target_link_libraries(yagbe PUBLIC "-s USE_SDL=2" --use-preload-plugins)
+		target_link_libraries(yagbe PUBLIC "--preload-file ../tests/roms/")
+
+		#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 --use-preload-plugins")
+		#set_target_properties(yagbe PROPERTIES LINK_FLAGS "-s USE_SDL=2 --use-preload-plugins --preload-file ../tests/roms/")
 		add_definitions(-DYAGBE_ROMS="/tests/roms/")
 	else(EMSCRIPTEN)
 		message("Building for native")
