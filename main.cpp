@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
 
 	std::cout << "Starting emulator..." << std::endl;
 	std::string url = (const char*)raw_url;
-	free(raw_url);
+	free((void*)raw_url);
 	if (!url.empty())
 	{
 		std::cout << "Getting rom from: " << url << std::endl;
