@@ -34,16 +34,12 @@ namespace yagbe
 			_texture.reset(SDL_CreateTexture(_renderer.get(), SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, _w, _h));
 			if (!_texture) throw std::runtime_error("SDL_CreateTexture");
 
-#ifdef _DEBUG
 			open_audio();
-#endif
 		}
 
 		~sdl2_renderer()
 		{
-#ifdef _DEBUG
 			SDL_CloseAudioDevice(_audio);
-#endif
 			SDL_Quit();
 		}
 
@@ -54,13 +50,11 @@ namespace yagbe
 				accept_image(frame);
 			};
 
-#ifdef _DEBUG
 			ctx.apu.configure(_audioSpec.freq, _audioSpec.samples / 4);
 			ctx.apu.onSamplesReady = [&](auto&& samples)
 			{
 				accept_samples(std::move(samples));
 			};
-#endif
 		}
 
 		bool frame_drawn()
@@ -165,13 +159,6 @@ namespace yagbe
 			want.samples = 4096;
 			want.userdata = this;
 			want.callback = nullptr;
-			
-			/*
-			[](void*  userdata, Uint8* stream, int len)
-			{
-				((sdl2_renderer*)userdata)->audio_callback((float*)stream, len/sizeof(float));
-			};*/
-
 
 			_audio = SDL_OpenAudioDevice(NULL, 0, &want, &_audioSpec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
 			if (_audio == 0) {
