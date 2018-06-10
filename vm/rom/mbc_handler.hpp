@@ -12,6 +12,7 @@ namespace yagbe
 	{
 	public:
 		mbc_handler(memory& m, std::vector<uint8_t>&& data) : _m(m), _rom_data(std::move(data)) {}
+		virtual ~mbc_handler() {}
 		using pointer = std::unique_ptr<mbc_handler>;
 
 
