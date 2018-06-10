@@ -50,15 +50,11 @@ namespace yagbe
 				accept_image(frame);
 			};
 
-#ifndef __EMSCRIPTEN__
-			ctx.apu.configure(_audioSpec.freq, _audioSpec.samples / 4);
+			ctx.apu.configure(_audioSpec.freq, _audioSpec.freq / 60);
 			ctx.apu.onSamplesReady = [&](auto&& samples)
 			{
 				accept_samples(std::move(samples));
 			};
-#else
-			ctx.apu.configure(_audioSpec.freq, _audioSpec.freq / 60);
-#endif
 		}
 
 		bool frame_drawn()
