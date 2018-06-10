@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules CACHE TYPE STRING FORCE)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 include(CommonFunctions)
 
 project (yagbe)
@@ -9,17 +10,10 @@ include_directories( ${PROJECT_SOURCE_DIR} )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 
 option(BUILD_TESTS "Build tests only" OFF)
-option(YAGBE_TRAVIS "On travis" OFF)
-
-#include(conanbuildinfo.cmake)
-#conan_basic_setup()
-
 
 if (MSVC)
 add_definitions( "/W3 /D_CRT_SECURE_NO_WARNINGS /wd4018 /wd4005 /wd4996 /nologo /permissive-" )
 endif(MSVC)
-
-
 
 add_folder(vm)
 add_folder(vm/gpu)
@@ -27,12 +21,6 @@ add_folder(vm/apu)
 add_folder(vm/rom)
 add_folder(serializer)
 
-if(YAGBE_TRAVIS)
-	add_definitions(-DYAGBE_TRAVIS)
-endif(YAGBE_TRAVIS)
-
-
-	message("TEST")
 if(BUILD_TESTS)
     #add_subdirectory(tests)
 	add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
