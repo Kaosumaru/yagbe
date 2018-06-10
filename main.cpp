@@ -102,10 +102,24 @@ int main(int argc, char * argv[])
 
 	
 #ifdef __EMSCRIPTEN__
+	int raw_url = EM_ASM_INT({
+		var getQueryString = function(field, url) {
+			var href = url ? url : window.location.href;
+			var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+			var string = reg.exec(href);
+			return string ? string[1] : null;
+		};
+
+		var url = getQueryString("url") || "";
+		var hexstring_ptr = allocate(intArrayFromString(url), 'i8', ALLOC_NORMAL);
+
+	});
+
 	std::cout << "Starting emulator..." << std::endl;
-	if (argc > 1)
+	const char* url = (const char*)raw_url;
+	if (strlen(url))
 	{
-		std::cout << "Getting rom from: " << argv[1] << std::endl;
+		std::cout << "Getting rom from: " << url << std::endl;
 
 		auto onLoad = [](void*, void* b, int s)
 		{
@@ -126,7 +140,7 @@ int main(int argc, char * argv[])
 		};
 
 
-		emscripten_async_wget_data(argv[1], nullptr, onLoad, onError);
+		emscripten_async_wget_data(url, nullptr, onLoad, onError);
 	}
 	else
 	{
