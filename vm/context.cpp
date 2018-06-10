@@ -248,7 +248,7 @@ void context::reset()
 		return m.raw_at(a);
 	};
 
-	memory.map_interceptors(0xFF00, 0xFFFF, zero_read, zero_write); //resetting zero RAM (IO) interceptors
+	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write); //resetting zero RAM (IO) interceptors
 }
 
 rom_info* context::load_rom(const std::string& path)
