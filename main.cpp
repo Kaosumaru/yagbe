@@ -111,13 +111,13 @@ int main(int argc, char * argv[])
 		};
 
 		var url = getQueryString("url") || "";
-		var hexstring_ptr = allocate(intArrayFromString(url), 'i8', ALLOC_NORMAL);
-
+		return allocate(intArrayFromString(url), 'i8', ALLOC_NORMAL);
 	});
 
 	std::cout << "Starting emulator..." << std::endl;
-	const char* url = (const char*)raw_url;
-	if (strlen(url))
+	std::string url = (const char*)raw_url;
+	free(raw_url);
+	if (!url.empty())
 	{
 		std::cout << "Getting rom from: " << url << std::endl;
 
@@ -140,7 +140,7 @@ int main(int argc, char * argv[])
 		};
 
 
-		emscripten_async_wget_data(url, nullptr, onLoad, onError);
+		emscripten_async_wget_data(url.c_str(), nullptr, onLoad, onError);
 	}
 	else
 	{
