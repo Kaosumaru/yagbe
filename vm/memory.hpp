@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <functional>
 #include <array>
+#include <cassert>
 #include "io_registers.hpp"
 #include <cereal/cereal.hpp>
 
@@ -164,6 +165,15 @@ namespace yagbe
 			write_byte_at(address + 1, w.byte[1]);
 		}
 
+		void reset_interceptors()
+		{
+			for (auto& i : _interceptors)
+			{
+				i.onRead = nullptr;
+				i.onWrite = nullptr;
+			}
+		}
+
 		void map_interceptors(uint16_t start, uint16_t end, const interceptor::ReadCallback& rc, const interceptor::WriteCallback& wc)
 		{
 			int end_range = end;
@@ -176,8 +186,10 @@ namespace yagbe
 			for (int i = start; i < end_range; i += interceptor_range)
 			{
 				auto& inter = interceptor_at(i);
-				inter.onWrite = wc;
-				inter.onRead = rc;
+				assert(!inter.onWrite);
+				assert(!inter.onRead);
+				if (wc) inter.onWrite = wc;
+				if (rc) inter.onRead = rc;
 			}
 		}
 

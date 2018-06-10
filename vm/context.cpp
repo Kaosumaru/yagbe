@@ -97,6 +97,7 @@ void context::reset()
 
 	cycles_elapsed = 0;
 	halted = false;
+	memory.reset_interceptors();
 
 	{
 		auto mbc_read = [](context &ctx, yagbe::memory &m, uint16_t a) -> uint8_t
@@ -224,7 +225,30 @@ void context::reset()
 		update_byte_with_mask(destination, b, bit_mask);
 	};
 
-	memory.map_interceptors(0xFF00, 0xFFFF, nullptr, zero_write); //resetting zero RAM (IO) interceptors
+	auto zero_read = [](context &ctx, yagbe::memory &m, uint16_t a) -> uint8_t 
+	{ 
+		// AUDIO
+		// http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware#Register_Reading
+		if (a >= 0xFF10 && a <= 0xFF52)
+		{
+			static uint8_t orMap[] = {	0x80, 0x3F, 0x00, 0xFF, 0xBF,
+										0xFF, 0x3F, 0x00, 0xFF, 0xBF,
+										0x7F, 0xFF, 0x9F, 0xFF, 0xBF,
+										0xFF, 0xFF, 0x00, 0x00, 0xBF,
+										0x00, 0x00, 0x70 };
+			return m.raw_at(a) | orMap[a - 0xFF10];
+		}
+
+		if (a >= 0xFF27 && a <= 0xFF2F)
+		{
+			return 0xFF;
+		}
+
+
+		return m.raw_at(a);
+	};
+
+	memory.map_interceptors(0xFF00, 0xFFFF, zero_read, zero_write); //resetting zero RAM (IO) interceptors
 }
 
 rom_info* context::load_rom(const std::string& path)

@@ -15,10 +15,10 @@ namespace yagbe
 	// sweep
 	// check if disable flag should stop circuits
 	// check if reset is OK
-	// check obscure behavior
-	// rewrite timings using cycles?
+	// check obscure behavior (don't seem to be important)
+	// rewrite timings using cycles? (this will result in slight loss of quality, about 1%)
 	// sync to audio
-	// saving state
+	// saving state?
 	// frequency is probably calculated in other way in wave, thus 2.0 in set_frequency
 
 	class apu
