@@ -13,12 +13,12 @@ matrix:
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports
           packages:
-            - g++-7
+            - g++-6
             - cmake-data
             - cmake
       env:
-        - COMPILER=g++-7
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - COMPILER=g++-6
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
     - compiler: clang
       os: linux
       addons:
