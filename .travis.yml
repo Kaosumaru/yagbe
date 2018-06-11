@@ -13,7 +13,7 @@ matrix:
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports
           packages:
-            - g++-7
+            - gcc-7
             - cmake-data
             - cmake
       env: COMPILER=g++-7
