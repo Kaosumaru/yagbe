@@ -6,6 +6,7 @@ language: cpp
 matrix:
   include:
     - compiler: gcc
+      os: linux
       addons:
         apt:
           sources:
@@ -17,6 +18,7 @@ matrix:
             - cmake
       env: COMPILER=g++-7
     - compiler: clang
+      os: linux
       addons:
         apt:
           sources:
