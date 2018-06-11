@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules CACHE TYPE STRING FORCE)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -35,7 +35,7 @@ else(BUILD_TESTS)
 		message("Building for emscripten")
 
 		set(CMAKE_EXECUTABLE_SUFFIX ".html")
-		add_definitions("-std=c++14")
+		add_definitions("-std=c++17")
 
 		target_compile_options(yagbe PUBLIC "-s" "USE_SDL=2" --use-preload-plugins)
 		target_link_libraries(yagbe PUBLIC "-s USE_SDL=2" --use-preload-plugins)
