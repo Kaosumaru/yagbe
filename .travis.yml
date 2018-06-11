@@ -29,6 +29,7 @@ matrix:
             - george-edison55-precise-backports
           packages:
             - clang-5.0
+            - g++-5
             - cmake-data
             - cmake
       env:
