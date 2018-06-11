@@ -1,6 +1,10 @@
 # Use new trusty images, should yield newer compilers and packages
-sudo: required
-dist: precise
+sudo: false
+
+# Use Linux unless specified otherwise
+os: linux
+dist: trusty
+
 language: cpp
 
 matrix:
