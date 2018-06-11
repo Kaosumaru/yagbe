@@ -35,7 +35,7 @@ else(BUILD_TESTS)
 		message("Building for emscripten")
 
 		set(CMAKE_EXECUTABLE_SUFFIX ".html")
-		add_definitions("-std=c++17")
+		add_definitions("-std=c++1z")
 
 		target_compile_options(yagbe PUBLIC "-s" "USE_SDL=2" --use-preload-plugins)
 		target_link_libraries(yagbe PUBLIC "-s USE_SDL=2" --use-preload-plugins)
