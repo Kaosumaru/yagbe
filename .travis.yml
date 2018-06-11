@@ -17,7 +17,6 @@ matrix:
             - cmake-data
             - cmake
       env:
-        - COMPILER=g++-7
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     - compiler: clang
       os: linux
@@ -32,7 +31,6 @@ matrix:
             - cmake-data
             - cmake
       env:
-        - COMPILER=clang++-5
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
 before_install:
@@ -48,7 +46,7 @@ before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_CXX_COMPILER=$COMPILER -DBUILD_TESTS=ON
+  - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON
   - cd ..
 
 script:
