@@ -22,7 +22,6 @@ matrix:
             - cmake
       env:
         - COMPILER=g++-7
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     - compiler: clang
       os: linux
       addons:
@@ -38,10 +37,8 @@ matrix:
             - cmake
       env:
         - COMPILER=clang++-5.0
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
 before_install:
-  - eval "${MATRIX_EVAL}"
   # Get CMake 3.1
   - wget https://github.com/Viq111/travis-container-packets/releases/download/cmake-3.1.2/cmake.tar.bz2
   - tar -xjf cmake.tar.bz2
