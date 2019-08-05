@@ -28,3 +28,5 @@
 *.app
 build/
 tests/proms/
+/.vs
+/CMakeSettings.json
