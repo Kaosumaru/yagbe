@@ -395,7 +395,7 @@ namespace instructions
 			
 			arg1 = (result_type)(result);
 
-			if (single_byte)
+			if constexpr (single_byte)
 			{
 				c.flags.c = (result > 0xFF);
 			}
