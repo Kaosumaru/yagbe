@@ -6,6 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Chmod scripts
+      run: |
+        chmod +x ./docker/docker_emscripten.sh
+        chmod +x ./docker/build_debug.sh
     - name: GitHub Action for Docker
       uses: docker://apiaryio/emcc
       with:
