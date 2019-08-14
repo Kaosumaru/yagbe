@@ -14,6 +14,7 @@ jobs:
       run: |
         chmod +x ./docker/docker_emscripten.sh
         chmod +x ./docker/build_debug.sh
+        chmod +x ./docker/build.sh
     - name: GitHub Action for Docker
       uses: docker://apiaryio/emcc
       with:
