@@ -1,0 +1,13 @@
+on: push
+name: Build
+jobs:
+  gitHubActionForDocker:
+    name: GitHub Action for Docker
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: GitHub Action for Docker
+      uses: docker://apiaryio/emcc
+      with:
+        entrypoint: ./docker/build.sh
+        args: -v $(pwd):/src
