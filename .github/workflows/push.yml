@@ -23,7 +23,7 @@ jobs:
         echo "Test"
         ls
         echo "Test2"
-        ls
+        ls ..
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
