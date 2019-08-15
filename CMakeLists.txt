@@ -1,10 +1,11 @@
 cmake_minimum_required (VERSION 2.8)
-include(CommonFunctions)
+
 
 project (yagbe)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules CACHE TYPE STRING FORCE)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${${CMAKE_CURRENT_BINARY_DIR}}/bin)
+include(CommonFunctions)
 
 include_directories( ${PROJECT_SOURCE_DIR} )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
