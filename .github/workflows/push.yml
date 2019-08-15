@@ -8,6 +8,10 @@ jobs:
   gitHubActionForDocker:
     name: GitHub Action for Docker
     runs-on: ubuntu-latest
+    container:
+      image: docker://apiaryio/emcc
+      volumes:
+      - /src:/github/workspace
     steps:
     - uses: actions/checkout@master
     - name: Chmod scripts
@@ -15,7 +19,6 @@ jobs:
         chmod +x ./docker/docker_emscripten.sh
         chmod +x ./docker/build_debug.sh
         chmod +x ./docker/build.sh
-    - name: GitHub Action for Docker
-      uses: docker://apiaryio/emcc
-      with:
-        args: -v $(pwd):/src -t ./docker/build.sh
+    - name: Build
+      run: |
+        ./docker/build.sh
