@@ -25,3 +25,8 @@ jobs:
       with:
         name: build
         path: build/bin/
+    - name: Publish page
+      uses: maxheld83/ghpages@v0.2.1
+      env:
+          BUILD_DIR: build/bin/
+          GITHUB_TOKEN: ${{ secrets.PAGE_PUBLISH }}
