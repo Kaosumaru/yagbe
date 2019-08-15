@@ -9,7 +9,7 @@ jobs:
     name: GitHub Action for Docker
     runs-on: ubuntu-latest
     container:
-      image: docker://apiaryio/emcc
+      image: docker://trzeci/emscripten
       volumes:
       - /src:/github/workspace
     steps:
@@ -23,6 +23,5 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=make -G "Unix Makefiles"
         emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=make -G "Unix Makefiles"
         emmake make
