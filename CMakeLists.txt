@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules CACHE TYPE STRING FORCE)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${${CMAKE_CURRENT_BINARY_DIR}}/bin)
 
 include(CommonFunctions)
 
@@ -33,7 +33,7 @@ else(BUILD_TESTS)
 	add_executable (yagbe main.cpp ${SRCS})
 
 	if (EMSCRIPTEN)
-		message("Building for emscripten")
+		message("Building for emscripten ${CMAKE_CURRENT_BINARY_DIR}/bin ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 		set(CMAKE_EXECUTABLE_SUFFIX ".html")
 		add_definitions("-std=c++1z")
