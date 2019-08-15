@@ -21,7 +21,10 @@ jobs:
         chmod +x ./docker/build.sh
     - name: Build
       run: |
+        ls
         mkdir -p build
+        ls
         cd build
         emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=make -G "Unix Makefiles"
+        ls
         emmake make
