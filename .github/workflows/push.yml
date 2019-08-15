@@ -18,4 +18,4 @@ jobs:
     - name: GitHub Action for Docker
       uses: docker://apiaryio/emcc
       with:
-        args: -rm -v $(pwd):/src -t ./docker/build.sh
+        args: --rm -v $(pwd):/src -t ./docker/build.sh
