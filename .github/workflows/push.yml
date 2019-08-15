@@ -14,11 +14,6 @@ jobs:
       - /src:/github/workspace
     steps:
     - uses: actions/checkout@master
-    - name: Chmod scripts
-      run: |
-        chmod +x ./docker/docker_emscripten.sh
-        chmod +x ./docker/build_debug.sh
-        chmod +x ./docker/build.sh
     - name: Build
       run: |
         mkdir -p build
