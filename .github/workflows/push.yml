@@ -22,8 +22,10 @@ jobs:
         emmake make
         echo "Test"
         ls
+        echo "Test2"
+        ls
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
         name: build
-        path: build/bin/
+        path: bin/
