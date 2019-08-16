@@ -5,13 +5,11 @@ on:
     - release/*
 name: Build
 jobs:
-  gitHubActionForDocker:
-    name: GitHub Action for Docker
+  buildAndDeploy:
+    name: Build WASM and deploy on page
     runs-on: ubuntu-latest
     container:
       image: docker://trzeci/emscripten
-      volumes:
-      - /src:/github/workspace
     steps:
     - uses: actions/checkout@master
     - name: Build
