@@ -42,23 +42,15 @@ else(BUILD_TESTS)
 		target_link_libraries(yagbe PUBLIC "-s USE_SDL=2" --use-preload-plugins)
 		target_link_libraries(yagbe PUBLIC "--preload-file ../tests/roms/")
 
-		#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 --use-preload-plugins")
-		#set_target_properties(yagbe PROPERTIES LINK_FLAGS "-s USE_SDL=2 --use-preload-plugins --preload-file ../tests/roms/")
 		add_definitions(-DYAGBE_ROMS="/tests/roms/")
 	else(EMSCRIPTEN)
 		message("Building for native")
 
 		add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
-		
-		#include(FindPkgConfig)
-		#pkg_search_module(SDL2 REQUIRED sdl2)
-		#include_directories(${SDL2_INCLUDE_DIRS} )
-		#target_link_libraries(yagbe ${SDL2_LIBRARIES} )
 
 		find_package(SDL2 REQUIRED)
 		include_directories(${SDL2_INCLUDE_DIR})
 		target_link_libraries(yagbe ${SDL2_LIBRARY} ${SDL2MAIN_LIBRARY})		
-		
 	endif(EMSCRIPTEN)	
 	
 	
