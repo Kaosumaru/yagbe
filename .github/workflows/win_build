@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+    - master
+    - release/*
+name: Windows build
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Dependencies
+      run: |
+        vcpkg install sdl2
