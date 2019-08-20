@@ -13,3 +13,14 @@ jobs:
     - name: Install dependencies
       run: |
         vcpkg install sdl2
+    - name: Configure
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%\scripts\buildsystems\vcpkg.cmake
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: build
+        path: ./
