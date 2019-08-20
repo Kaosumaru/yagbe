@@ -10,6 +10,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@master
-    - name: Dependencies
+    - name: Install dependencies
       run: |
         vcpkg install sdl2
