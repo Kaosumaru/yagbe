@@ -3,7 +3,7 @@ on:
     branches:
     - master
     - release/*
-name: Build
+name: Build WASM
 jobs:
   buildAndDeploy:
     name: Build WASM and deploy on page
