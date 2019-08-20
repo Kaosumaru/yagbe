@@ -15,6 +15,10 @@
 #include "vm/utils.hpp"
 #include "vm/context.hpp"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 namespace yagbe
 {
 	class sdl2_renderer
