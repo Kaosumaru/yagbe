@@ -11,6 +11,8 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install dependencies
+      env:
+        VCPKG_DEFAULT_TRIPLET: x64-windows
       run: |
         vcpkg install sdl2
     - name: Configure
