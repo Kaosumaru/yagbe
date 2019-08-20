@@ -23,7 +23,6 @@ add_folder(vm/rom)
 add_folder(serializer)
 
 if(BUILD_TESTS)
-    #add_subdirectory(tests)
 	add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
 	add_definitions(-DYAGBE_TESTS)
 	add_executable (yagbe tests/main.cpp ${SRCS})
@@ -46,12 +45,12 @@ else(BUILD_TESTS)
 	else(EMSCRIPTEN)
 		message("Building for native")
 
-		add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
-
 		find_package(SDL2 REQUIRED)
 		include_directories(${SDL2_INCLUDE_DIR})
-		target_link_libraries(yagbe ${SDL2_LIBRARY} ${SDL2MAIN_LIBRARY})		
-	endif(EMSCRIPTEN)	
+		target_link_libraries(yagbe ${SDL2_LIBRARY} ${SDL2MAIN_LIBRARY})
+		file(COPY tests/roms/ DESTINATION bin/roms/)
+		add_definitions(-DYAGBE_ROMS="roms/")
+	endif(EMSCRIPTEN)
 	
 	
 endif(BUILD_TESTS)
