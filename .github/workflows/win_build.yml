@@ -26,8 +26,13 @@ jobs:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cd build
         cmake --build . --config Release
+    - name: Copy binaries & assets
+      run: |
+        mkdir bin
+        xcopy /s build/bin/Release/*.* bin/
+        xcopy /s tests/roms/*.* bin/roms/
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
         name: build
-        path: build/bin/
+        path: bin/
