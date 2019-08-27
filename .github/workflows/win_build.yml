@@ -29,8 +29,8 @@ jobs:
     - name: Copy binaries & assets
       run: |
         mkdir bin
-        xcopy /s build/bin/Release/*.* bin/
-        xcopy /s tests/roms/*.* bin/roms/
+        xcopy /s build\bin\Release\*.* bin\
+        xcopy /s tests\roms\*.* bin\roms\
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
