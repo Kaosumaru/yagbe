@@ -30,3 +30,4 @@ build/
 tests/proms/
 /.vs
 /CMakeSettings.json
+/bin

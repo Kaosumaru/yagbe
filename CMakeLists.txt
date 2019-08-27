@@ -11,6 +11,7 @@ include_directories( ${PROJECT_SOURCE_DIR} )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 
 option(BUILD_TESTS "Build tests only" OFF)
+option(RELEASE_BUILD "Release build" OFF)
 
 if (MSVC)
 add_definitions( "/W3 /D_CRT_SECURE_NO_WARNINGS /wd4018 /wd4005 /wd4996 /nologo /permissive-" )
@@ -48,8 +49,12 @@ else(BUILD_TESTS)
 		find_package(SDL2 REQUIRED)
 		include_directories(${SDL2_INCLUDE_DIR})
 		target_link_libraries(yagbe ${SDL2_LIBRARY} ${SDL2MAIN_LIBRARY})
-		file(COPY tests/roms/ DESTINATION bin/roms/)
+
+	if(RELEASE_BUILD)
 		add_definitions(-DYAGBE_ROMS="roms/")
+	else(RELEASE_BUILD)
+		add_definitions(-DYAGBE_ROMS="${PROJECT_SOURCE_DIR}/tests/roms/")
+	endif(RELEASE_BUILD)
 	endif(EMSCRIPTEN)
 	
 	
