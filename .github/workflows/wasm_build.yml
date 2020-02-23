@@ -1,8 +1,6 @@
 on:
   push:
-    branches:
-    - master
-    - release/*
+  pull_request:
 name: Build WASM
 jobs:
   buildAndDeploy:
@@ -11,20 +9,18 @@ jobs:
     container:
       image: docker://trzeci/emscripten
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
     - name: Build
-      run: |
-        mkdir -p build
-        cd build
-        emcmake cmake .. -DRELEASE_BUILD=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=make -G "Unix Makefiles"
-        emmake make
+      uses: lukka/run-cmake@master
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeAppendedArgs: '-DRELEASE_BUILD=ON -DCMAKE_BUILD_TYPE=Release -G Ninja'
+        cmakeWrapperCommand: emcmake
+        buildDirectory: '${{ github.workspace }}/build'
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
         name: build
         path: build/bin/
-    - name: Publish page
-      uses: maxheld83/ghpages@v0.2.1
-      env:
-          BUILD_DIR: build/bin/
-          GH_PAT: ${{ secrets.PAGE_PUBLISH }}

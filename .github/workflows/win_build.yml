@@ -1,31 +1,31 @@
 on:
   push:
-    branches:
-    - master
-    - release/*
+  pull_request:
 name: Windows build
 jobs:
   build:
     name: Build
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Install dependencies
-      env:
-        VCPKG_DEFAULT_TRIPLET: x64-windows
-      run: |
-        vcpkg install sdl2
-    - name: Configure
-      run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        mkdir build
-        cd build
-        cmake .. -DRELEASE_BUILD=ON -DCMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%\scripts\buildsystems\vcpkg.cmake
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Cache vcpkg's artifacts
+      uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/vcpkg/
+        key: ${{ hashFiles( 'vcpkg_windows.txt' ) }}-${{ hashFiles('.git/modules/vcpkg/HEAD') }}-${{ runner.os }}
+    - name: Install dependencies (vcpkg)
+      uses: lukka/run-vcpkg@v0
+      with:
+        vcpkgArguments: '@${{ github.workspace }}/vcpkg_windows.txt'
     - name: Build
-      run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cd build
-        cmake --build . --config Release
+      uses: lukka/run-cmake@v0
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeAppendedArgs: '-DRELEASE_BUILD=ON -DCMAKE_BUILD_TYPE=Release -G Ninja'
+        useVcpkgToolchainFile: true
+        buildDirectory: '${{ github.workspace }}/build'
     - name: Copy binaries & assets
       run: |
         mkdir bin
@@ -36,3 +36,11 @@ jobs:
       with:
         name: build
         path: bin/
+    # clean out the vcpkg content that must not be cached. //?? This should not be needed if the 'cache' action would allow to filter the files to be cached!
+    - name: clean vcpkg artifact that must not be cached
+      run: |
+        rm -rfv ${{ github.workspace }}/vcpkg/buildtrees
+        rm -rfv ${{ github.workspace }}/vcpkg/packages
+        rm -rfv ${{ github.workspace }}/vcpkg/downloads
+      shell: bash
+
